@@ -741,6 +741,190 @@ body{background:var(--bg);font-family:'Segoe UI',Arial,sans-serif;color:var(--te
 
 </div><!-- /appContent -->
 
+<!-- ══ COPILOTO DOCUMENTOS PRO ══ -->
+<style>
+#docCopiloBtn{position:fixed;bottom:22px;right:22px;width:52px;height:52px;background:linear-gradient(135deg,#1a1a1a,#C9A84C);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;box-shadow:0 4px 20px rgba(201,168,76,.5);z-index:1000;transition:.2s;}
+#docCopiloBtn:hover{transform:scale(1.08);}
+#docCopiloPanel{position:fixed;bottom:84px;right:22px;width:320px;max-height:490px;background:#fff;border:2px solid var(--gold);border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,.18);z-index:1000;display:none;flex-direction:column;overflow:hidden;}
+#docCopiloMensajes{flex:1;overflow-y:auto;padding:12px 14px;display:flex;flex-direction:column;gap:8px;max-height:260px;}
+.dcop-burbuja-bot{max-width:230px;padding:8px 11px;border-radius:4px 12px 12px 12px;font-size:10.5px;line-height:1.6;background:#f8f7f4;color:var(--text);border:1px solid var(--border);}
+.dcop-burbuja-user{max-width:230px;padding:8px 11px;border-radius:12px 4px 12px 12px;font-size:10.5px;line-height:1.6;background:var(--blue);color:#fff;align-self:flex-end;}
+.dcop-row{display:flex;gap:7px;align-items:flex-start;}
+.dcop-row.user{flex-direction:row-reverse;}
+.dcop-avatar{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;background:linear-gradient(135deg,#1a1a1a,#C9A84C);color:#fff;}
+.dcop-avatar.u{background:var(--blue);}
+</style>
+
+<div id="docCopiloBtn" onclick="toggleDocCopiloto()" title="Copiloto Documentos">✦</div>
+<div id="docCopiloPanel">
+  <div style="background:linear-gradient(135deg,#1a1a1a,#2d2d2d);padding:11px 14px;display:flex;align-items:center;gap:10px;">
+    <div style="width:34px;height:34px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">✦</div>
+    <div style="flex:1;"><div style="font-size:11px;font-weight:700;color:var(--gold);">COPILOTO DOCUMENTOS</div><div style="font-size:8.5px;color:rgba(201,168,76,.6);">CV · Plantillas · Trámites · Seguridad</div></div>
+    <div style="display:flex;gap:5px;align-items:center;">
+      <button id="docVozBtn" onclick="toggleVozDoc()" style="background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.3);border-radius:20px;color:var(--gold);font-size:9.5px;padding:3px 7px;cursor:pointer;">🔊 Voz</button>
+      <button onclick="toggleDocCopiloto()" style="background:none;border:none;color:#888;font-size:15px;cursor:pointer;">✕</button>
+    </div>
+  </div>
+  <div id="docCopiloMensajes" style="flex:1;overflow-y:auto;padding:12px 14px;display:flex;flex-direction:column;gap:8px;max-height:260px;"></div>
+  <div style="padding:9px 11px;border-top:1px solid var(--border);display:flex;gap:6px;align-items:flex-end;">
+    <textarea id="docCopiloInput" placeholder="Pregúntame sobre tu CV, plantillas..." style="flex:1;padding:7px 9px;border:1.5px solid var(--border);border-radius:8px;font-size:10.5px;font-family:inherit;resize:none;max-height:65px;outline:none;line-height:1.5;" rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();enviarDocCopiloto();}"></textarea>
+    <button onclick="vozADocCopiloto()" id="docMicBtn" style="width:32px;height:32px;background:rgba(201,168,76,.12);border:1.5px solid var(--gold);border-radius:8px;font-size:13px;cursor:pointer;flex-shrink:0;">🎤</button>
+    <button onclick="enviarDocCopiloto()" style="width:32px;height:32px;background:var(--gold);border:none;border-radius:8px;font-size:13px;cursor:pointer;flex-shrink:0;">→</button>
+  </div>
+  <div id="docCopiloSug" style="padding:7px 11px;border-top:1px solid var(--border);display:flex;gap:5px;flex-wrap:wrap;background:var(--bg3);"></div>
+</div>
+
+<script>
+// ══ COPILOTO DOCUMENTOS PRO ══
+const DCOP={
+  abierto:false,
+  vozActiva:true,
+  recActivo:null,
+  respuestas:{
+    'cv':'El CV tiene 8 secciones: Datos, Experiencia, Formación, Idiomas, Habilidades, Referencias, Carta y Certificados. Rellena primero los Datos y la Vista previa se actualiza en tiempo real.',
+    'foto':'Ve a la pestaña Datos del CV. Haz clic en el recuadro de foto para subir tu imagen. Formatos aceptados: JPG y PNG.',
+    'certificado':'En la pestaña Certificados sube tus títulos o diplomas. El sistema aplica automáticamente una marca de agua con tu nombre y la empresa destinataria.',
+    'marca de agua':'La marca de agua protege tus documentos. Se configura en el módulo Documentos con tu nombre, el destinatario, propósito y fecha. Así nadie puede reutilizar tu documento para otro trámite.',
+    'plantilla':'En el módulo Plantillas tienes cartas por sector laboral, trámites de España y Venezuela, solicitudes bancarias y quejas. Selecciona el tipo y se genera automáticamente con tus datos.',
+    'carta':'En Plantillas → Trabajo selecciona tu sector y la carta se genera sola con tus datos del CV. Puedes editarla directamente antes de descargar el PDF.',
+    'whatsapp':'En Comunicación o en Plantillas tienes el mensaje de WhatsApp listo para copiar y enviar directamente a la empresa.',
+    'tramite':'En Plantillas → Trámites España tienes: Empadronamiento, Renovación NIE, Arraigo, SEPE, Tarjeta Sanitaria y Alta de Autónomo. Cada uno genera un PDF con tus datos.',
+    'venezuela':'En Plantillas → Venezuela tienes: Apostilla MPPRE, Poder Notarial, Carta Familiar, Cita Consular, Justificación de Remesas y Declaración de Bienes.',
+    'banco':'En Plantillas → Banco tienes: Crédito personal, Hipoteca, Apertura de cuenta, Microcrédito e ICO y Renegociación de deuda.',
+    'iban':'En Seguridad → IBAN puedes enmascarar tu número de cuenta y generar un PDF protegido para entregarlo a empleadores o gestorías.',
+    'tarjeta':'En Seguridad → Tarjetas puedes enmascarar tu tarjeta mostrando solo los últimos 4 dígitos. El CVV nunca se incluye en ningún documento.',
+    'contrato':'En el módulo Contratos tienes: Contrato de Alquiler LAU, Autorización, Declaración Responsable, Instancia General, Empadronamiento, Autorización menor y Reclamación.',
+    'alquiler':'En Contratos → Alquiler rellena los datos del propietario, los tuyos y el inmueble. El sistema genera el contrato completo según la Ley 29/1994 LAU.',
+    'pdf':'Todos los módulos generan PDF directamente. Haz clic en el botón PDF de cada sección y se abre la ventana de impresión lista para guardar o imprimir.',
+    'voz':'Todos los campos tienen el botón 🎤. Haz clic, habla en español y el texto se escribe solo. Usa Chrome o Edge para mejor compatibilidad.',
+    'guardar':'Haz clic en 💾 Guardar en cualquier sección. Los datos se guardan en tu navegador y se recuperan automáticamente la próxima vez.',
+    'postulacion':'En Comunicación → Historial puedes registrar cada empresa a la que envías tu CV con fecha, puesto y estado: Enviado, Con respuesta, Entrevista o Descartado.',
+    'nie':'El NIE es tu Número de Identidad de Extranjero en España. Lo necesitas para trabajar, abrir cuenta bancaria y hacer cualquier trámite oficial.',
+    'nie':'El NIE es tu Número de Identidad de Extranjero en España. Lo necesitas para trabajar, abrir cuenta bancaria y hacer cualquier trámite oficial.',
+    'hola':'¡Hola Fátima! Estoy aquí para ayudarte con tus documentos, CV y plantillas. ¿En qué empezamos?',
+    'gracias':'¡Con mucho gusto! Para eso estoy. ¿Necesitas algo más?'
+  },
+  sugerencias:{
+    cv:['¿Cómo añado mi foto?','¿Cómo genero el PDF?','¿Cómo añado experiencia?'],
+    docs:['¿Cómo aplico marca de agua?','¿Cómo protejo mi NIE?','¿Qué es la marca de agua?'],
+    plantillas:['¿Cómo genero una carta?','¿Trámites de España?','¿Trámites de Venezuela?'],
+    seguridad:['¿Cómo enmascaro mi tarjeta?','¿Cómo protejo mi IBAN?','¿Qué es el registro de envíos?'],
+    comunicacion:['¿Cómo copio el email?','¿Cómo uso el WhatsApp?','¿Cómo registro postulaciones?'],
+    formularios:['¿Cómo relleno un formulario?','¿Cómo descargo el CSV?','¿Cómo uso el editor visual?'],
+    contratos:['¿Cómo genero un contrato?','¿Qué es la LAU?','¿Cómo hago una autorización?'],
+    boveda:['¿Cómo añado un perfil?','¿Para qué sirve la bóveda?'],
+    default:['¿Cómo uso el CV?','¿Cómo genero plantillas?','¿Cómo protejo documentos?']
+  }
+};
+
+function toggleDocCopiloto(){
+  DCOP.abierto=!DCOP.abierto;
+  const panel=document.getElementById('docCopiloPanel');
+  panel.style.display=DCOP.abierto?'flex':'none';
+  if(DCOP.abierto&&document.getElementById('docCopiloMensajes').children.length===0)iniciarDocCopiloto();
+}
+
+function iniciarDocCopiloto(){
+  const modulo=document.querySelector('.nav-btn.act')?.textContent||'';
+  let ctx='cv';
+  if(modulo.includes('Documento'))ctx='docs';
+  else if(modulo.includes('Plantilla'))ctx='plantillas';
+  else if(modulo.includes('Seguridad'))ctx='seguridad';
+  else if(modulo.includes('Comunicación'))ctx='comunicacion';
+  else if(modulo.includes('Formulario'))ctx='formularios';
+  else if(modulo.includes('Contrato'))ctx='contratos';
+  else if(modulo.includes('Bóveda'))ctx='boveda';
+  const bienvenidas={
+    cv:'¡Hola Fátima! 👋 Estás en el Constructor de CV. Rellena tus datos y la vista previa se actualiza en tiempo real. Puedes dictar con el micrófono 🎤 en todos los campos.',
+    docs:'Estás en Protección de Documentos. Configura tu nombre y el destinatario, sube el documento y se aplica la marca de agua automáticamente.',
+    plantillas:'Estás en Plantillas Automáticas. Selecciona el sector o tipo de trámite y la carta se genera con tus datos. Edítala y descarga el PDF.',
+    seguridad:'Estás en Seguridad. Aquí proteges tus tarjetas, IBAN y documentos sensibles. Recuerda: el CVV nunca se comparte.',
+    comunicacion:'Estás en Comunicación. Tienes el email y WhatsApp profesional listos para copiar, y el historial de postulaciones.',
+    formularios:'Estás en Formularios. Puedes subir cualquier formulario fotografiado y colocar tus datos encima haciendo clic.',
+    contratos:'Estás en Contratos. Tienes el contrato de alquiler LAU, autorizaciones, declaraciones responsables y más.',
+    boveda:'Estás en la Bóveda Familiar. Aquí tienes los perfiles de tu familia. Los documentos protegidos se organizan por perfil.',
+    default:'¡Hola Fátima! Soy tu Copiloto de Documentos. Puedo guiarte en el CV, plantillas, protección de documentos, contratos y trámites.'
+  };
+  agregarMsgDoc(bienvenidas[ctx]||bienvenidas.default,'bot');
+  mostrarSugDoc(DCOP.sugerencias[ctx]||DCOP.sugerencias.default);
+  if(DCOP.vozActiva)hablarDoc(bienvenidas[ctx]||bienvenidas.default);
+}
+
+function agregarMsgDoc(texto,tipo){
+  const wrap=document.getElementById('docCopiloMensajes');
+  const row=document.createElement('div');row.className='dcop-row'+(tipo==='user'?' user':'');
+  const av=document.createElement('div');av.className='dcop-avatar'+(tipo==='user'?' u':'');av.textContent=tipo==='user'?'Tú':'✦';
+  const bur=document.createElement('div');bur.className=tipo==='user'?'dcop-burbuja-user':'dcop-burbuja-bot';bur.textContent=texto;
+  if(tipo==='bot'){
+    const escBtn=document.createElement('button');escBtn.textContent='🎧';escBtn.title='Escuchar';
+    escBtn.style.cssText='background:none;border:none;cursor:pointer;font-size:10px;opacity:.5;margin-top:4px;display:block;';
+    escBtn.onclick=()=>hablarDoc(texto);bur.appendChild(escBtn);
+  }
+  row.appendChild(av);row.appendChild(bur);wrap.appendChild(row);wrap.scrollTop=wrap.scrollHeight;
+}
+
+function enviarDocCopiloto(){
+  const input=document.getElementById('docCopiloInput');
+  const texto=input.value.trim();if(!texto)return;
+  agregarMsgDoc(texto,'user');input.value='';
+  setTimeout(()=>{
+    const resp=procesarDocPregunta(texto);
+    agregarMsgDoc(resp,'bot');
+    if(DCOP.vozActiva)hablarDoc(resp);
+  },400);
+}
+
+function procesarDocPregunta(texto){
+  const q=texto.toLowerCase().trim();
+  for(const[clave,resp]of Object.entries(DCOP.respuestas)){if(q.includes(clave))return resp;}
+  if(q.includes('empleo')||q.includes('trabajo')||q.includes('candidatura'))return DCOP.respuestas['carta'];
+  if(q.includes('proteg')||q.includes('document'))return DCOP.respuestas['marca de agua'];
+  if(q.includes('pdf'))return DCOP.respuestas['pdf'];
+  if(q.includes('voz')||q.includes('micr')||q.includes('dict'))return DCOP.respuestas['voz'];
+  if(q.includes('guard')||q.includes('datos'))return DCOP.respuestas['guardar'];
+  if(q.includes('spain')||q.includes('españa')||q.includes('español'))return DCOP.respuestas['tramite'];
+  if(q.includes('venezuel')||q.includes('caracas')||q.includes('mppre'))return DCOP.respuestas['venezuela'];
+  return '🤔 Puedo ayudarte con: CV, Plantillas de trabajo, Trámites España y Venezuela, Protección de documentos, Contratos y Seguridad bancaria. ¿Sobre cuál quieres saber más?';
+}
+
+function mostrarSugDoc(lista){
+  const wrap=document.getElementById('docCopiloSug');
+  wrap.innerHTML=lista.map(s=>`<button onclick="clickSugDoc('${s}')" style="padding:3px 8px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);border-radius:14px;font-size:9px;color:var(--gold);cursor:pointer;">${s}</button>`).join('');
+}
+
+function clickSugDoc(texto){document.getElementById('docCopiloInput').value=texto;enviarDocCopiloto();}
+
+function hablarDoc(texto){
+  if(!window.speechSynthesis||!DCOP.vozActiva)return;
+  speechSynthesis.cancel();
+  const utt=new SpeechSynthesisUtterance(texto.substring(0,500));
+  utt.lang='es-ES';utt.rate=0.88;utt.pitch=1.05;
+  const vs=speechSynthesis.getVoices();
+  const es=vs.find(v=>v.lang==='es-ES'&&v.name.includes('Female'))||vs.find(v=>v.lang.startsWith('es'));
+  if(es)utt.voice=es;
+  speechSynthesis.speak(utt);
+}
+
+function toggleVozDoc(){
+  DCOP.vozActiva=!DCOP.vozActiva;
+  const btn=document.getElementById('docVozBtn');
+  if(DCOP.vozActiva){btn.textContent='🔊 Voz';btn.style.color='var(--gold)';}
+  else{speechSynthesis.cancel();btn.textContent='🔇 Mudo';btn.style.color='var(--text3)';}
+}
+
+function vozADocCopiloto(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){agregarMsgDoc('⚠️ Usa Chrome o Edge para reconocimiento de voz.','bot');return;}
+  if(DCOP.recActivo){DCOP.recActivo.stop();return;}
+  const rec=new SR();rec.lang='es-ES';rec.continuous=false;rec.interimResults=false;
+  DCOP.recActivo=rec;
+  const btn=document.getElementById('docMicBtn');btn.textContent='⏹';btn.style.background='rgba(220,38,38,.15)';
+  rec.onresult=e=>{document.getElementById('docCopiloInput').value=e.results[0][0].transcript;enviarDocCopiloto();};
+  rec.onend=()=>{DCOP.recActivo=null;btn.textContent='🎤';btn.style.background='rgba(201,168,76,.12)';};
+  rec.start();
+}
+</script>
+
 <!-- ══ FIREBASE AUTH — mismo proyecto tramites-eb8cb ══ -->
 <script type="module">
 import{initializeApp}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
