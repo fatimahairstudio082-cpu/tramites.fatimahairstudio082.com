@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FÁTIMA CALDEA — DOCUMENTOS PRO</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--gold:#C9A84C;--gold2:#7A6130;--bg:#f5f4f0;--bg2:#ffffff;--bg3:#f0ede6;--text:#1a1a1a;--text2:#555;--text3:#888;--border:#e0d9cc;--border2:#d4c9b0;--green:#27AE60;--blue:#2563EB;--red:#DC2626;--shadow:0 2px 12px rgba(0,0,0,.08);}
+body{background:var(--bg);font-family:'Segoe UI',Arial,sans-serif;color:var(--text);min-height:100vh;}
+
+/* ══ LOGIN ══ */
+#loginScreen{position:fixed;inset:0;background:linear-gradient(135deg,#1a1a1a,#2d2d2d);display:flex;align-items:center;justify-content:center;z-index:9999;}
+.login-box{background:#fff;border-radius:16px;padding:36px 32px;width:340px;box-shadow:0 20px 60px rgba(0,0,0,.4);}
+.login-logo{text-align:center;margin-bottom:20px;}
+.login-logo div:first-child{font-size:32px;margin-bottom:8px;}
+.login-title{font-size:16px;font-weight:700;color:var(--text);}
+.login-sub{font-size:10px;color:var(--text3);margin-top:2px;}
+.login-field{margin-bottom:12px;}
+.login-field label{font-size:10px;font-weight:600;color:var(--text2);display:block;margin-bottom:4px;}
+.login-field input{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:7px;font-size:12px;font-family:inherit;outline:none;transition:.15s;}
+.login-field input:focus{border-color:var(--gold);background:#fffdf5;}
+.login-btn{width:100%;padding:11px;background:var(--gold);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;margin-top:4px;transition:.15s;}
+.login-btn:hover{background:#b8922e;}
+.login-err{background:#fff5f5;border:1px solid #fca5a5;border-radius:6px;padding:8px 12px;font-size:10px;color:var(--red);margin-top:10px;display:none;}
+.login-badge{text-align:center;margin-top:14px;font-size:9px;color:var(--text3);}
+#appContent{display:none;}
+
+.hdr{background:var(--bg2);border-bottom:2px solid var(--gold);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;box-shadow:var(--shadow);}
+.hdr-logo{width:38px;height:38px;background:linear-gradient(135deg,#1a1a1a,#333);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--gold);font-weight:700;}
+.hdr-title{font-size:14px;font-weight:700;color:var(--text);}
+.hdr-sub{font-size:9px;color:var(--text3);margin-top:1px;}
+.nav{display:flex;gap:4px;flex-wrap:wrap;}
+.nav-btn{padding:6px 12px;font-size:10px;border-radius:6px;cursor:pointer;border:1.5px solid var(--border2);color:var(--text2);background:var(--bg3);transition:.2s;font-weight:500;}
+.nav-btn.act,.nav-btn:hover{background:var(--gold);color:#fff;border-color:var(--gold);}
+.nav-link-ext{background:var(--gold);color:#1a1a1a;padding:6px 14px;border-radius:20px;font-size:10px;font-weight:700;text-decoration:none;transition:.15s;}
+.nav-link-ext:hover{background:#b8922e;color:#fff;}
+.user-chip{display:flex;align-items:center;gap:5px;background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:20px;padding:3px 10px;}
+.user-dot{width:6px;height:6px;background:var(--green);border-radius:50%;}
+.user-name{font-size:9px;color:var(--green);font-weight:600;}
+.logout-btn{background:none;border:1px solid var(--border);border-radius:12px;padding:3px 10px;font-size:9px;color:var(--text3);cursor:pointer;}
+.logout-btn:hover{border-color:var(--red);color:var(--red);}
+.view{display:none;} .view.act{display:block;}
+.page{max-width:1100px;margin:0 auto;padding:18px 14px;}
+.sec-header{display:flex;align-items:center;gap:10px;margin-bottom:18px;padding-bottom:10px;border-bottom:2px solid var(--border);}
+.sec-icon{width:34px;height:34px;background:linear-gradient(135deg,#1a1a1a,#333);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;}
+.sec-title{font-size:16px;font-weight:700;}
+.sec-sub{font-size:10px;color:var(--text3);margin-top:1px;}
+.card{background:var(--bg2);border:1.5px solid var(--border);border-radius:10px;padding:16px;margin-bottom:14px;box-shadow:var(--shadow);}
+.card-title{font-size:11px;font-weight:700;color:var(--text);letter-spacing:.06em;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:6px;}
+.card-title::before{content:'';width:3px;height:14px;background:var(--gold);border-radius:2px;display:block;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.form-grid.three{grid-template-columns:1fr 1fr 1fr;}
+.f-group{display:flex;flex-direction:column;gap:3px;}
+.f-group.span2{grid-column:span 2;}
+.f-group.span3{grid-column:span 3;}
+.f-label{font-size:10px;font-weight:600;color:var(--text2);}
+.req{color:var(--red);margin-left:2px;}
+.f-input{padding:8px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:11px;color:var(--text);background:var(--bg2);font-family:inherit;transition:.15s;}
+.f-input:focus{outline:none;border-color:var(--gold);background:#fffdf5;}
+.f-input::placeholder{color:var(--text3);}
+.f-textarea{resize:vertical;min-height:65px;line-height:1.5;}
+.f-select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23888'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;}
+.voice-wrap{position:relative;}
+.voice-wrap .f-input{padding-right:34px;}
+.voice-btn{position:absolute;right:7px;top:50%;transform:translateY(-50%);width:22px;height:22px;background:none;border:none;cursor:pointer;font-size:13px;color:var(--text3);padding:0;display:flex;align-items:center;justify-content:center;border-radius:50%;}
+.voice-btn:hover{background:rgba(201,168,76,.1);color:var(--gold);}
+.voice-btn.rec{color:var(--red);animation:vpulse 1s infinite;}
+@keyframes vpulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+.tabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:18px;flex-wrap:wrap;}
+.tab{padding:9px 16px;font-size:10px;font-weight:600;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:.15s;}
+.tab.act{color:var(--gold);border-bottom-color:var(--gold);}
+.tab-content{display:none;} .tab-content.act{display:block;}
+.btn{padding:8px 18px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;transition:.15s;border:none;}
+.btn-gold{background:var(--gold);color:#fff;}
+.btn-gold:hover{background:#b8922e;}
+.btn-outline{background:var(--bg3);border:1.5px solid var(--border2);color:var(--text2);}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold);}
+.btns-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;}
+.status-bar{background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:6px;padding:7px 12px;font-size:10px;color:var(--green);margin-bottom:12px;display:none;}
+.status-bar.visible{display:block;}
+.status-bar.err{background:#fff5f5;border-color:#fca5a5;color:var(--red);}
+.foto-zone{width:100px;height:120px;border:2px dashed var(--border2);border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;background:var(--bg3);position:relative;overflow:hidden;flex-shrink:0;}
+.foto-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;}
+.foto-zone img{width:100%;height:100%;object-fit:cover;border-radius:6px;}
+.dynamic-list{display:flex;flex-direction:column;gap:9px;margin-bottom:9px;}
+.dyn-item{background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;padding:12px;position:relative;}
+.dyn-item-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;}
+.dyn-item-title{font-size:10px;font-weight:700;color:var(--text2);}
+.dyn-del{background:none;border:1px solid #fca5a5;border-radius:4px;color:var(--red);font-size:9px;cursor:pointer;padding:2px 7px;}
+.add-btn{padding:7px 14px;background:var(--bg3);border:1.5px dashed var(--border2);border-radius:6px;font-size:10px;color:var(--text2);cursor:pointer;width:100%;text-align:center;transition:.15s;}
+.add-btn:hover{border-color:var(--gold);color:var(--gold);}
+.doc-upload-zone{border:2px dashed var(--border2);border-radius:10px;padding:24px;text-align:center;cursor:pointer;background:var(--bg3);position:relative;transition:.2s;}
+.doc-upload-zone:hover{border-color:var(--gold);background:#fffdf5;}
+.doc-upload-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.doc-upload-icon{font-size:32px;margin-bottom:6px;opacity:.5;}
+.doc-upload-txt{font-size:11px;color:var(--text2);font-weight:600;}
+.doc-upload-sub{font-size:9px;color:var(--text3);margin-top:2px;}
+.doc-card{background:var(--bg2);border:1.5px solid var(--border);border-radius:8px;overflow:hidden;}
+.doc-card-header{padding:8px 12px;background:var(--bg3);border-bottom:1px solid var(--border);font-size:10px;font-weight:700;color:var(--text2);display:flex;justify-content:space-between;align-items:center;}
+.doc-canvas-wrap{background:#f8f7f4;display:flex;align-items:center;justify-content:center;min-height:160px;}
+.doc-canvas-wrap canvas{max-width:100%;max-height:220px;}
+.doc-actions{padding:8px 12px;display:flex;gap:5px;flex-wrap:wrap;}
+.doc-act-btn{padding:4px 10px;border:1.5px solid var(--border2);border-radius:4px;font-size:9px;color:var(--text2);cursor:pointer;background:var(--bg3);transition:.15s;}
+.doc-act-btn:hover{border-color:var(--gold);color:var(--gold);}
+.doc-act-btn.pri{background:var(--gold);color:#fff;border-color:var(--gold);}
+.perfil-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:14px;}
+.perfil-card{background:var(--bg2);border:1.5px solid var(--border);border-radius:10px;padding:14px;text-align:center;cursor:pointer;transition:.2s;}
+.perfil-card:hover,.perfil-card.act{border-color:var(--gold);}
+.perfil-avatar{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#1a1a1a,#444);display:flex;align-items:center;justify-content:center;font-size:18px;margin:0 auto 7px;}
+.perfil-name{font-size:11px;font-weight:700;}
+.perfil-role{font-size:9px;color:var(--text3);}
+.voz-indicator{position:fixed;bottom:18px;right:18px;background:#DC2626;color:#fff;border-radius:20px;padding:7px 14px;font-size:10px;font-weight:700;display:none;align-items:center;gap:5px;box-shadow:0 4px 14px rgba(220,38,38,.4);z-index:999;}
+.voz-indicator.visible{display:flex;}
+.voz-dot{width:7px;height:7px;background:#fff;border-radius:50%;animation:vpulse 1s infinite;}
+.cv-doc{max-width:660px;margin:0 auto;font-family:'Segoe UI',Arial,sans-serif;color:#1a1a1a;font-size:11px;line-height:1.5;}
+.cv-header{display:flex;gap:16px;align-items:flex-start;border-bottom:3px solid #C9A84C;padding-bottom:14px;margin-bottom:14px;}
+.cv-foto{width:80px;height:95px;border-radius:6px;object-fit:cover;border:2px solid #e0d9cc;flex-shrink:0;}
+.cv-foto-ph{width:80px;height:95px;border-radius:6px;background:#f0ede6;border:2px solid #e0d9cc;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;}
+.cv-name{font-size:20px;font-weight:700;}
+.cv-profession{font-size:12px;color:#C9A84C;font-weight:600;margin-top:2px;}
+.cv-body{display:grid;grid-template-columns:185px 1fr;gap:16px;}
+.cv-sec-title{font-size:9.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#C9A84C;border-bottom:1.5px solid #C9A84C;padding-bottom:2px;margin-bottom:7px;}
+.cv-item{margin-bottom:9px;}
+.cv-item-title{font-size:10.5px;font-weight:700;}
+.cv-item-sub{font-size:9.5px;color:#C9A84C;font-weight:600;}
+.cv-item-date{font-size:9px;color:#888;}
+.cv-item-desc{font-size:9.5px;color:#444;margin-top:2px;line-height:1.5;}
+.cv-skill-bar{height:4px;background:#e0d9cc;border-radius:3px;margin-top:3px;}
+.cv-skill-fill{height:100%;background:#C9A84C;border-radius:3px;}
+.cv-lang-item{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
+.cv-lang-dot{width:9px;height:9px;border-radius:50%;background:#e0d9cc;display:inline-block;margin-right:2px;}
+.cv-lang-dot.on{background:#C9A84C;}
+.cv-footer{margin-top:14px;padding-top:7px;border-top:1px solid #e0d9cc;text-align:center;font-size:8.5px;color:#aaa;}
+.preview-toolbar{background:var(--bg3);border-bottom:1px solid var(--border);padding:9px 14px;display:flex;gap:7px;align-items:center;flex-wrap:wrap;}
+.prev-btn{padding:5px 12px;border:1.5px solid var(--border2);border-radius:5px;font-size:10px;color:var(--text2);cursor:pointer;background:var(--bg2);}
+.prev-btn:hover{border-color:var(--gold);color:var(--gold);}
+.prev-btn.pri{background:var(--gold);color:#fff;border-color:var(--gold);}
+.ftr{background:var(--bg2);border-top:2px solid var(--border);padding:9px 20px;display:flex;gap:14px;align-items:center;flex-wrap:wrap;font-size:9px;color:var(--text3);}
+.ftr span{color:var(--gold);font-weight:600;}
+.plant-sector-btn{padding:8px 12px;border:1.5px solid var(--border2);border-radius:6px;font-size:10px;color:var(--text2);cursor:pointer;transition:.15s;background:var(--bg3);}
+.plant-sector-btn:hover,.plant-sector-btn.act{background:var(--gold);color:#fff;border-color:var(--gold);}
+.plant-card{background:var(--bg2);border:1.5px solid var(--border);border-radius:10px;padding:16px;cursor:pointer;transition:.2s;display:flex;flex-direction:column;}
+.plant-card:hover{border-color:var(--gold);box-shadow:var(--shadow);}
+.plant-icon{font-size:28px;margin-bottom:8px;}
+.plant-name{font-size:11px;font-weight:700;margin-bottom:5px;}
+.plant-desc{font-size:9.5px;color:var(--text3);line-height:1.5;flex:1;}
+@media(max-width:650px){.form-grid,.form-grid.three{grid-template-columns:1fr;}.f-group.span2,.f-group.span3{grid-column:span 1;}.cv-body{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<!-- ══ PANTALLA DE LOGIN ══ -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">
+      <div>✦</div>
+      <div class="login-title">FÁTIMA CALDEA — DOCUMENTOS PRO</div>
+      <div class="login-sub">Sistema Privado Familiar · España & Venezuela</div>
+    </div>
+    <div class="login-field">
+      <label>Email</label>
+      <input type="email" id="loginEmail" placeholder="tu@email.com" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <div class="login-field">
+      <label>Contraseña</label>
+      <input type="password" id="loginPass" placeholder="Contraseña" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <button class="login-btn" onclick="doLogin()">🔐 Entrar al sistema</button>
+    <div class="login-err" id="loginErr"></div>
+    <div class="login-badge">🔒 Acceso exclusivo · Familia Caldea</div>
+  </div>
+</div>
+
+<!-- ══ CONTENIDO PRINCIPAL ══ -->
+<div id="appContent">
+<div class="voz-indicator" id="vozIndicator"><div class="voz-dot"></div><span id="vozIndTxt">Grabando...</span></div>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div style="display:flex;align-items:center;gap:10px;">
+    <div class="hdr-logo">✦</div>
+    <div><div class="hdr-title">FÁTIMA CALDEA — DOCUMENTOS PRO</div><div class="hdr-sub">Sistema Privado de Gestión Documental Familiar · España</div></div>
+  </div>
+  <div class="nav">
+    <button class="nav-btn act" onclick="setTab('cv',this)">📄 Currículum</button>
+    <button class="nav-btn" onclick="setTab('docs',this)">🔒 Documentos</button>
+    <button class="nav-btn" onclick="setTab('boveda',this)">🏠 Bóveda</button>
+    <button class="nav-btn" onclick="setTab('comunicacion',this)">📧 Comunicación</button>
+    <button class="nav-btn" onclick="setTab('plantillas',this)">📝 Plantillas</button>
+    <button class="nav-btn" onclick="setTab('seguridad',this)">🛡️ Seguridad</button>
+    <button class="nav-btn" onclick="setTab('formularios',this)">📋 Formularios</button>
+    <button class="nav-btn" onclick="setTab('contratos',this)">🏠 Contratos</button>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <a href="index.html" class="nav-link-ext">⚖️ Sistema Legal →</a>
+    <div class="user-chip"><div class="user-dot"></div><span class="user-name" id="userChipName">Cargando...</span></div>
+    <button class="logout-btn" onclick="doLogout()">Salir</button>
+  </div>
+</div>
+
+<!-- ═══ CV ═══ -->
+<div class="view act" id="view-cv"><div class="page">
+  <div class="sec-header"><div class="sec-icon">📄</div><div><div class="sec-title">Constructor de Currículum</div><div class="sec-sub">Formato europeo España · PDF optimizado · Voz en todos los campos</div></div></div>
+  <div class="status-bar" id="cvStatus"></div>
+  <div class="tabs">
+    <div class="tab act" onclick="setCvTab('datos',this)">👤 Datos</div>
+    <div class="tab" onclick="setCvTab('experiencia',this)">💼 Experiencia</div>
+    <div class="tab" onclick="setCvTab('formacion',this)">🎓 Formación</div>
+    <div class="tab" onclick="setCvTab('idiomas',this)">🌐 Idiomas & Habilidades</div>
+    <div class="tab" onclick="setCvTab('referencias',this)">🤝 Referencias</div>
+    <div class="tab" onclick="setCvTab('carta',this)">✉️ Carta</div>
+    <div class="tab" onclick="setCvTab('certificados',this)">🎓 Certificados</div>
+    <div class="tab" onclick="setCvTab('preview',this)">👁️ Vista previa</div>
+  </div>
+  <div class="tab-content act" id="cvtab-datos">
+    <div style="display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap;">
+      <div>
+        <div class="f-label" style="margin-bottom:5px;">Foto de perfil</div>
+        <div class="foto-zone" onclick="document.getElementById('fotoInput').click()">
+          <input type="file" id="fotoInput" accept="image/*" onchange="handleFoto(event)">
+          <div id="fotoPh" style="text-align:center;font-size:9px;color:var(--text3);">📷<br>Foto</div>
+          <img id="fotoPreview" style="display:none;width:100%;height:100%;object-fit:cover;border-radius:6px;">
+        </div>
+        <button class="btn btn-outline" style="margin-top:5px;width:100px;font-size:9px;padding:4px;" onclick="quitarFoto()">🗑 Quitar</button>
+      </div>
+      <div style="flex:1;min-width:260px;">
+        <div class="card" style="margin-bottom:0;">
+          <div class="card-title">Datos personales</div>
+          <div class="form-grid">
+            <div class="f-group"><label class="f-label">Nombre<span class="req">*</span></label><div class="voice-wrap"><input class="f-input" id="cvNombre" placeholder="Tu nombre" oninput="updatePreview()"><button class="voice-btn" onclick="startVoice('cvNombre',this)">🎤</button></div></div>
+            <div class="f-group"><label class="f-label">Apellidos<span class="req">*</span></label><div class="voice-wrap"><input class="f-input" id="cvApellidos" placeholder="Tus apellidos" oninput="updatePreview()"><button class="voice-btn" onclick="startVoice('cvApellidos',this)">🎤</button></div></div>
+            <div class="f-group span2"><label class="f-label">Profesión / Puesto que buscas</label><div class="voice-wrap"><input class="f-input" id="cvProfesion" placeholder="Ej: Peluquera y Colorista Profesional" oninput="updatePreview()"><button class="voice-btn" onclick="startVoice('cvProfesion',this)">🎤</button></div></div>
+            <div class="f-group"><label class="f-label">Teléfono</label><div class="voice-wrap"><input class="f-input" id="cvTelefono" placeholder="+34 600 000 000" oninput="updatePreview()"><button class="voice-btn" onclick="startVoice('cvTelefono',this)">🎤</button></div></div>
+            <div class="f-group"><label class="f-label">Email</label><div class="voice-wrap"><input class="f-input" id="cvEmail" placeholder="tu@email.com" oninput="updatePreview()"><button class="voice-btn" onclick="startVoice('cvEmail',this)">🎤</button></div></div>
+            <div class="f-group span2"><label class="f-label">Dirección</label><div class="voice-wrap"><input class="f-input" id="cvDireccion" placeholder="Ciudad, España" oninput="updatePreview()"><button class="voice-btn" onclick="startVoice('cvDireccion',this)">🎤</button></div></div>
+            <div class="f-group"><label class="f-label">Nacionalidad</label><div class="voice-wrap"><input class="f-input" id="cvNacionalidad" placeholder="Venezolana" oninput="updatePreview()"><button class="voice-btn" onclick="startVoice('cvNacionalidad',this)">🎤</button></div></div>
+            <div class="f-group"><label class="f-label">Permiso de trabajo</label><select class="f-input f-select" id="cvPermiso" onchange="updatePreview()"><option value="">Seleccionar...</option><option>NIE en trámite</option><option>NIE vigente</option><option>Permiso de trabajo</option><option>Ciudadanía europea</option></select></div>
+            <div class="f-group span2"><label class="f-label">Perfil profesional</label><div style="position:relative;"><textarea class="f-input f-textarea" id="cvPerfil" placeholder="Breve descripción..." style="padding-right:34px;" oninput="updatePreview()"></textarea><button class="voice-btn" style="position:absolute;right:7px;top:8px;transform:none;" onclick="startVoice('cvPerfil',this)">🎤</button></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="btns-row"><button class="btn btn-gold" onclick="setCvTab('experiencia',null)">Siguiente →</button><button class="btn btn-outline" onclick="saveData()">💾 Guardar</button></div>
+  </div>
+  <div class="tab-content" id="cvtab-experiencia">
+    <div class="card"><div class="card-title">Experiencia laboral</div><div class="dynamic-list" id="expList"></div><button class="add-btn" onclick="addExp()">+ Añadir experiencia</button></div>
+    <div class="btns-row"><button class="btn btn-gold" onclick="setCvTab('formacion',null)">Siguiente →</button><button class="btn btn-outline" onclick="saveData()">💾 Guardar</button></div>
+  </div>
+  <div class="tab-content" id="cvtab-formacion">
+    <div class="card"><div class="card-title">Formación académica y cursos</div><div class="dynamic-list" id="formList"></div><button class="add-btn" onclick="addForm()">+ Añadir formación</button></div>
+    <div class="btns-row"><button class="btn btn-gold" onclick="setCvTab('idiomas',null)">Siguiente →</button><button class="btn btn-outline" onclick="saveData()">💾 Guardar</button></div>
+  </div>
+  <div class="tab-content" id="cvtab-idiomas">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+      <div class="card"><div class="card-title">Idiomas</div><div class="dynamic-list" id="idiomaList"></div><button class="add-btn" onclick="addIdioma()">+ Añadir idioma</button></div>
+      <div class="card"><div class="card-title">Habilidades</div><div class="dynamic-list" id="habList"></div><button class="add-btn" onclick="addHab()">+ Añadir habilidad</button></div>
+    </div>
+    <div class="btns-row"><button class="btn btn-gold" onclick="setCvTab('referencias',null)">Siguiente →</button><button class="btn btn-outline" onclick="saveData()">💾 Guardar</button></div>
+  </div>
+  <div class="tab-content" id="cvtab-referencias">
+    <div class="card"><div class="card-title">Referencias laborales y personales</div><div class="dynamic-list" id="refList"></div><button class="add-btn" onclick="addRef()">+ Añadir referencia</button></div>
+    <div class="btns-row"><button class="btn btn-gold" onclick="setCvTab('carta',null)">Siguiente →</button><button class="btn btn-outline" onclick="saveData()">💾 Guardar</button></div>
+  </div>
+  <div class="tab-content" id="cvtab-carta">
+    <div class="card"><div class="card-title">Carta de Presentación</div>
+      <div class="form-grid">
+        <div class="f-group"><label class="f-label">Empresa</label><div class="voice-wrap"><input class="f-input" id="cartaEmpresa" placeholder="Nombre empresa"><button class="voice-btn" onclick="startVoice('cartaEmpresa',this)">🎤</button></div></div>
+        <div class="f-group"><label class="f-label">Puesto</label><div class="voice-wrap"><input class="f-input" id="cartaPuesto" placeholder="Puesto al que aplicas"><button class="voice-btn" onclick="startVoice('cartaPuesto',this)">🎤</button></div></div>
+        <div class="f-group"><label class="f-label">Contacto</label><div class="voice-wrap"><input class="f-input" id="cartaContacto" placeholder="Dpto. RRHH"><button class="voice-btn" onclick="startVoice('cartaContacto',this)">🎤</button></div></div>
+        <div class="f-group"><label class="f-label">Fecha</label><input class="f-input" id="cartaFecha" type="date"></div>
+        <div class="f-group span2"><label class="f-label">Cuerpo de la carta</label><div style="position:relative;"><textarea class="f-input f-textarea" id="cartaCuerpo" rows="7" style="padding-right:34px;" placeholder="Escribe o dicta tu carta..."></textarea><button class="voice-btn" style="position:absolute;right:7px;top:8px;transform:none;" onclick="startVoice('cartaCuerpo',this)">🎤</button></div><button class="btn btn-outline" style="margin-top:5px;font-size:9px;" onclick="generarCartaAuto()">✨ Generar carta automática</button></div>
+      </div>
+    </div>
+    <div class="btns-row"><button class="btn btn-gold" onclick="setCvTab('certificados',null)">Siguiente →</button><button class="btn btn-outline" onclick="saveData()">💾 Guardar</button></div>
+  </div>
+  <div class="tab-content" id="cvtab-certificados">
+    <div style="background:#fffdf5;border:1.5px solid #e0d9cc;border-left:4px solid var(--gold);border-radius:6px;padding:10px 14px;margin-bottom:14px;font-size:10px;color:var(--text2);line-height:1.8;">
+      <strong style="color:var(--gold);">✦ Arquitectura profesional:</strong> El CV sale limpio. Los certificados generan un PDF anexo separado con marca de agua protectora.
+    </div>
+    <div class="card"><div class="card-title">🏢 Empresa destinataria del anexo</div>
+      <div class="form-grid three">
+        <div class="f-group"><label class="f-label">Empresa</label><div class="voice-wrap"><input class="f-input" id="certEmpresa" placeholder="Nombre empresa" oninput="updateCertMarca()"><button class="voice-btn" onclick="startVoice('certEmpresa',this)">🎤</button></div></div>
+        <div class="f-group"><label class="f-label">Puesto</label><div class="voice-wrap"><input class="f-input" id="certPuesto" placeholder="Puesto que solicitas"><button class="voice-btn" onclick="startVoice('certPuesto',this)">🎤</button></div></div>
+        <div class="f-group"><label class="f-label">Fecha</label><input class="f-input" id="certFecha" type="date" onchange="updateCertMarca()"></div>
+      </div>
+      <div style="margin-top:8px;background:var(--bg3);border:1px solid var(--border);border-radius:5px;padding:8px 12px;font-size:9.5px;color:var(--text3);">
+        <strong style="color:var(--gold);">Vista previa marca:</strong> <span id="certMarcaPreview">FÁTIMA CALDEA · USO EXCLUSIVO: [empresa] · [fecha] · PROHIBIDO OTROS TRÁMITES</span>
+      </div>
+    </div>
+    <div class="card"><div class="card-title">📎 Subir certificados</div>
+      <div class="doc-upload-zone" style="margin-bottom:14px;"><input type="file" id="certInput" accept="image/*" multiple onchange="handleCertUpload(event)"><div class="doc-upload-icon">🎓</div><div class="doc-upload-txt">Arrastra certificados · JPG · PNG</div><div class="doc-upload-sub">Títulos · Diplomas · Cursos · Certificaciones</div></div>
+      <div id="certList" style="display:flex;flex-direction:column;gap:9px;"></div>
+    </div>
+    <div class="card" style="background:linear-gradient(135deg,#fffdf5,#faf8f0);border-color:var(--gold);">
+      <div class="card-title">📄 Generar PDF Anexo protegido</div>
+      <div class="btns-row" style="margin-top:0;">
+        <button class="btn btn-gold" onclick="generarPdfCertificados()">📥 Generar PDF Anexo Certificados</button>
+        <button class="btn btn-outline" onclick="setCvTab('preview',null)">👁️ Ver CV limpio →</button>
+      </div>
+    </div>
+    <div class="btns-row"><button class="btn btn-outline" onclick="saveData()">💾 Guardar</button></div>
+  </div>
+  <div class="tab-content" id="cvtab-preview">
+    <div style="background:var(--bg2);border:1.5px solid var(--border);border-radius:10px;overflow:hidden;">
+      <div class="preview-toolbar">
+        <button class="prev-btn pri" onclick="exportCvPdf(false)">📥 PDF CV</button>
+        <button class="prev-btn" onclick="exportCvPdf(true)">📥 PDF CV + Carta</button>
+        <button class="prev-btn" onclick="copiarEmailCv()">📧 Copiar email</button>
+        <button class="prev-btn" onclick="copiarWaCv()">📱 WhatsApp</button>
+        <button class="prev-btn" onclick="updatePreview()" style="margin-left:auto;">🔄</button>
+      </div>
+      <div style="padding:20px;background:#fff;"><div class="cv-doc" id="cvPreviewDoc"><div style="text-align:center;color:#aaa;padding:36px;font-size:11px;">Rellena tus datos — la vista previa aparece aquí en tiempo real ✦</div></div></div>
+    </div>
+  </div>
+</div></div>
+
+<!-- ═══ DOCUMENTOS ═══ -->
+<div class="view" id="view-docs"><div class="page">
+  <div class="sec-header"><div class="sec-icon">🔒</div><div><div class="sec-title">Protección de Documentos</div><div class="sec-sub">NIE · Cédula · Vida laboral · Tarjeta SS · Marca de agua automática</div></div></div>
+  <div class="status-bar" id="docStatus"></div>
+  <div class="card"><div class="card-title">⚙️ Configuración marca de agua</div>
+    <div class="form-grid three">
+      <div class="f-group"><label class="f-label">Tu nombre</label><input class="f-input" id="mdaNombre" placeholder="Fátima Caldea"></div>
+      <div class="f-group"><label class="f-label">Destinatario / Empresa</label><div class="voice-wrap"><input class="f-input" id="mdaDestinatario" placeholder="Empresa X"><button class="voice-btn" onclick="startVoice('mdaDestinatario',this)">🎤</button></div></div>
+      <div class="f-group"><label class="f-label">Propósito</label><div class="voice-wrap"><input class="f-input" id="mdaPropósito" placeholder="Proceso selección"><button class="voice-btn" onclick="startVoice('mdaPropósito',this)">🎤</button></div></div>
+      <div class="f-group"><label class="f-label">Fecha</label><input class="f-input" id="mdaFecha" type="date"></div>
+      <div class="f-group"><label class="f-label">Aviso</label><input class="f-input" id="mdaAviso" value="PROHIBIDO PARA OTROS TRÁMITES"></div>
+    </div>
+  </div>
+  <div class="card"><div class="card-title">📎 Subir documento</div>
+    <div class="doc-upload-zone"><input type="file" id="docInput" accept="image/*" multiple onchange="handleDocUpload(event)"><div class="doc-upload-icon">🔒</div><div class="doc-upload-txt">Arrastra tu documento aquí</div><div class="doc-upload-sub">JPG · PNG · NIE · Cédula · Vida laboral · SS</div></div>
+    <div id="docPreviewWrap" style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px;"></div>
+  </div>
+</div></div>
+
+<!-- ═══ BÓVEDA ═══ -->
+<div class="view" id="view-boveda"><div class="page">
+  <div class="sec-header"><div class="sec-icon">🏠</div><div><div class="sec-title">Bóveda Familiar Privada</div><div class="sec-sub">Perfiles de tu familia · Datos guardados localmente · Solo tú accedes</div></div></div>
+  <div class="card"><div class="card-title">👨‍👩‍👧‍👧 Perfiles familiares</div>
+    <div class="perfil-grid" id="perfilGrid">
+      <div class="perfil-card act" onclick="selectPerfil('fatima',this)"><div class="perfil-avatar">👩</div><div class="perfil-name">Fátima</div><div class="perfil-role">Titular</div></div>
+      <div class="perfil-card" onclick="selectPerfil('marido',this)"><div class="perfil-avatar">👨</div><div class="perfil-name">Mi marido</div><div class="perfil-role">Familiar</div></div>
+      <div class="perfil-card" onclick="selectPerfil('hija',this)"><div class="perfil-avatar">👧</div><div class="perfil-name">Mi hija</div><div class="perfil-role">Familiar</div></div>
+      <div class="perfil-card" style="border:2px dashed var(--border2);cursor:pointer;" onclick="addPerfil()"><div class="perfil-avatar" style="background:var(--bg3);font-size:22px;">+</div><div class="perfil-name" style="color:var(--text3);">Añadir</div></div>
+    </div>
+  </div>
+  <div class="card"><div class="card-title" id="bovedaTitle">📁 Documentos — Fátima</div><div style="font-size:11px;color:var(--text3);padding:16px;text-align:center;">Los documentos protegidos aparecerán aquí organizados por perfil.</div></div>
+</div></div>
+
+<!-- ═══ COMUNICACIÓN ═══ -->
+<div class="view" id="view-comunicacion"><div class="page">
+  <div class="sec-header"><div class="sec-icon">📧</div><div><div class="sec-title">Centro de Comunicación</div><div class="sec-sub">Emails listos · WhatsApp profesional · Historial de postulaciones</div></div></div>
+  <div class="status-bar" id="comStatus"></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+    <div class="card"><div class="card-title">📧 Email profesional</div>
+      <div class="f-group" style="margin-bottom:8px;"><label class="f-label">Empresa</label><div class="voice-wrap"><input class="f-input" id="emailEmpresa" placeholder="Empresa" oninput="updateEmailPreview()"><button class="voice-btn" onclick="startVoice('emailEmpresa',this)">🎤</button></div></div>
+      <div class="f-group" style="margin-bottom:8px;"><label class="f-label">Puesto</label><div class="voice-wrap"><input class="f-input" id="emailPuesto" placeholder="Puesto" oninput="updateEmailPreview()"><button class="voice-btn" onclick="startVoice('emailPuesto',this)">🎤</button></div></div>
+      <div id="emailPreview" style="background:var(--bg3);border:1px solid var(--border);border-radius:5px;padding:10px;font-size:10px;min-height:100px;line-height:1.7;"></div>
+      <div class="btns-row"><button class="btn btn-gold" onclick="copiarEmail()">📋 Copiar</button></div>
+    </div>
+    <div class="card"><div class="card-title">📱 WhatsApp profesional</div>
+      <div class="f-group" style="margin-bottom:8px;"><label class="f-label">Empresa</label><div class="voice-wrap"><input class="f-input" id="waEmpresa" placeholder="Empresa" oninput="updateWaPreview()"><button class="voice-btn" onclick="startVoice('waEmpresa',this)">🎤</button></div></div>
+      <div class="f-group" style="margin-bottom:8px;"><label class="f-label">Puesto</label><div class="voice-wrap"><input class="f-input" id="waPuesto" placeholder="Puesto" oninput="updateWaPreview()"><button class="voice-btn" onclick="startVoice('waPuesto',this)">🎤</button></div></div>
+      <div id="waPreview" style="background:#dcf8c6;border:1px solid #b2dfb0;border-radius:8px;padding:10px;font-size:10px;min-height:100px;line-height:1.7;"></div>
+      <div class="btns-row"><button class="btn btn-gold" onclick="copiarWa()">📋 Copiar</button></div>
+    </div>
+  </div>
+  <div class="card"><div class="card-title">📋 Historial de postulaciones</div>
+    <div style="display:flex;gap:7px;margin-bottom:10px;flex-wrap:wrap;">
+      <div class="voice-wrap" style="flex:1;min-width:140px;"><input class="f-input" id="postEmpresa" placeholder="Empresa"><button class="voice-btn" onclick="startVoice('postEmpresa',this)">🎤</button></div>
+      <div class="voice-wrap" style="flex:1;min-width:120px;"><input class="f-input" id="postPuesto" placeholder="Puesto"><button class="voice-btn" onclick="startVoice('postPuesto',this)">🎤</button></div>
+      <input class="f-input" id="postFecha" type="date" style="flex:0 0 125px;">
+      <select class="f-input f-select" id="postEstado" style="flex:0 0 120px;"><option value="enviado">Enviado</option><option value="respuesta">Con respuesta</option><option value="entrevista">Entrevista</option><option value="descartado">Descartado</option></select>
+      <button class="btn btn-gold" onclick="addPostulacion()">+ Añadir</button>
+    </div>
+    <div id="postList" style="display:flex;flex-direction:column;gap:5px;font-size:10px;color:var(--text3);text-align:center;padding:12px;">Sin registros aún.</div>
+  </div>
+</div></div>
+
+<!-- ═══ SEGURIDAD ═══ -->
+<div class="view" id="view-seguridad"><div class="page">
+  <div class="sec-header"><div class="sec-icon">🛡️</div><div><div class="sec-title">Protección de Datos Bancarios</div><div class="sec-sub">Tarjetas · IBAN · Documentos sensibles · Registro de envíos · Seguridad contra estafas</div></div></div>
+  <div style="background:#fff5f5;border:2px solid #fca5a5;border-left:5px solid var(--red);border-radius:8px;padding:12px 16px;margin-bottom:18px;font-size:10px;color:#7f1d1d;line-height:1.8;">
+    <strong style="color:var(--red);">⚠ Reglas de oro anti-estafa:</strong><br>
+    🔴 Nunca envíes número completo de tarjeta · CVV nunca se comparte · IBAN + DNI + contraseña juntos = ESTAFA
+  </div>
+  <div class="status-bar" id="segStatus"></div>
+  <div class="tabs">
+    <div class="tab act" onclick="setSegTab('tarjeta',this)">💳 Tarjetas</div>
+    <div class="tab" onclick="setSegTab('cuenta',this)">🏦 IBAN</div>
+    <div class="tab" onclick="setSegTab('docsensible',this)">📄 Docs sensibles</div>
+    <div class="tab" onclick="setSegTab('registro',this)">📋 Registro envíos</div>
+  </div>
+  <div class="tab-content act" id="segtab-tarjeta">
+    <div class="card"><div class="card-title">💳 Enmascarador de tarjeta</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;">
+        <div>
+          <div class="f-group" style="margin-bottom:8px;"><label class="f-label">Nombre en tarjeta</label><div class="voice-wrap"><input class="f-input" id="tarjNombre" placeholder="FATIMA CALDEA" oninput="updateTarjetaPreview()"><button class="voice-btn" onclick="startVoice('tarjNombre',this)">🎤</button></div></div>
+          <div class="f-group" style="margin-bottom:8px;"><label class="f-label">Número <span style="color:var(--red);font-size:8px;">(no se guarda)</span></label><input class="f-input" id="tarjNumero" placeholder="1234 5678 9012 3456" maxlength="19" oninput="formatTarjeta(this);updateTarjetaPreview()" style="font-family:monospace;letter-spacing:.1em;"></div>
+          <div class="f-group" style="margin-bottom:8px;"><label class="f-label">¿Qué mostrar?</label><select class="f-input f-select" id="tarjMostrar" onchange="updateTarjetaPreview()"><option value="last4">Solo últimos 4 — ●●●● ●●●● ●●●● 3456</option><option value="first4">Solo primeros 4 — 1234 ●●●● ●●●● ●●●●</option><option value="first6last4">Primeros 6 + últimos 4</option><option value="none">Ninguno</option></select></div>
+          <div class="f-group" style="margin-bottom:8px;"><label class="f-label">Banco</label><div class="voice-wrap"><input class="f-input" id="tarjBanco" placeholder="CaixaBank · Visa" oninput="updateTarjetaPreview()"><button class="voice-btn" onclick="startVoice('tarjBanco',this)">🎤</button></div></div>
+          <div class="f-group" style="margin-bottom:8px;"><label class="f-label">Caducidad MM/AA</label><input class="f-input" id="tarjCaducidad" placeholder="MM/AA" maxlength="5" oninput="formatCaducidad(this);updateTarjetaPreview()" style="max-width:90px;"></div>
+          <div class="f-group" style="margin-bottom:12px;"><label class="f-label">Propósito del envío</label><div class="voice-wrap"><input class="f-input" id="tarjPropósito" placeholder="Para qué lo envías"><button class="voice-btn" onclick="startVoice('tarjPropósito',this)">🎤</button></div></div>
+          <div style="display:flex;gap:7px;flex-wrap:wrap;"><button class="btn btn-gold" onclick="generarTarjetaPdf()">📥 PDF protegido</button><button class="btn btn-outline" onclick="copiarTarjetaTexto()">📋 Copiar</button></div>
+        </div>
+        <div>
+          <div class="f-label" style="margin-bottom:7px;">Vista previa</div>
+          <div id="tarjetaVisual" style="background:linear-gradient(135deg,#1a1a1a,#2d2d2d);border-radius:12px;padding:20px;color:#fff;font-family:monospace;box-shadow:0 6px 24px rgba(0,0,0,.25);">
+            <div style="font-size:8px;color:rgba(201,168,76,.7);margin-bottom:16px;letter-spacing:.2em;">TARJETA PROTEGIDA</div>
+            <div id="tvNumero" style="font-size:16px;letter-spacing:.12em;margin-bottom:14px;">●●●● ●●●● ●●●● ●●●●</div>
+            <div style="display:flex;justify-content:space-between;">
+              <div><div style="font-size:7px;color:rgba(255,255,255,.5);">TITULAR</div><div id="tvNombre" style="font-size:10px;">NOMBRE TITULAR</div></div>
+              <div style="text-align:right;"><div style="font-size:7px;color:rgba(255,255,255,.5);">CADUCA</div><div id="tvCaducidad" style="font-size:10px;">••/••</div></div>
+            </div>
+            <div style="font-size:9px;color:var(--gold);font-weight:700;margin-top:6px;" id="tvBanco"></div>
+          </div>
+          <div id="tarjetaAviso" style="margin-top:8px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:5px;padding:9px 12px;font-size:9.5px;color:#166534;line-height:1.7;"><span id="tarjetaAvisoTxt">Configura los datos para ver la versión protegida</span></div>
+          <div style="margin-top:8px;background:#fff5f5;border:1px solid #fca5a5;border-radius:5px;padding:7px 10px;font-size:9px;color:var(--red);">🔴 El CVV NUNCA se incluye en ningún documento.</div>
+        </div>
+      </div>
+    </div>
+    <div class="card"><div class="card-title">🗂️ Mis tarjetas (apodos — sin números reales)</div>
+      <div id="tarjetasGuardadas" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;font-size:10px;color:var(--text3);">Sin tarjetas registradas.</div>
+      <div style="display:flex;gap:7px;flex-wrap:wrap;">
+        <input class="f-input" id="nuevaTarjApodo" placeholder="Apodo: Visa CaixaBank" style="flex:1;max-width:240px;">
+        <input class="f-input" id="nuevaTarjUltimos" placeholder="Últimos 4 dígitos" maxlength="4" style="width:120px;">
+        <button class="btn btn-gold" onclick="guardarApodoTarjeta()">+ Registrar</button>
+      </div>
+    </div>
+  </div>
+  <div class="tab-content" id="segtab-cuenta">
+    <div class="card"><div class="card-title">🏦 Enmascarador IBAN</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div>
+          <div class="f-group" style="margin-bottom:8px;"><label class="f-label">IBAN completo <span style="color:var(--red);font-size:8px;">(no se guarda)</span></label><input class="f-input" id="ibanCompleto" placeholder="ES12 3456 7890..." oninput="formatIban(this);updateIbanPreview()" style="font-family:monospace;"></div>
+          <div class="f-group" style="margin-bottom:8px;"><label class="f-label">Banco</label><div class="voice-wrap"><input class="f-input" id="ibanBanco" placeholder="CaixaBank" oninput="updateIbanPreview()"><button class="voice-btn" onclick="startVoice('ibanBanco',this)">🎤</button></div></div>
+          <div class="f-group" style="margin-bottom:8px;"><label class="f-label">Titular</label><div class="voice-wrap"><input class="f-input" id="ibanTitular" placeholder="Nombre completo" oninput="updateIbanPreview()"><button class="voice-btn" onclick="startVoice('ibanTitular',this)">🎤</button></div></div>
+          <div class="f-group" style="margin-bottom:8px;"><label class="f-label">Propósito</label><div class="voice-wrap"><input class="f-input" id="ibanPropósito" placeholder="Domiciliación nómina"><button class="voice-btn" onclick="startVoice('ibanPropósito',this)">🎤</button></div></div>
+          <div class="f-group" style="margin-bottom:12px;"><label class="f-label">¿Qué mostrar?</label><select class="f-input f-select" id="ibanMostrar" onchange="updateIbanPreview()"><option value="full">IBAN completo</option><option value="last8">Últimos 8</option><option value="masked">Solo país + banco</option></select></div>
+          <div style="display:flex;gap:7px;"><button class="btn btn-gold" onclick="generarIbanPdf()">📥 PDF</button><button class="btn btn-outline" onclick="copiarIban()">📋 Copiar</button></div>
+        </div>
+        <div>
+          <div class="f-label" style="margin-bottom:7px;">Vista previa</div>
+          <div id="ibanPreview" style="background:#fff;border:2px solid var(--border);border-radius:8px;padding:18px;font-size:10.5px;line-height:2;min-height:180px;">
+            <div style="font-size:12px;font-weight:700;border-bottom:2px solid var(--gold);padding-bottom:7px;margin-bottom:10px;">DATOS BANCARIOS</div>
+            <div><strong>Titular:</strong> <span id="ipTitular">—</span></div>
+            <div><strong>Banco:</strong> <span id="ipBanco">—</span></div>
+            <div><strong>IBAN:</strong> <span id="ipIban" style="font-family:monospace;">—</span></div>
+            <div style="margin-top:10px;font-size:9px;color:var(--red);font-weight:600;">⚠ Uso exclusivo: <span id="ipPropósito">—</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="tab-content" id="segtab-docsensible">
+    <div class="card"><div class="card-title">📄 Vida Laboral y Tarjeta Seguridad Social</div>
+      <div class="form-grid" style="margin-bottom:12px;">
+        <div class="f-group"><label class="f-label">Tipo de documento</label><select class="f-input f-select" id="docSensibleTipo"><option>Vida Laboral</option><option>Tarjeta Seguridad Social</option><option>Contrato de trabajo</option><option>Nómina</option><option>Otro</option></select></div>
+        <div class="f-group"><label class="f-label">Nombre del titular</label><div class="voice-wrap"><input class="f-input" id="docTitularNombre" placeholder="Nombre completo del titular"><button class="voice-btn" onclick="startVoice('docTitularNombre',this)">🎤</button></div></div>
+        <div class="f-group"><label class="f-label">Destinatario</label><div class="voice-wrap"><input class="f-input" id="docSensibleDest" placeholder="A quién lo envías"><button class="voice-btn" onclick="startVoice('docSensibleDest',this)">🎤</button></div></div>
+        <div class="f-group"><label class="f-label">Propósito</label><div class="voice-wrap"><input class="f-input" id="docSensibleProp" placeholder="Para qué"><button class="voice-btn" onclick="startVoice('docSensibleProp',this)">🎤</button></div></div>
+        <div class="f-group"><label class="f-label">Fecha</label><input class="f-input" id="docSensibleFecha" type="date"></div>
+      </div>
+      <div class="doc-upload-zone"><input type="file" id="docSensibleInput" accept="image/*" multiple onchange="handleDocSensible(event)"><div class="doc-upload-icon">🔒</div><div class="doc-upload-txt">Sube tu documento</div><div class="doc-upload-sub">JPG · PNG</div></div>
+      <div id="docSensibleList" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-top:12px;"></div>
+    </div>
+  </div>
+  <div class="tab-content" id="segtab-registro">
+    <div class="card"><div class="card-title">📋 Registro de documentos enviados</div>
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:12px;margin-bottom:12px;">
+        <div class="form-grid three" style="margin-bottom:8px;">
+          <div class="f-group"><label class="f-label">Documento</label><select class="f-input f-select" id="regDocumento"><option>CV</option><option>Certificados</option><option>NIE</option><option>Cédula</option><option>Vida Laboral</option><option>Tarjeta SS</option><option>IBAN</option><option>Contrato</option><option>Nómina</option><option>Otro</option></select></div>
+          <div class="f-group"><label class="f-label">Enviado a</label><div class="voice-wrap"><input class="f-input" id="regDestinatario" placeholder="Empresa"><button class="voice-btn" onclick="startVoice('regDestinatario',this)">🎤</button></div></div>
+          <div class="f-group"><label class="f-label">Fecha</label><input class="f-input" id="regFecha" type="date"></div>
+          <div class="f-group"><label class="f-label">Canal</label><select class="f-input f-select" id="regCanal"><option>Email</option><option>WhatsApp</option><option>En persona</option><option>Portal web</option></select></div>
+          <div class="f-group"><label class="f-label">Propósito</label><div class="voice-wrap"><input class="f-input" id="regPropósito" placeholder="Para qué"><button class="voice-btn" onclick="startVoice('regPropósito',this)">🎤</button></div></div>
+          <div class="f-group"><label class="f-label">Estado</label><select class="f-input f-select" id="regEstado"><option value="ok">✓ Legítimo</option><option value="sospechoso">⚠ Sospechoso</option><option value="estafa">🔴 Posible estafa</option></select></div>
+        </div>
+        <button class="btn btn-gold" onclick="addRegistro()">+ Registrar envío</button>
+      </div>
+      <div id="registroList" style="display:flex;flex-direction:column;gap:5px;font-size:10px;color:var(--text3);text-align:center;padding:12px;">Sin registros.</div>
+    </div>
+  </div>
+</div></div>
+
+<!-- ═══ FORMULARIOS ═══ -->
+<div class="view" id="view-formularios"><div class="page">
+  <div class="sec-header"><div class="sec-icon">📋</div><div><div class="sec-title">Autorellenado de Formularios</div><div class="sec-sub">Sube cualquier formulario · Tus datos se insertan automáticamente · PDF y Excel</div></div></div>
+  <div class="status-bar" id="formStatus"></div>
+  <div class="tabs">
+    <div class="tab act" onclick="setFormTab('rellenar',this)">✏️ Rellenar formulario</div>
+    <div class="tab" onclick="setFormTab('excel',this)">📊 Excel / CSV</div>
+  </div>
+  <div class="tab-content act" id="formtab-rellenar">
+    <div class="card"><div class="card-title">👤 Tus datos (autodetectados del perfil)</div><div id="formDatosAuto" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px;"></div></div>
+    <div class="card"><div class="card-title">📎 Subir formulario imagen</div>
+      <div class="doc-upload-zone"><input type="file" id="formImageInput" accept="image/*" onchange="handleFormUpload(event)"><div class="doc-upload-icon">📋</div><div class="doc-upload-txt">Sube el formulario (JPG / PNG)</div><div class="doc-upload-sub">SEPE · ETT · Bolsas de empleo · Cualquier formulario fotografiado</div></div>
+    </div>
+    <div class="card" id="formEditorCard" style="display:none;"><div class="card-title">✏️ Editor — haz clic para colocar campos</div>
+      <div style="display:grid;grid-template-columns:200px 1fr;gap:14px;">
+        <div>
+          <div style="font-size:10px;font-weight:700;margin-bottom:7px;">Campos disponibles</div>
+          <div id="camposDisponibles" style="display:flex;flex-direction:column;gap:4px;"></div>
+          <div style="margin-top:10px;"><div style="font-size:10px;font-weight:700;margin-bottom:5px;">Campo personalizado</div>
+            <div class="voice-wrap" style="margin-bottom:5px;"><input class="f-input" id="campoCustomLabel" placeholder="Nombre del campo"><button class="voice-btn" onclick="startVoice('campoCustomLabel',this)">🎤</button></div>
+            <div class="voice-wrap" style="margin-bottom:5px;"><input class="f-input" id="campoCustomValor" placeholder="Valor"><button class="voice-btn" onclick="startVoice('campoCustomValor',this)">🎤</button></div>
+            <button class="btn btn-outline" style="width:100%;font-size:9px;" onclick="addCampoCustom()">+ Añadir</button>
+          </div>
+        </div>
+        <div>
+          <div style="position:relative;border:2px solid var(--border);border-radius:7px;overflow:hidden;background:#f8f7f4;">
+            <canvas id="formCanvas" style="display:block;max-width:100%;cursor:crosshair;"></canvas>
+          </div>
+          <div style="display:flex;gap:6px;margin-top:9px;flex-wrap:wrap;">
+            <button class="btn btn-gold" onclick="descargarFormulario()">📥 Descargar rellenado</button>
+            <button class="btn btn-outline" onclick="imprimirFormulario()">🖨️ Imprimir</button>
+            <button class="btn btn-outline" onclick="limpiarFormCanvas()" style="color:var(--red);">🗑 Limpiar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="tab-content" id="formtab-excel">
+    <div class="card"><div class="card-title">📊 Formulario Excel / tabla</div>
+      <div class="f-group" style="margin-bottom:12px;max-width:320px;"><label class="f-label">Tipo</label>
+        <select class="f-input f-select" id="excelTipo" onchange="generarExcelPreview()">
+          <option value="datos_personales">Datos personales básicos</option>
+          <option value="candidatura">Candidatura / inscripción ETT</option>
+          <option value="sepe">Formulario tipo SEPE</option>
+          <option value="bolsa_empleo">Bolsa de empleo municipal</option>
+          <option value="banco">Datos bancarios para nómina</option>
+        </select>
+      </div>
+      <div style="overflow-x:auto;"><table id="excelPreview" style="width:100%;border-collapse:collapse;font-size:11px;"></table></div>
+      <div style="display:flex;gap:7px;margin-top:12px;flex-wrap:wrap;">
+        <button class="btn btn-gold" onclick="descargarExcelCsv()">📥 Descargar CSV</button>
+        <button class="btn btn-outline" onclick="copiarTablaExcel()">📋 Copiar tabla</button>
+        <button class="btn btn-outline" onclick="imprimirExcel()">🖨️ Imprimir</button>
+      </div>
+    </div>
+  </div>
+</div></div>
+
+<!-- ═══ CONTRATOS ═══ -->
+<div class="view" id="view-contratos"><div class="page">
+  <div class="sec-header"><div class="sec-icon">🏠</div><div><div class="sec-title">Contratos y Documentos Familiares</div><div class="sec-sub">Alquiler · Autorización · Declaración responsable · Instancias · Todos protegidos</div></div></div>
+  <div class="status-bar" id="contratoStatus"></div>
+  <div class="tabs">
+    <div class="tab act" onclick="setContratoTab('alquiler',this)">🏠 Alquiler</div>
+    <div class="tab" onclick="setContratoTab('autorizacion',this)">✍️ Autorización</div>
+    <div class="tab" onclick="setContratoTab('declaracion',this)">📄 Declaración</div>
+    <div class="tab" onclick="setContratoTab('otros',this)">📁 Otros</div>
+  </div>
+  <div class="tab-content act" id="contratotab-alquiler">
+    <div class="card"><div class="card-title">🏠 Contrato de Arrendamiento (LAU)</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div><div style="font-size:10px;font-weight:700;color:var(--gold);margin-bottom:8px;">ARRENDADOR (propietario)</div>
+          <div class="f-group" style="margin-bottom:7px;"><label class="f-label">Nombre</label><div class="voice-wrap"><input class="f-input" id="arrNombre" placeholder="Nombre propietario" oninput="updateContratoPreview()"><button class="voice-btn" onclick="startVoice('arrNombre',this)">🎤</button></div></div>
+          <div class="f-group" style="margin-bottom:7px;"><label class="f-label">DNI/NIE</label><input class="f-input" id="arrDni" placeholder="DNI/NIE" oninput="updateContratoPreview()"></div>
+          <div class="f-group"><label class="f-label">Dirección</label><div class="voice-wrap"><input class="f-input" id="arrDireccion" placeholder="Dirección" oninput="updateContratoPreview()"><button class="voice-btn" onclick="startVoice('arrDireccion',this)">🎤</button></div></div>
+        </div>
+        <div><div style="font-size:10px;font-weight:700;color:var(--gold);margin-bottom:8px;">ARRENDATARIO (tú)</div>
+          <div class="f-group" style="margin-bottom:7px;"><label class="f-label">Nombre</label><div class="voice-wrap"><input class="f-input" id="inquNombre" placeholder="Tu nombre" oninput="updateContratoPreview()"><button class="voice-btn" onclick="startVoice('inquNombre',this)">🎤</button></div></div>
+          <div class="f-group" style="margin-bottom:7px;"><label class="f-label">NIE/DNI</label><input class="f-input" id="inquDni" placeholder="Tu NIE/DNI" oninput="updateContratoPreview()"></div>
+          <div class="f-group"><label class="f-label">Teléfono</label><div class="voice-wrap"><input class="f-input" id="inquTel" placeholder="Tu teléfono" oninput="updateContratoPreview()"><button class="voice-btn" onclick="startVoice('inquTel',this)">🎤</button></div></div>
+        </div>
+      </div>
+      <div style="margin-top:12px;"><div style="font-size:10px;font-weight:700;color:var(--gold);margin-bottom:8px;">INMUEBLE</div>
+        <div class="form-grid three">
+          <div class="f-group"><label class="f-label">Dirección piso</label><div class="voice-wrap"><input class="f-input" id="pisoDir" placeholder="Calle, nº, piso, ciudad" oninput="updateContratoPreview()"><button class="voice-btn" onclick="startVoice('pisoDir',this)">🎤</button></div></div>
+          <div class="f-group"><label class="f-label">Renta mensual €</label><input class="f-input" id="pisoRenta" placeholder="750" type="number" oninput="updateContratoPreview()"></div>
+          <div class="f-group"><label class="f-label">Fianza €</label><input class="f-input" id="pisoFianza" placeholder="750" type="number" oninput="updateContratoPreview()"></div>
+          <div class="f-group"><label class="f-label">Inicio contrato</label><input class="f-input" id="pisoInicio" type="date" oninput="updateContratoPreview()"></div>
+          <div class="f-group"><label class="f-label">Duración</label><select class="f-input f-select" id="pisoDuracion" onchange="updateContratoPreview()"><option>1 año prorrogable</option><option>2 años</option><option>3 años</option><option>6 meses</option></select></div>
+          <div class="f-group"><label class="f-label">Fecha firma</label><input class="f-input" id="pisoFechaFirma" type="date" oninput="updateContratoPreview()"></div>
+          <div class="f-group"><label class="f-label">Ocupantes</label><div class="voice-wrap"><input class="f-input" id="pisoOcupantes" placeholder="Ej: 2 adultos, 1 menor" oninput="updateContratoPreview()"><button class="voice-btn" onclick="startVoice('pisoOcupantes',this)">🎤</button></div></div>
+          <div class="f-group"><label class="f-label">Suministros</label><div class="voice-wrap"><input class="f-input" id="pisoSuministros" placeholder="Agua incluida, luz aparte" oninput="updateContratoPreview()"><button class="voice-btn" onclick="startVoice('pisoSuministros',this)">🎤</button></div></div>
+          <div class="f-group"><label class="f-label">Mascotas</label><select class="f-input f-select" id="pisoMascotas" onchange="updateContratoPreview()"><option>No se permiten mascotas</option><option>Se permiten mascotas pequeñas</option><option>Se permiten mascotas</option></select></div>
+        </div>
+        <div class="f-group" style="margin-top:9px;"><label class="f-label">Cláusulas adicionales</label><div style="position:relative;"><textarea class="f-input f-textarea" id="pisoClausulas" rows="2" style="padding-right:34px;" oninput="updateContratoPreview()"></textarea><button class="voice-btn" style="position:absolute;right:7px;top:8px;transform:none;" onclick="startVoice('pisoClausulas',this)">🎤</button></div></div>
+      </div>
+      <div class="btns-row"><button class="btn btn-gold" onclick="generarContratoAlquilerPdf()">📥 Generar contrato PDF</button><button class="btn btn-outline" onclick="updateContratoPreview()">👁️ Vista previa</button></div>
+    </div>
+    <div class="card" id="contratoPreviewCard" style="display:none;"><div class="card-title">👁️ Vista previa</div><div id="contratoPreviewContent" style="font-size:10px;line-height:1.8;max-height:360px;overflow-y:auto;padding:8px;background:var(--bg3);border-radius:5px;"></div></div>
+  </div>
+  <div class="tab-content" id="contratotab-autorizacion">
+    <div class="card"><div class="card-title">✍️ Autorización</div>
+      <div class="form-grid">
+        <div class="f-group"><label class="f-label">Yo (autorizante)</label><div class="voice-wrap"><input class="f-input" id="autNombre" placeholder="Tu nombre"><button class="voice-btn" onclick="startVoice('autNombre',this)">🎤</button></div></div>
+        <div class="f-group"><label class="f-label">Mi NIE/DNI/Cédula</label><input class="f-input" id="autDni" placeholder="Tu documento"></div>
+        <div class="f-group"><label class="f-label">Autorizo a</label><div class="voice-wrap"><input class="f-input" id="autAutorizado" placeholder="Nombre persona autorizada"><button class="voice-btn" onclick="startVoice('autAutorizado',this)">🎤</button></div></div>
+        <div class="f-group"><label class="f-label">Su DNI/NIE</label><input class="f-input" id="autAutorizadoDni" placeholder="Documento autorizado"></div>
+        <div class="f-group span2"><label class="f-label">Para realizar</label><div style="position:relative;"><textarea class="f-input f-textarea" id="autTramite" rows="3" style="padding-right:34px;" placeholder="Describe el trámite..."></textarea><button class="voice-btn" style="position:absolute;right:7px;top:8px;transform:none;" onclick="startVoice('autTramite',this)">🎤</button></div></div>
+        <div class="f-group"><label class="f-label">Válida hasta</label><input class="f-input" id="autValidez" type="date"></div>
+        <div class="f-group"><label class="f-label">Ciudad y fecha</label><div class="voice-wrap"><input class="f-input" id="autCiudad" placeholder="Madrid, 8 de mayo de 2026"><button class="voice-btn" onclick="startVoice('autCiudad',this)">🎤</button></div></div>
+      </div>
+      <div class="btns-row"><button class="btn btn-gold" onclick="generarAutorizacionPdf()">📥 Generar PDF</button></div>
+    </div>
+  </div>
+  <div class="tab-content" id="contratotab-declaracion">
+    <div class="card"><div class="card-title">📄 Declaración Responsable</div>
+      <div class="form-grid">
+        <div class="f-group"><label class="f-label">Nombre completo</label><div class="voice-wrap"><input class="f-input" id="declNombre" placeholder="Tu nombre"><button class="voice-btn" onclick="startVoice('declNombre',this)">🎤</button></div></div>
+        <div class="f-group"><label class="f-label">DNI/NIE/Cédula</label><input class="f-input" id="declDni" placeholder="Tu documento"></div>
+        <div class="f-group"><label class="f-label">Domicilio</label><div class="voice-wrap"><input class="f-input" id="declDomicilio" placeholder="Tu dirección"><button class="voice-btn" onclick="startVoice('declDomicilio',this)">🎤</button></div></div>
+        <div class="f-group"><label class="f-label">Dirigido a</label><div class="voice-wrap"><input class="f-input" id="declDirigido" placeholder="Ayuntamiento, SEPE..."><button class="voice-btn" onclick="startVoice('declDirigido',this)">🎤</button></div></div>
+        <div class="f-group span2"><label class="f-label">DECLARO que</label><div style="position:relative;"><textarea class="f-input f-textarea" id="declTexto" rows="4" style="padding-right:34px;"></textarea><button class="voice-btn" style="position:absolute;right:7px;top:8px;transform:none;" onclick="startVoice('declTexto',this)">🎤</button></div><button class="btn btn-outline" style="margin-top:5px;font-size:9px;" onclick="generarDeclaracionAuto()">✨ Generar texto auto</button></div>
+        <div class="f-group"><label class="f-label">Ciudad</label><input class="f-input" id="declCiudad" placeholder="Madrid"></div>
+        <div class="f-group"><label class="f-label">Fecha</label><input class="f-input" id="declFecha" type="date"></div>
+      </div>
+      <div class="btns-row"><button class="btn btn-gold" onclick="generarDeclaracionPdf()">📥 Generar PDF</button></div>
+    </div>
+  </div>
+  <div class="tab-content" id="contratotab-otros">
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;">
+      <div class="card" style="text-align:center;"><div style="font-size:26px;margin-bottom:7px;">📝</div><div style="font-size:11px;font-weight:700;margin-bottom:4px;">Instancia General</div><div style="font-size:9px;color:var(--text3);margin-bottom:9px;">Para cualquier organismo público</div><button class="btn btn-gold" style="font-size:9px;" onclick="generarInstanciaGeneral()">Generar PDF</button></div>
+      <div class="card" style="text-align:center;"><div style="font-size:26px;margin-bottom:7px;">🏘️</div><div style="font-size:11px;font-weight:700;margin-bottom:4px;">Empadronamiento</div><div style="font-size:9px;color:var(--text3);margin-bottom:9px;">Registro padrón municipal</div><button class="btn btn-gold" style="font-size:9px;" onclick="generarEmpadronamientoPdf()">Generar PDF</button></div>
+      <div class="card" style="text-align:center;"><div style="font-size:26px;margin-bottom:7px;">👧</div><div style="font-size:11px;font-weight:700;margin-bottom:4px;">Autorización menor</div><div style="font-size:9px;color:var(--text3);margin-bottom:9px;">Para viajes o actividades de tus hijas</div><button class="btn btn-gold" style="font-size:9px;" onclick="generarAutMenorPdf()">Generar PDF</button></div>
+      <div class="card" style="text-align:center;"><div style="font-size:26px;margin-bottom:7px;">⚠️</div><div style="font-size:11px;font-weight:700;margin-bottom:4px;">Reclamación / Queja</div><div style="font-size:9px;color:var(--text3);margin-bottom:9px;">Para reclamar derechos</div><button class="btn btn-gold" style="font-size:9px;" onclick="generarReclamacionPdf()">Generar PDF</button></div>
+    </div>
+  </div>
+</div></div>
+
+<!-- ═══ PLANTILLAS ═══ -->
+<div class="view" id="view-plantillas"><div class="page">
+  <div class="sec-header"><div class="sec-icon">📝</div><div>
+    <div class="sec-title">Plantillas Automáticas Profesionales</div>
+    <div class="sec-sub">Cartas de presentación por sector · Trámites España y Venezuela · Créditos · Hipotecas · Quejas · Ayudas sociales</div>
+  </div></div>
+  <div class="status-bar" id="plantStatus"></div>
+  <div class="tabs">
+    <div class="tab act" onclick="setPlantTab('trabajo',this)">💼 Trabajo</div>
+    <div class="tab" onclick="setPlantTab('tramites',this)">🏛️ Trámites España</div>
+    <div class="tab" onclick="setPlantTab('venezuela',this)">🇻🇪 Venezuela</div>
+    <div class="tab" onclick="setPlantTab('banco',this)">🏦 Banco & Créditos</div>
+    <div class="tab" onclick="setPlantTab('quejas',this)">⚖️ Quejas & Ayudas</div>
+  </div>
+  <div class="tab-content act" id="planttab-trabajo">
+    <div style="display:grid;grid-template-columns:260px 1fr;gap:16px;">
+      <div class="card" style="height:fit-content;">
+        <div class="card-title">💼 Sector laboral</div>
+        <div style="display:flex;flex-direction:column;gap:5px;" id="sectorList">
+          <div class="plant-sector-btn act" onclick="selSector(this,'peluqueria')">✂️ Peluquería / Colorimetría</div>
+          <div class="plant-sector-btn" onclick="selSector(this,'cuidadora')">❤️ Cuidadora / Auxiliar</div>
+          <div class="plant-sector-btn" onclick="selSector(this,'hosteleria')">🍽️ Hostelería / Camarera</div>
+          <div class="plant-sector-btn" onclick="selSector(this,'limpieza')">🧹 Limpieza / Hogar</div>
+          <div class="plant-sector-btn" onclick="selSector(this,'comercio')">🛍️ Comercio / Dependienta</div>
+          <div class="plant-sector-btn" onclick="selSector(this,'fitness')">💪 Fitness / Instructora</div>
+          <div class="plant-sector-btn" onclick="selSector(this,'admin')">📋 Administración / Oficina</div>
+          <div class="plant-sector-btn" onclick="selSector(this,'general')">🔄 General (cualquier trabajo)</div>
+        </div>
+        <div style="margin-top:12px;">
+          <div class="card-title" style="font-size:10px;">⚙️ Personalizar</div>
+          <div class="f-group" style="margin-bottom:7px;"><label class="f-label">Empresa destinataria</label><div class="voice-wrap"><input class="f-input" id="plantEmpresa" placeholder="Nombre de la empresa" oninput="generarPlantillaTrabajo()"><button class="voice-btn" onclick="startVoice('plantEmpresa',this)">🎤</button></div></div>
+          <div class="f-group" style="margin-bottom:7px;"><label class="f-label">Puesto al que aplicas</label><div class="voice-wrap"><input class="f-input" id="plantPuesto" placeholder="Ej: Peluquera colorista" oninput="generarPlantillaTrabajo()"><button class="voice-btn" onclick="startVoice('plantPuesto',this)">🎤</button></div></div>
+          <div class="f-group" style="margin-bottom:7px;"><label class="f-label">Tono de la carta</label><select class="f-input f-select" id="plantTono" onchange="generarPlantillaTrabajo()"><option value="formal">Formal — empresas grandes</option><option value="cercano">Cercano — negocios locales</option><option value="urgente">Urgente — disponibilidad inmediata</option></select></div>
+          <div class="f-group"><label class="f-label">Fecha del documento</label><input class="f-input" id="plantFecha" type="date" onchange="generarPlantillaTrabajo()"></div>
+        </div>
+      </div>
+      <div>
+        <div class="card" style="margin-bottom:10px;">
+          <div class="card-title">📄 Carta generada — editable</div>
+          <div style="font-size:9.5px;color:var(--text3);margin-bottom:8px;">✦ Tus datos se insertan automáticamente · Edita el texto directamente · El resultado es tuyo</div>
+          <textarea class="f-input f-textarea" id="plantTexto" rows="18" style="font-size:11px;line-height:1.8;font-family:'Segoe UI',Arial,sans-serif;"></textarea>
+          <div class="btns-row">
+            <button class="btn btn-gold" onclick="exportarPlantillaPdf()">📥 PDF listo para enviar</button>
+            <button class="btn btn-outline" onclick="copiarPlantilla()">📋 Copiar texto</button>
+            <button class="btn btn-outline" onclick="generarPlantillaTrabajo()">🔄 Regenerar</button>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div class="card"><div class="card-title" style="font-size:10px;">📧 Asunto del email</div><div id="plantEmailAsunto" style="background:var(--bg3);border:1px solid var(--border);border-radius:5px;padding:9px 12px;font-size:10.5px;line-height:1.6;min-height:36px;"></div><button class="btn btn-outline" style="margin-top:7px;font-size:9px;width:100%;" onclick="copiarAsunto()">📋 Copiar asunto</button></div>
+          <div class="card"><div class="card-title" style="font-size:10px;">📱 Mensaje WhatsApp</div><div id="plantWa" style="background:#dcf8c6;border:1px solid #b2dfb0;border-radius:8px;padding:9px 12px;font-size:10px;line-height:1.6;min-height:36px;white-space:pre-wrap;"></div><button class="btn btn-outline" style="margin-top:7px;font-size:9px;width:100%;" onclick="copiarWaPlant()">📋 Copiar WhatsApp</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="tab-content" id="planttab-tramites">
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;">
+      <div class="plant-card" onclick="generarTramite('empadronamiento')"><div class="plant-icon">🏘️</div><div class="plant-name">Solicitud Empadronamiento</div><div class="plant-desc">Para registrarte en el padrón municipal.</div><button class="btn btn-gold" style="font-size:9px;margin-top:8px;">📥 Generar PDF</button></div>
+      <div class="plant-card" onclick="generarTramite('nie_renovacion')"><div class="plant-icon">🪪</div><div class="plant-name">Renovación NIE / Residencia</div><div class="plant-desc">Carta de solicitud de renovación con arraigo.</div><button class="btn btn-gold" style="font-size:9px;margin-top:8px;">📥 Generar PDF</button></div>
+      <div class="plant-card" onclick="generarTramite('arraigo')"><div class="plant-icon">🌱</div><div class="plant-name">Solicitud Arraigo Social / Laboral</div><div class="plant-desc">Carta de presentación para arraigo con justificación.</div><button class="btn btn-gold" style="font-size:9px;margin-top:8px;">📥 Generar PDF</button></div>
+      <div class="plant-card" onclick="generarTramite('sepe_prestacion')"><div class="plant-icon">💼</div><div class="plant-name">Solicitud Prestación SEPE</div><div class="plant-desc">Carta formal para solicitar prestación por desempleo.</div><button class="btn btn-gold" style="font-size:9px;margin-top:8px;">📥 Generar PDF</button></div>
+      <div class="plant-card" onclick="generarTramite('cita_medica')"><div class="plant-icon">🏥</div><div class="plant-name">Solicitud Tarjeta Sanitaria</div><div class="plant-desc">Para acceder al sistema de salud pública española.</div><button class="btn btn-gold" style="font-size:9px;margin-top:8px;">📥 Generar PDF</button></div>
+      <div class="plant-card" onclick="generarTramite('autonomo')"><div class="plant-icon">💡</div><div class="plant-name">Carta Alta de Autónomo</div><div class="plant-desc">Presentación profesional para iniciar actividad.</div><button class="btn btn-gold" style="font-size:9px;margin-top:8px;">📥 Generar PDF</button></div>
+    </div>
+  </div>
+  <div class="tab-content" id="planttab-venezuela">
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;">
+      <div class="plant-card" onclick="generarTramite('apostilla_solicitud')"><div class="plant-icon">📜</div><div class="plant-name">Solicitud de Apostilla (MPPRE)</div><div class="plant-desc">Carta formal para apostilla ante el Ministerio venezolano.</div><button class="btn btn-gold" style="font-size:9px;margin-top:8px;">📥 Generar PDF</button></div>
+      <div class="plant-card" onclick="generarTramite('poder_notarial')"><div class="plant-icon">✍️</div><div class="plant-name">Poder Notarial (Venezuela)</div><div class="plant-desc">Para que un familiar actúe en tu nombre.</div><button class="btn btn-gold" style="font-size:9px;margin-top:8px;">📥 Generar PDF</button></div>
+      <div class="plant-card" onclick="generarTramite('carta_familiar')"><div class="plant-icon">👨‍👩‍👧</div><div class="plant-name">Carta de Sostenimiento Familiar</div><div class="plant-desc">Declaración de sostenimiento económico a familia en Venezuela.</div><button class="btn btn-gold" style="font-size:9px;margin-top:8px;">📥 Generar PDF</button></div>
+      <div class="plant-card" onclick="generarTramite('consulado_cita')"><div class="plant-icon">🏛️</div><div class="plant-name">Solicitud Cita Consular</div><div class="plant-desc">Carta para solicitar cita en el Consulado venezolano.</div><button class="btn btn-gold" style="font-size:9px;margin-top:8px;">📥 Generar PDF</button></div>
+      <div class="plant-card" onclick="generarTramite('remesa_justificacion')"><div class="plant-icon">💸</div><div class="plant-name">Justificación de Remesas</div><div class="plant-desc">Carta explicativa de envíos a familia en Venezuela.</div><button class="btn btn-gold" style="font-size:9px;margin-top:8px;">📥 Generar PDF</button></div>
+      <div class="plant-card" onclick="generarTramite('declaracion_bienes')"><div class="plant-icon">🏠</div><div class="plant-name">Declaración de Bienes Venezuela</div><div class="plant-desc">Para declarar propiedades en Venezuela ante organismos españoles.</div><button class="btn btn-gold" style="font-size:9px;margin-top:8px;">📥 Generar PDF</button></div>
+    </div>
+  </div>
+  <div class="tab-content" id="planttab-banco">
+    <div style="display:grid;grid-template-columns:260px 1fr;gap:16px;">
+      <div class="card" style="height:fit-content;">
+        <div class="card-title">🏦 Tipo de solicitud</div>
+        <div style="display:flex;flex-direction:column;gap:5px;">
+          <div class="plant-sector-btn act" onclick="selBanco(this,'credito_personal')">💳 Crédito personal</div>
+          <div class="plant-sector-btn" onclick="selBanco(this,'hipoteca')">🏠 Hipoteca</div>
+          <div class="plant-sector-btn" onclick="selBanco(this,'cuenta_bancaria')">🏦 Apertura cuenta bancaria</div>
+          <div class="plant-sector-btn" onclick="selBanco(this,'microcredito')">💶 Microcrédito / ICO</div>
+          <div class="plant-sector-btn" onclick="selBanco(this,'renegociacion')">🤝 Renegociar deuda</div>
+        </div>
+        <div style="margin-top:12px;">
+          <div class="f-group" style="margin-bottom:7px;"><label class="f-label">Banco / Entidad</label><div class="voice-wrap"><input class="f-input" id="bancoNombre" placeholder="Nombre del banco" oninput="generarPlantillaBanco()"><button class="voice-btn" onclick="startVoice('bancoNombre',this)">🎤</button></div></div>
+          <div class="f-group" style="margin-bottom:7px;"><label class="f-label">Importe solicitado</label><input class="f-input" id="bancoImporte" placeholder="Ej: 5.000 €" oninput="generarPlantillaBanco()"></div>
+          <div class="f-group"><label class="f-label">Propósito del crédito</label><div class="voice-wrap"><input class="f-input" id="bancoPropósito" placeholder="Para qué lo necesitas" oninput="generarPlantillaBanco()"><button class="voice-btn" onclick="startVoice('bancoPropósito',this)">🎤</button></div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">📄 Carta bancaria generada — editable</div>
+        <textarea class="f-input f-textarea" id="bancoTexto" rows="16" style="font-size:11px;line-height:1.8;font-family:'Segoe UI',Arial,sans-serif;"></textarea>
+        <div class="btns-row">
+          <button class="btn btn-gold" onclick="exportarBancoPdf()">📥 PDF</button>
+          <button class="btn btn-outline" onclick="copiarBanco()">📋 Copiar</button>
+          <button class="btn btn-outline" onclick="generarPlantillaBanco()">🔄 Regenerar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="tab-content" id="planttab-quejas">
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;">
+      <div class="plant-card" onclick="generarQueja('servicios_sociales')"><div class="plant-icon">🤝</div><div class="plant-name">Solicitud Ayuda Servicios Sociales</div><div class="plant-desc">Para solicitar ayudas económicas al ayuntamiento.</div><button class="btn btn-gold" style="font-size:9px;margin-top:8px;">📥 Generar PDF</button></div>
+      <div class="plant-card" onclick="generarQueja('renta_minima')"><div class="plant-icon">💶</div><div class="plant-name">Solicitud Ingreso Mínimo Vital</div><div class="plant-desc">Carta para solicitar el IMV ante la Seguridad Social.</div><button class="btn btn-gold" style="font-size:9px;margin-top:8px;">📥 Generar PDF</button></div>
+      <div class="plant-card" onclick="generarQueja('queja_empresa')"><div class="plant-icon">⚖️</div><div class="plant-name">Queja formal a empresa</div><div class="plant-desc">Oficio con lenguaje jurídico para reclamar derechos.</div><button class="btn btn-gold" style="font-size:9px;margin-top:8px;">📥 Generar PDF</button></div>
+      <div class="plant-card" onclick="generarQueja('ayuda_alquiler')"><div class="plant-icon">🏠</div><div class="plant-name">Solicitud Ayuda al Alquiler</div><div class="plant-desc">Para pedir ayuda al alquiler del Plan Estatal de Vivienda.</div><button class="btn btn-gold" style="font-size:9px;margin-top:8px;">📥 Generar PDF</button></div>
+      <div class="plant-card" onclick="generarQueja('beca_comedor')"><div class="plant-icon">🍽️</div><div class="plant-name">Solicitud Beca Comedor / Libros</div><div class="plant-desc">Para solicitar ayudas escolares en España.</div><button class="btn btn-gold" style="font-size:9px;margin-top:8px;">📥 Generar PDF</button></div>
+      <div class="plant-card" onclick="generarQueja('denuncia_laboral')"><div class="plant-icon">🚨</div><div class="plant-name">Denuncia Laboral (Inspección)</div><div class="plant-desc">Para denunciar irregularidades ante la Inspección de Trabajo.</div><button class="btn btn-gold" style="font-size:9px;margin-top:8px;">📥 Generar PDF</button></div>
+    </div>
+  </div>
+</div></div>
+
+<!-- FOOTER -->
+<div class="ftr"><span>Sistema privado · <span>Fátima Caldea</span></span><span style="margin-left:auto;">✦ FÁTIMA CALDEA DOCUMENTOS PRO · V28 FINAL · tramites.fatimahairstudio082.com</span></div>
+
+</div><!-- /appContent -->
+
+<!-- ══ FIREBASE AUTH — mismo proyecto tramites-eb8cb ══ -->
+<script type="module">
+import{initializeApp}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import{getAuth,signInWithEmailAndPassword,signOut,onAuthStateChanged}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+
+const firebaseConfig={
+  apiKey:"AIzaSyBxe1gf2g7GjaZ9nid-YdsJhHPgH93XGfw",
+  authDomain:"tramites-eb8cb.firebaseapp.com",
+  projectId:"tramites-eb8cb",
+  storageBucket:"tramites-eb8cb.firebasestorage.app",
+  messagingSenderId:"63815441304",
+  appId:"1:63815441304:web:afe54267b5232c7e5329ed"
+};
+
+const app=initializeApp(firebaseConfig);
+const auth=getAuth(app);
+
+window._fbLogin=(email,pass)=>signInWithEmailAndPassword(auth,email,pass);
+window._fbLogout=()=>signOut(auth);
+
+onAuthStateChanged(auth,user=>{
+  if(user){
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('appContent').style.display='block';
+    const name=user.email.split('@')[0];
+    document.getElementById('userChipName').textContent=name+' · Privado';
+    if(typeof loadData==='function')loadData();
+    if(typeof generarPlantillaTrabajo==='function')generarPlantillaTrabajo();
+    if(typeof generarPlantillaBanco==='function')generarPlantillaBanco();
+  }else{
+    document.getElementById('loginScreen').style.display='flex';
+    document.getElementById('appContent').style.display='none';
+  }
+});
+</script>
+
+<script>
+'use strict';
+// ══════════════════════════════════════════════════════
+// AUTH
+// ══════════════════════════════════════════════════════
+function doLogin(){
+  const email=document.getElementById('loginEmail').value.trim();
+  const pass=document.getElementById('loginPass').value;
+  const err=document.getElementById('loginErr');
+  err.style.display='none';
+  if(!email||!pass){err.textContent='Introduce email y contraseña.';err.style.display='block';return;}
+  if(typeof window._fbLogin!=='function'){err.textContent='Error de conexión. Recarga la página.';err.style.display='block';return;}
+  window._fbLogin(email,pass).catch(e=>{
+    const msgs={'auth/invalid-credential':'Email o contraseña incorrectos.','auth/user-not-found':'Email no registrado.','auth/wrong-password':'Contraseña incorrecta.','auth/too-many-requests':'Demasiados intentos. Espera.','auth/network-request-failed':'Sin conexión.'};
+    err.textContent=msgs[e.code]||'Error al iniciar sesión.';err.style.display='block';
+  });
+}
+function doLogout(){if(typeof window._fbLogout==='function')window._fbLogout();}
+
+// ══════════════════════════════════════════════════════
+// DATOS GLOBALES
+// ══════════════════════════════════════════════════════
+let DATA={foto:null,nombre:'',apellidos:'',profesion:'',telefono:'',email:'',direccion:'',nacionalidad:'',permiso:'',perfil:'',postulaciones:[]};
+let tarjetasData=[],registros=[];
+const CERTS=[];
+let certCount=0,expCount=0,formCount=0,idiomaCount=0,habCount=0,refCount=0;
+let formImg=null,formFields=[],campoActivo=null;
+let activeRec=null,activeRecBtn=null;
+let sectorActual='peluqueria',bancoActual='credito_personal';
+
+// ══════════════════════════════════════════════════════
+// NAVEGACIÓN
+// ══════════════════════════════════════════════════════
+function setTab(name,btn){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('act'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('act'));
+  const vEl=document.getElementById('view-'+name);if(vEl)vEl.classList.add('act');
+  if(btn)btn.classList.add('act');
+  if(name==='cv')updatePreview();
+  if(name==='comunicacion'){updateEmailPreview();updateWaPreview();}
+  if(name==='formularios'){renderFormDatosAuto();generarExcelPreview();}
+  if(name==='contratos')autoRellenarContratos();
+  if(name==='plantillas'){generarPlantillaTrabajo();generarPlantillaBanco();}
+}
+function setCvTab(name,btn){
+  document.querySelectorAll('#view-cv .tab-content').forEach(t=>t.classList.remove('act'));
+  document.querySelectorAll('#view-cv .tab').forEach(t=>t.classList.remove('act'));
+  const t=document.getElementById('cvtab-'+name);if(t)t.classList.add('act');
+  if(btn)btn.classList.add('act');
+  if(name==='preview')updatePreview();
+}
+function setContratoTab(name,btn){
+  document.querySelectorAll('#view-contratos .tab-content').forEach(t=>t.classList.remove('act'));
+  document.querySelectorAll('#view-contratos .tab').forEach(t=>t.classList.remove('act'));
+  const t=document.getElementById('contratotab-'+name);if(t)t.classList.add('act');
+  if(btn)btn.classList.add('act');
+}
+function setFormTab(name,btn){
+  document.querySelectorAll('#view-formularios .tab-content').forEach(t=>t.classList.remove('act'));
+  document.querySelectorAll('#view-formularios .tab').forEach(t=>t.classList.remove('act'));
+  const t=document.getElementById('formtab-'+name);if(t)t.classList.add('act');
+  if(btn)btn.classList.add('act');
+  if(name==='excel')generarExcelPreview();
+}
+function setSegTab(name,btn){
+  document.querySelectorAll('#view-seguridad .tab-content').forEach(t=>t.classList.remove('act'));
+  document.querySelectorAll('#view-seguridad .tab').forEach(t=>t.classList.remove('act'));
+  const t=document.getElementById('segtab-'+name);if(t)t.classList.add('act');
+  if(btn)btn.classList.add('act');
+}
+function setPlantTab(name,btn){
+  document.querySelectorAll('#view-plantillas .tab-content').forEach(t=>t.classList.remove('act'));
+  document.querySelectorAll('#view-plantillas .tab').forEach(t=>t.classList.remove('act'));
+  const t=document.getElementById('planttab-'+name);if(t)t.classList.add('act');
+  if(btn)btn.classList.add('act');
+}
+
+// ══════════════════════════════════════════════════════
+// GUARDAR / CARGAR
+// ══════════════════════════════════════════════════════
+function saveData(){
+  DATA.nombre=v('cvNombre');DATA.apellidos=v('cvApellidos');DATA.profesion=v('cvProfesion');
+  DATA.telefono=v('cvTelefono');DATA.email=v('cvEmail');DATA.direccion=v('cvDireccion');
+  DATA.nacionalidad=v('cvNacionalidad');DATA.permiso=v('cvPermiso');DATA.perfil=v('cvPerfil');
+  try{localStorage.setItem('fc_docs_v2',JSON.stringify(DATA));}catch(e){}
+  showStatus('cvStatus','✓ Datos guardados','ok');
+  const mn=document.getElementById('mdaNombre');if(mn)mn.value=(DATA.nombre+' '+DATA.apellidos).trim()||'Fátima Caldea';
+}
+function loadData(){
+  try{const d=localStorage.getItem('fc_docs_v2');if(d)DATA=JSON.parse(d);}catch(e){}
+  try{const t=localStorage.getItem('fc_tarjetas');if(t)tarjetasData=JSON.parse(t);}catch(e){}
+  try{const r=localStorage.getItem('fc_registros');if(r)registros=JSON.parse(r);}catch(e){}
+  setv('cvNombre',DATA.nombre);setv('cvApellidos',DATA.apellidos);setv('cvProfesion',DATA.profesion);
+  setv('cvTelefono',DATA.telefono);setv('cvEmail',DATA.email);setv('cvDireccion',DATA.direccion);
+  setv('cvNacionalidad',DATA.nacionalidad);setv('cvPermiso',DATA.permiso);setv('cvPerfil',DATA.perfil);
+  if(DATA.foto){const fp=document.getElementById('fotoPreview');const ph=document.getElementById('fotoPh');if(fp){fp.src=DATA.foto;fp.style.display='block';}if(ph)ph.style.display='none';}
+  const hoy=new Date().toISOString().split('T')[0];
+  ['mdaFecha','certFecha','cartaFecha','postFecha','regFecha','docSensibleFecha','pisoInicio','pisoFechaFirma','autValidez','declFecha','plantFecha'].forEach(id=>{const el=document.getElementById(id);if(el&&!el.value)el.value=hoy;});
+  const mn=document.getElementById('mdaNombre');if(mn)mn.value=(DATA.nombre+' '+DATA.apellidos).trim()||'Fátima Caldea';
+  renderTarjetasGuardadas();renderRegistros();renderPostulaciones();
+}
+const v=id=>{const e=document.getElementById(id);return e?e.value:'';};
+const setv=(id,val)=>{const e=document.getElementById(id);if(e&&val)e.value=val;};
+
+// ══════════════════════════════════════════════════════
+// VOZ
+// ══════════════════════════════════════════════════════
+function startVoice(targetOrId,btn){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){alert('Usa Chrome o Edge para dictado por voz.');return;}
+  if(activeRec&&activeRecBtn===btn){activeRec.stop();return;}
+  if(activeRec)activeRec.stop();
+  const target=typeof targetOrId==='string'?document.getElementById(targetOrId):targetOrId;
+  if(!target)return;
+  const rec=new SR();rec.lang='es-ES';rec.continuous=false;rec.interimResults=true;
+  activeRec=rec;activeRecBtn=btn;btn.classList.add('rec');btn.textContent='⏹';
+  document.getElementById('vozIndicator').classList.add('visible');
+  let final='';
+  rec.onresult=e=>{let interim='';for(let i=e.resultIndex;i<e.results.length;i++){if(e.results[i].isFinal)final+=e.results[i][0].transcript+' ';else interim=e.results[i][0].transcript;}target.value=(target.value?target.value.trimEnd()+' ':'')+( final+interim).trim();if(typeof updatePreview==='function')updatePreview();};
+  rec.onend=()=>{btn.classList.remove('rec');btn.textContent='🎤';document.getElementById('vozIndicator').classList.remove('visible');activeRec=null;activeRecBtn=null;};
+  rec.onerror=()=>{btn.classList.remove('rec');btn.textContent='🎤';document.getElementById('vozIndicator').classList.remove('visible');activeRec=null;activeRecBtn=null;};
+  rec.start();
+}
+
+// ══════════════════════════════════════════════════════
+// FOTO
+// ══════════════════════════════════════════════════════
+function handleFoto(e){const file=e.target.files[0];if(!file)return;const r=new FileReader();r.onload=ev=>{DATA.foto=ev.target.result;const fp=document.getElementById('fotoPreview');const ph=document.getElementById('fotoPh');if(fp){fp.src=DATA.foto;fp.style.display='block';}if(ph)ph.style.display='none';updatePreview();};r.readAsDataURL(file);}
+function quitarFoto(){DATA.foto=null;const fp=document.getElementById('fotoPreview');const ph=document.getElementById('fotoPh');if(fp)fp.style.display='none';if(ph)ph.style.display='flex';const fi=document.getElementById('fotoInput');if(fi)fi.value='';updatePreview();}
+
+// ══════════════════════════════════════════════════════
+// SECCIONES DINÁMICAS CV
+// ══════════════════════════════════════════════════════
+function addExp(){const i=expCount++;const d=document.createElement('div');d.className='dyn-item';d.innerHTML=`<div class="dyn-item-header"><div class="dyn-item-title">Experiencia ${i+1}</div><button class="dyn-del" onclick="this.closest('.dyn-item').remove();updatePreview()">✕</button></div><div class="form-grid"><div class="f-group"><label class="f-label">Puesto</label><div class="voice-wrap"><input class="f-input exp-p" placeholder="Cargo" oninput="updatePreview()"><button class="voice-btn" onclick="startVoice(this.previousElementSibling,this)">🎤</button></div></div><div class="f-group"><label class="f-label">Empresa</label><div class="voice-wrap"><input class="f-input exp-e" placeholder="Empresa" oninput="updatePreview()"><button class="voice-btn" onclick="startVoice(this.previousElementSibling,this)">🎤</button></div></div><div class="f-group"><label class="f-label">Ciudad</label><input class="f-input exp-c" placeholder="Ciudad" oninput="updatePreview()"></div><div class="f-group"><label class="f-label">Periodo</label><input class="f-input exp-per" placeholder="2020–2023" oninput="updatePreview()"></div><div class="f-group span2"><label class="f-label">Funciones</label><div style="position:relative;"><textarea class="f-input f-textarea exp-d" style="padding-right:34px;" oninput="updatePreview()"></textarea><button class="voice-btn" style="position:absolute;right:7px;top:8px;transform:none;" onclick="startVoice(this.previousElementSibling,this)">🎤</button></div></div></div>`;document.getElementById('expList').appendChild(d);}
+function addForm(){const i=formCount++;const d=document.createElement('div');d.className='dyn-item';d.innerHTML=`<div class="dyn-item-header"><div class="dyn-item-title">Formación ${i+1}</div><button class="dyn-del" onclick="this.closest('.dyn-item').remove();updatePreview()">✕</button></div><div class="form-grid"><div class="f-group"><label class="f-label">Título/Curso</label><div class="voice-wrap"><input class="f-input fm-t" placeholder="Título" oninput="updatePreview()"><button class="voice-btn" onclick="startVoice(this.previousElementSibling,this)">🎤</button></div></div><div class="f-group"><label class="f-label">Centro</label><div class="voice-wrap"><input class="f-input fm-c" placeholder="Institución" oninput="updatePreview()"><button class="voice-btn" onclick="startVoice(this.previousElementSibling,this)">🎤</button></div></div><div class="f-group"><label class="f-label">Año</label><input class="f-input fm-a" placeholder="2022" oninput="updatePreview()"></div><div class="f-group"><label class="f-label">País</label><input class="f-input fm-p" placeholder="España/Venezuela" oninput="updatePreview()"></div></div>`;document.getElementById('formList').appendChild(d);}
+function addIdioma(){const i=idiomaCount++;const d=document.createElement('div');d.className='dyn-item';d.innerHTML=`<div class="dyn-item-header"><div class="dyn-item-title">Idioma ${i+1}</div><button class="dyn-del" onclick="this.closest('.dyn-item').remove();updatePreview()">✕</button></div><div class="form-grid"><div class="f-group"><label class="f-label">Idioma</label><input class="f-input id-n" placeholder="Español" oninput="updatePreview()"></div><div class="f-group"><label class="f-label">Nivel</label><select class="f-input f-select id-nv" onchange="updatePreview()"><option>Nativo</option><option>Avanzado</option><option>Intermedio</option><option>Básico</option></select></div></div>`;document.getElementById('idiomaList').appendChild(d);}
+function addHab(){const i=habCount++;const d=document.createElement('div');d.className='dyn-item';d.innerHTML=`<div class="dyn-item-header"><div class="dyn-item-title">Habilidad ${i+1}</div><button class="dyn-del" onclick="this.closest('.dyn-item').remove();updatePreview()">✕</button></div><div class="form-grid"><div class="f-group"><label class="f-label">Habilidad</label><div class="voice-wrap"><input class="f-input hb-n" placeholder="Colorimetría" oninput="updatePreview()"><button class="voice-btn" onclick="startVoice(this.previousElementSibling,this)">🎤</button></div></div><div class="f-group"><label class="f-label">Nivel</label><select class="f-input f-select hb-nv" onchange="updatePreview()"><option value="100">⭐⭐⭐⭐⭐ Experta</option><option value="80">⭐⭐⭐⭐ Avanzada</option><option value="60">⭐⭐⭐ Buena</option><option value="40">⭐⭐ Media</option></select></div></div>`;document.getElementById('habList').appendChild(d);}
+function addRef(){const i=refCount++;const d=document.createElement('div');d.className='dyn-item';d.innerHTML=`<div class="dyn-item-header"><div class="dyn-item-title">Referencia ${i+1}</div><button class="dyn-del" onclick="this.closest('.dyn-item').remove();updatePreview()">✕</button></div><div class="form-grid three"><div class="f-group"><label class="f-label">Nombre</label><div class="voice-wrap"><input class="f-input rf-n" placeholder="Nombre referencia" oninput="updatePreview()"><button class="voice-btn" onclick="startVoice(this.previousElementSibling,this)">🎤</button></div></div><div class="f-group"><label class="f-label">Cargo/Relación</label><div class="voice-wrap"><input class="f-input rf-c" placeholder="Ex jefa de salón" oninput="updatePreview()"><button class="voice-btn" onclick="startVoice(this.previousElementSibling,this)">🎤</button></div></div><div class="f-group"><label class="f-label">Contacto</label><input class="f-input rf-t" placeholder="Teléfono/Email" oninput="updatePreview()"></div></div>`;document.getElementById('refList').appendChild(d);}
+
+// ══════════════════════════════════════════════════════
+// VISTA PREVIA CV
+// ══════════════════════════════════════════════════════
+function updatePreview(){
+  const nom=v('cvNombre'),ape=v('cvApellidos'),prof=v('cvProfesion'),tel=v('cvTelefono'),eml=v('cvEmail'),dir=v('cvDireccion'),nac=v('cvNacionalidad'),per=v('cvPermiso'),prf=v('cvPerfil');
+  if(!nom&&!prof){document.getElementById('cvPreviewDoc').innerHTML='<div style="text-align:center;color:#aaa;padding:36px;font-size:11px;">Rellena tus datos — la vista previa aparece aquí ✦</div>';return;}
+  const fotoH=DATA.foto?`<img class="cv-foto" src="${DATA.foto}">`:`<div class="cv-foto-ph">👩</div>`;
+  let expH='';document.querySelectorAll('#expList .dyn-item').forEach(el=>{const p=el.querySelector('.exp-p')?.value,e=el.querySelector('.exp-e')?.value,c=el.querySelector('.exp-c')?.value,pe=el.querySelector('.exp-per')?.value,d=el.querySelector('.exp-d')?.value;if(p||e)expH+=`<div class="cv-item"><div class="cv-item-title">${p||''}</div><div class="cv-item-sub">${e||''}${c?' · '+c:''}</div><div class="cv-item-date">${pe||''}</div>${d?`<div class="cv-item-desc">${d}</div>`:''}</div>`;});
+  let fmH='';document.querySelectorAll('#formList .dyn-item').forEach(el=>{const t=el.querySelector('.fm-t')?.value,c=el.querySelector('.fm-c')?.value,a=el.querySelector('.fm-a')?.value,p=el.querySelector('.fm-p')?.value;if(t)fmH+=`<div class="cv-item"><div class="cv-item-title">${t}</div><div class="cv-item-sub">${c||''}</div><div class="cv-item-date">${a||''}${p?' · '+p:''}</div></div>`;});
+  let idH='';document.querySelectorAll('#idiomaList .dyn-item').forEach(el=>{const n=el.querySelector('.id-n')?.value,nv=el.querySelector('.id-nv')?.value;const d={'Nativo':5,'Avanzado':4,'Intermedio':3,'Básico':2}[nv]||3;if(n)idH+=`<div class="cv-lang-item"><span style="font-size:10px;">${n}</span><div>${[...Array(5)].map((_,i)=>`<span class="cv-lang-dot${i<d?' on':''}"></span>`).join('')}</div></div>`;});
+  let hbH='';document.querySelectorAll('#habList .dyn-item').forEach(el=>{const n=el.querySelector('.hb-n')?.value,nv=el.querySelector('.hb-nv')?.value||'80';if(n)hbH+=`<div class="cv-item" style="margin-bottom:6px;"><div style="font-size:10px;">${n}</div><div class="cv-skill-bar"><div class="cv-skill-fill" style="width:${nv}%"></div></div></div>`;});
+  let rfH='';document.querySelectorAll('#refList .dyn-item').forEach(el=>{const n=el.querySelector('.rf-n')?.value,c=el.querySelector('.rf-c')?.value,t=el.querySelector('.rf-t')?.value;if(n)rfH+=`<div class="cv-item"><div style="font-size:10.5px;font-weight:700;">${n}</div><div style="font-size:9.5px;color:#C9A84C;">${c||''}</div>${t?`<div style="font-size:9px;color:#666;">${t}</div>`:''}</div>`;});
+  const hoy=new Date().toLocaleDateString('es-ES');
+  document.getElementById('cvPreviewDoc').innerHTML=`<div class="cv-header">${fotoH}<div style="flex:1;"><div class="cv-name">${nom} ${ape}</div><div class="cv-profession">${prof}</div><div style="margin-top:7px;display:flex;flex-direction:column;gap:2px;">${tel?`<span style="font-size:9.5px;color:#555;">📞 ${tel}</span>`:''} ${eml?`<span style="font-size:9.5px;color:#555;">✉️ ${eml}</span>`:''} ${dir?`<span style="font-size:9.5px;color:#555;">📍 ${dir}</span>`:''} ${nac?`<span style="font-size:9.5px;color:#555;">🌍 ${nac}${per?' · '+per:''}</span>`:''}</div></div></div><div class="cv-body"><div>${idH?`<div><div class="cv-sec-title">IDIOMAS</div>${idH}</div>`:''} ${hbH?`<div><div class="cv-sec-title">HABILIDADES</div>${hbH}</div>`:''} ${rfH?`<div><div class="cv-sec-title">REFERENCIAS</div>${rfH}</div>`:''}</div><div>${prf?`<div><div class="cv-sec-title">PERFIL</div><div style="font-size:10px;color:#444;line-height:1.6;">${prf}</div></div>`:''} ${expH?`<div><div class="cv-sec-title">EXPERIENCIA</div>${expH}</div>`:''} ${fmH?`<div><div class="cv-sec-title">FORMACIÓN</div>${fmH}</div>`:''}</div></div><div class="cv-footer">✦ ${nom} ${ape} · ${hoy}</div>`;
+}
+
+// ══════════════════════════════════════════════════════
+// EXPORTAR CV
+// ══════════════════════════════════════════════════════
+function exportCvPdf(conCarta){
+  updatePreview();const cvH=document.getElementById('cvPreviewDoc').innerHTML;
+  let cartaH='';
+  if(conCarta){const cpo=v('cartaCuerpo');if(cpo){const nom=v('cvNombre')+' '+v('cvApellidos');const fec=v('cartaFecha')?new Date(v('cartaFecha')).toLocaleDateString('es-ES'):'';cartaH=`<div style="page-break-before:always;font-family:'Segoe UI',Arial,sans-serif;max-width:660px;margin:0 auto;padding:20px;font-size:11px;line-height:1.8;"><div style="text-align:right;margin-bottom:18px;color:#888;">${fec}</div><div style="margin-bottom:12px;"><strong>${v('cartaEmpresa')||''}</strong></div><div style="white-space:pre-wrap;">${cpo}</div><div style="margin-top:22px;">Atentamente,<br><strong>${nom}</strong></div></div>`;}}
+  const css=`*{box-sizing:border-box;}body{margin:0;background:#fff;}.cv-doc{max-width:660px;margin:0 auto;padding:20px;font-size:11px;line-height:1.5;color:#1a1a1a;}.cv-header{display:flex;gap:16px;align-items:flex-start;border-bottom:3px solid #C9A84C;padding-bottom:14px;margin-bottom:14px;}.cv-foto{width:80px;height:95px;border-radius:6px;object-fit:cover;border:2px solid #e0d9cc;flex-shrink:0;}.cv-foto-ph{width:80px;height:95px;border-radius:6px;background:#f0ede6;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;}.cv-name{font-size:20px;font-weight:700;}.cv-profession{font-size:12px;color:#C9A84C;font-weight:600;}.cv-body{display:grid;grid-template-columns:185px 1fr;gap:16px;}.cv-sec-title{font-size:9.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#C9A84C;border-bottom:1.5px solid #C9A84C;padding-bottom:2px;margin-bottom:7px;}.cv-item{margin-bottom:9px;}.cv-item-title{font-size:10.5px;font-weight:700;}.cv-item-sub{font-size:9.5px;color:#C9A84C;font-weight:600;}.cv-item-date{font-size:9px;color:#888;}.cv-item-desc{font-size:9.5px;color:#444;margin-top:2px;}.cv-skill-bar{height:4px;background:#e0d9cc;border-radius:3px;margin-top:3px;}.cv-skill-fill{height:100%;background:#C9A84C;border-radius:3px;}.cv-lang-item{display:flex;justify-content:space-between;margin-bottom:4px;}.cv-lang-dot{width:9px;height:9px;border-radius:50%;background:#e0d9cc;display:inline-block;margin-right:2px;}.cv-lang-dot.on{background:#C9A84C;}.cv-footer{margin-top:14px;padding-top:7px;border-top:1px solid #e0d9cc;text-align:center;font-size:8.5px;color:#aaa;}@media print{@page{size:A4;margin:12mm;}}`;
+  const w=window.open('','_blank');if(!w)return;
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><style>${css}</style></head><body><div class="cv-doc">${cvH}</div>${cartaH}<script>window.onload=()=>window.print()<\/script></body></html>`);w.document.close();
+}
+function copiarEmailCv(){updateEmailPreview();navigator.clipboard.writeText(document.getElementById('emailPreview').innerText).then(()=>alert('✓ Email copiado'));}
+function copiarWaCv(){updateWaPreview();navigator.clipboard.writeText(document.getElementById('waPreview').textContent).then(()=>alert('✓ WhatsApp copiado'));}
+function generarCartaAuto(){const nom=v('cvNombre')+' '+v('cvApellidos'),prof=v('cvProfesion')||'el puesto disponible',emp=v('cartaEmpresa')||'su empresa',pue=v('cartaPuesto')||prof;document.getElementById('cartaCuerpo').value=`Estimado/a equipo de ${emp},\n\nMe dirijo a ustedes para presentar mi candidatura al puesto de ${pue}.\n\nSoy ${nom}, profesional con amplia experiencia en el sector. Me caracterizo por mi responsabilidad, puntualidad y compromiso. Estoy disponible para incorporarme de manera inmediata.\n\nQuedo a su disposición.\n\nAtentamente,\n${nom}`;}
+
+// ══════════════════════════════════════════════════════
+// CERTIFICADOS
+// ══════════════════════════════════════════════════════
+function updateCertMarca(){const emp=v('certEmpresa')||'[empresa]';const fec=v('certFecha')?new Date(v('certFecha')).toLocaleDateString('es-ES'):'[fecha]';const nom=(v('cvNombre')+' '+v('cvApellidos')).trim()||'FÁTIMA CALDEA';const el=document.getElementById('certMarcaPreview');if(el)el.textContent=`${nom.toUpperCase()} · USO EXCLUSIVO: ${emp.toUpperCase()} · ${fec} · PROHIBIDO OTROS TRÁMITES`;}
+function handleCertUpload(e){[...e.target.files].forEach(f=>{if(!f.type.startsWith('image/'))return;const r=new FileReader();r.onload=ev=>addCertCard(ev.target.result,f.name);r.readAsDataURL(f);});e.target.value='';}
+function addCertCard(src,filename){
+  const id='cert_'+Date.now()+'_'+(certCount++),cid='canvas_'+id;
+  const nom=filename.replace(/\.[^.]+$/,'').replace(/_/g,' ');
+  const list=document.getElementById('certList');const div=document.createElement('div');div.id=id;div.className='dyn-item';
+  div.style.cssText='display:grid;grid-template-columns:160px 1fr;gap:12px;align-items:start;';
+  div.innerHTML=`<div><canvas id="${cid}" style="width:100%;border-radius:5px;border:1px solid var(--border);display:block;"></canvas><div style="display:flex;gap:4px;margin-top:5px;"><button class="doc-act-btn pri" style="flex:1;font-size:8px;" onclick="downloadCert('${cid}','${filename}')">📥</button><button class="doc-act-btn" style="flex:1;font-size:8px;" onclick="refreshCertMarca('${cid}','${id}')">🔄</button></div></div><div style="display:flex;flex-direction:column;gap:7px;"><div class="dyn-item-header" style="margin-bottom:0;"><div class="dyn-item-title">Certificado</div><button class="dyn-del" onclick="eliminarCert('${id}')">✕</button></div><div class="f-group"><label class="f-label">Nombre</label><div class="voice-wrap"><input class="f-input cert-nombre" id="nombre_${id}" value="${nom}"><button class="voice-btn" onclick="startVoice('nombre_${id}',this)">🎤</button></div></div><div class="form-grid"><div class="f-group"><label class="f-label">Institución</label><div class="voice-wrap"><input class="f-input cert-inst" id="inst_${id}" placeholder="Centro"><button class="voice-btn" onclick="startVoice('inst_${id}',this)">🎤</button></div></div><div class="f-group"><label class="f-label">Año</label><input class="f-input cert-anio" id="anio_${id}" placeholder="2022"></div></div><div style="font-size:9px;color:var(--green);background:#f0fdf4;border:1px solid #bbf7d0;border-radius:4px;padding:5px 9px;">✓ Marca de agua aplicada</div></div>`;
+  list.appendChild(div);CERTS.push({id,dataUrl:src,canvasId:cid});
+  const img=new Image();img.crossOrigin='anonymous';img.onload=()=>{const canvas=document.getElementById(cid);if(!canvas)return;canvas.width=img.width;canvas.height=img.height;const ctx=canvas.getContext('2d');ctx.drawImage(img,0,0);applyCertWatermark(ctx,img.width,img.height);};img.src=src;
+}
+function applyCertWatermark(ctx,W,H){
+  const emp=v('certEmpresa')||'USO EXCLUSIVO',fec=v('certFecha')?new Date(v('certFecha')).toLocaleDateString('es-ES'):new Date().toLocaleDateString('es-ES'),nom=(v('cvNombre')+' '+v('cvApellidos')).trim()||'FÁTIMA CALDEA';
+  const lines=[nom.toUpperCase(),`USO EXCLUSIVO: ${emp.toUpperCase()}`,`FECHA: ${fec}`,'PROHIBIDO OTROS TRÁMITES'];
+  ctx.save();ctx.translate(W/2,H/2);ctx.rotate(-35*Math.PI/180);
+  const fs=Math.max(Math.round(Math.min(W,H)*0.05),16);ctx.font=`bold ${fs}px Arial`;ctx.textAlign='center';ctx.textBaseline='middle';
+  const lh=fs*1.55;lines.forEach((line,i)=>{const y=(i-(lines.length-1)/2)*lh;ctx.strokeStyle='rgba(255,255,255,0.5)';ctx.lineWidth=3.5;ctx.strokeText(line,0,y);ctx.fillStyle='rgba(150,150,150,0.35)';ctx.fillText(line,0,y);});ctx.restore();
+}
+function refreshCertMarca(cid,id){const cert=CERTS.find(c=>c.id===id);if(!cert)return;const canvas=document.getElementById(cid);if(!canvas)return;const img=new Image();img.crossOrigin='anonymous';img.onload=()=>{const ctx=canvas.getContext('2d');ctx.clearRect(0,0,canvas.width,canvas.height);ctx.drawImage(img,0,0);applyCertWatermark(ctx,canvas.width,canvas.height);};img.src=cert.dataUrl;}
+function eliminarCert(id){const idx=CERTS.findIndex(c=>c.id===id);if(idx>-1)CERTS.splice(idx,1);const el=document.getElementById(id);if(el)el.remove();}
+function downloadCert(cid,filename){const canvas=document.getElementById(cid);if(!canvas)return;const a=document.createElement('a');a.download=`CERT_PROTEGIDO_${Date.now()}.jpg`;a.href=canvas.toDataURL('image/jpeg',0.92);a.click();}
+async function generarPdfCertificados(){
+  if(!CERTS.length){showStatus('cvStatus','⚠ Sube al menos un certificado','err');return;}
+  const emp=v('certEmpresa')||'la empresa',pue=v('certPuesto')||'',fec=v('certFecha')?new Date(v('certFecha')).toLocaleDateString('es-ES'):new Date().toLocaleDateString('es-ES'),nom=(v('cvNombre')+' '+v('cvApellidos')).trim()||'Fátima Caldea';
+  let certsHtml='';
+  for(const cert of CERTS){const canvas=document.getElementById(cert.canvasId);if(!canvas)continue;const imgData=canvas.toDataURL('image/jpeg',0.88);const nombre=document.getElementById('nombre_'+cert.id)?.value||'Certificado';const inst=document.getElementById('inst_'+cert.id)?.value||'';const anio=document.getElementById('anio_'+cert.id)?.value||'';certsHtml+=`<div class="cp"><div class="cm"><div class="cn">${nombre}</div>${inst?`<div class="ci">${inst}</div>`:''} ${anio?`<div class="ca">${anio}</div>`:''}</div><img src="${imgData}" class="cimg"><div class="cav">⚠ Uso exclusivo: ${emp.toUpperCase()} · ${fec} · Prohibido otros trámites</div></div>`;}
+  const css=`*{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Arial,sans-serif;}body{background:#fff;padding:8mm;}.portada{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;page-break-after:always;}.ptit{font-size:18pt;font-weight:700;color:#C9A84C;letter-spacing:.08em;margin-bottom:8px;}.pnom{font-size:14pt;font-weight:700;margin-bottom:5px;}.pemp{font-size:11pt;color:#555;margin-bottom:16px;}.paviso{background:#fff5f5;border:2px solid #DC2626;border-radius:8px;padding:12px 18px;font-size:11pt;color:#DC2626;font-weight:700;}.cp{page-break-before:always;padding:14px;display:flex;flex-direction:column;align-items:center;gap:10px;}.cm{width:100%;max-width:560px;}.cn{font-size:13pt;font-weight:700;}.ci{font-size:10pt;color:#C9A84C;font-weight:600;}.ca{font-size:9pt;color:#888;}.cimg{max-width:560px;width:100%;border:2px solid #e0d9cc;border-radius:5px;}.cav{width:100%;max-width:560px;background:#fff5f5;border:1px solid #fca5a5;border-radius:5px;padding:7px 12px;font-size:9pt;color:#DC2626;font-weight:600;text-align:center;}@media print{@page{size:A4;margin:8mm;}}`;
+  const w=window.open('','_blank');if(!w)return;
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><style>${css}</style></head><body><div class="portada"><div style="font-size:28px;margin-bottom:14px;">🎓</div><div class="ptit">ANEXO DE CERTIFICADOS</div><div class="pnom">${nom}</div><div class="pemp">Para: ${emp}${pue?' · '+pue:''} · ${fec}</div><div class="paviso">⚠ USO EXCLUSIVO · PROHIBIDO OTROS TRÁMITES</div></div>${certsHtml}<script>window.onload=()=>window.print()<\/script></body></html>`);
+  w.document.close();showStatus('cvStatus',`✓ PDF Anexo con ${CERTS.length} certificado(s) generado`,'ok');
+}
+
+// ══════════════════════════════════════════════════════
+// DOCUMENTOS CON MARCA DE AGUA
+// ══════════════════════════════════════════════════════
+function handleDocUpload(e){[...e.target.files].forEach(f=>{if(!f.type.startsWith('image/'))return;const r=new FileReader();r.onload=ev=>renderDocWithWatermark(ev.target.result,f.name);r.readAsDataURL(f);});e.target.value='';}
+function renderDocWithWatermark(src,filename){
+  const wrap=document.getElementById('docPreviewWrap');const card=document.createElement('div');card.className='doc-card';const cid='dc_'+Date.now();
+  card.innerHTML=`<div class="doc-card-header"><span>🔒 ${filename.substring(0,25)}</span><button class="doc-act-btn" style="font-size:9px;color:var(--red);" onclick="this.closest('.doc-card').remove()">✕</button></div><div class="doc-canvas-wrap"><canvas id="${cid}"></canvas></div><div class="doc-actions"><button class="doc-act-btn pri" onclick="downloadDocCanvas('${cid}','${filename}')">📥 Descargar</button><button class="doc-act-btn" onclick="reapplyDocWatermark('${cid}')">🔄 Actualizar marca</button></div>`;
+  wrap.appendChild(card);
+  const img=new Image();img.crossOrigin='anonymous';img.onload=()=>{const canvas=document.getElementById(cid);canvas.width=img.width;canvas.height=img.height;const ctx=canvas.getContext('2d');ctx.drawImage(img,0,0);applyDocWatermark(ctx,img.width,img.height);showStatus('docStatus','✓ Marca de agua aplicada','ok');};img.src=src;
+}
+function applyDocWatermark(ctx,W,H){
+  const nom=v('mdaNombre')||'Fátima Caldea',dest=v('mdaDestinatario')||'USO EXCLUSIVO',prop=v('mdaPropósito')||'',fec=v('mdaFecha')?new Date(v('mdaFecha')).toLocaleDateString('es-ES'):new Date().toLocaleDateString('es-ES'),aviso=v('mdaAviso')||'PROHIBIDO PARA OTROS TRÁMITES';
+  const lines=[nom.toUpperCase(),`PARA: ${dest.toUpperCase()}`,prop?`USO: ${prop.toUpperCase()}`:'',`FECHA: ${fec}`,aviso.toUpperCase()].filter(Boolean);
+  ctx.save();ctx.translate(W/2,H/2);ctx.rotate(-35*Math.PI/180);
+  const fs=Math.max(Math.round(W*0.042),18);ctx.font=`bold ${fs}px Arial`;ctx.textAlign='center';ctx.textBaseline='middle';
+  const lh=fs*1.55;lines.forEach((line,i)=>{const y=(i-(lines.length-1)/2)*lh;ctx.strokeStyle='rgba(255,255,255,0.5)';ctx.lineWidth=3.5;ctx.strokeText(line,0,y);ctx.fillStyle='rgba(150,150,150,0.35)';ctx.fillText(line,0,y);});ctx.restore();
+}
+function reapplyDocWatermark(cid){const canvas=document.getElementById(cid);if(!canvas)return;applyDocWatermark(canvas.getContext('2d'),canvas.width,canvas.height);showStatus('docStatus','✓ Marca actualizada','ok');}
+function downloadDocCanvas(cid,filename){const canvas=document.getElementById(cid);if(!canvas)return;const a=document.createElement('a');a.download=`PROTEGIDO_${(filename||'doc').replace(/\.[^.]+$/,'')}_${Date.now()}.jpg`;a.href=canvas.toDataURL('image/jpeg',0.92);a.click();}
+
+// ══════════════════════════════════════════════════════
+// DOCS SENSIBLES
+// ══════════════════════════════════════════════════════
+function handleDocSensible(e){[...e.target.files].forEach(f=>{if(!f.type.startsWith('image/'))return;const r=new FileReader();r.onload=ev=>renderDocSensible(ev.target.result,f.name);r.readAsDataURL(f);});e.target.value='';}
+function renderDocSensible(src,filename){
+  const titular=(v('docTitularNombre')||'').trim()||(v('cvNombre')+' '+v('cvApellidos')).trim()||'FÁTIMA CALDEA';
+  const tipo=v('docSensibleTipo')||'DOCUMENTO';const dest=v('docSensibleDest')||'USO EXCLUSIVO';
+  const fec=v('docSensibleFecha')?new Date(v('docSensibleFecha')).toLocaleDateString('es-ES'):new Date().toLocaleDateString('es-ES');
+  const cid='soc_'+Date.now();const list=document.getElementById('docSensibleList');
+  const div=document.createElement('div');div.className='doc-card';
+  div.innerHTML=`<div class="doc-card-header"><span>🔒 ${tipo} — ${titular.split(' ')[0]}</span><button class="doc-act-btn" style="font-size:9px;color:var(--red);" onclick="this.closest('.doc-card').remove()">✕</button></div><div class="doc-canvas-wrap"><canvas id="${cid}"></canvas></div><div style="padding:6px 10px;background:var(--bg3);font-size:9px;color:var(--text3);">Titular: <strong style="color:var(--text);">${titular}</strong></div><div class="doc-actions"><button class="doc-act-btn pri" onclick="downloadDocCanvas('${cid}','${tipo}')">📥 Descargar</button></div>`;
+  list.appendChild(div);
+  const img=new Image();img.crossOrigin='anonymous';
+  img.onload=()=>{
+    const canvas=document.getElementById(cid);canvas.width=img.width;canvas.height=img.height;
+    const ctx=canvas.getContext('2d');ctx.drawImage(img,0,0);
+    const lines=[titular.toUpperCase(),tipo.toUpperCase(),`PARA: ${dest.toUpperCase()}`,`FECHA: ${fec}`,'PROHIBIDO OTROS TRÁMITES'];
+    ctx.save();ctx.translate(img.width/2,img.height/2);ctx.rotate(-35*Math.PI/180);
+    const fs=Math.max(Math.round(Math.min(img.width,img.height)*0.045),13);
+    ctx.font=`bold ${fs}px Arial`;ctx.textAlign='center';ctx.textBaseline='middle';
+    lines.forEach((l,i)=>{const y=(i-(lines.length-1)/2)*fs*1.65;ctx.strokeStyle='rgba(255,255,255,0.5)';ctx.lineWidth=3.5;ctx.strokeText(l,0,y);ctx.fillStyle='rgba(150,150,150,0.35)';ctx.fillText(l,0,y);});
+    ctx.restore();showStatus('segStatus',`✓ Documento de ${titular} protegido`,'ok');
+  };img.src=src;
+}
+
+// ══════════════════════════════════════════════════════
+// COMUNICACIÓN
+// ══════════════════════════════════════════════════════
+function updateEmailPreview(){const nom=(v('cvNombre')+' '+v('cvApellidos')).trim()||'[Tu nombre]',emp=v('emailEmpresa')||'[Empresa]',pue=v('emailPuesto')||'[puesto]';const el=document.getElementById('emailPreview');if(el)el.innerHTML=`<strong>Asunto:</strong> Candidatura ${pue} — ${nom}<br><br>Estimado/a equipo de ${emp},<br><br>Me pongo en contacto para presentar mi candidatura al puesto de <strong>${pue}</strong>. Adjunto mi currículum.<br><br>Quedo a su disposición.<br><br>Un saludo,<br><strong>${nom}</strong><br>${v('cvTelefono')||''}`;}
+function updateWaPreview(){const nom=v('cvNombre')||'[Tu nombre]',pue=v('waPuesto')||'[puesto]';const el=document.getElementById('waPreview');if(el)el.textContent=`Hola, buenos días 🙂\n\nMe llamo ${nom} y me pongo en contacto porque vi que tienen disponible el puesto de ${pue}.\n\nMe gustaría enviarles mi currículum. Tengo experiencia y estoy disponible para una entrevista.\n\nMuchas gracias 🙏`;}
+function copiarEmail(){navigator.clipboard.writeText(document.getElementById('emailPreview').innerText).then(()=>showStatus('comStatus','✓ Email copiado','ok'));}
+function copiarWa(){navigator.clipboard.writeText(document.getElementById('waPreview').textContent).then(()=>showStatus('comStatus','✓ WhatsApp copiado','ok'));}
+function addPostulacion(){const emp=v('postEmpresa').trim();if(!emp)return;DATA.postulaciones.unshift({id:Date.now(),emp,pue:v('postPuesto'),fec:v('postFecha'),est:v('postEstado')});try{localStorage.setItem('fc_docs_v2',JSON.stringify(DATA));}catch(e){}setv('postEmpresa','');setv('postPuesto','');renderPostulaciones();}
+function renderPostulaciones(){const list=document.getElementById('postList');if(!DATA.postulaciones?.length){list.innerHTML='<div style="font-size:10px;color:var(--text3);text-align:center;padding:12px;">Sin registros aún.</div>';return;}const cols={enviado:'var(--blue)',respuesta:'#D97706',entrevista:'var(--green)',descartado:'#9CA3AF'};list.innerHTML=DATA.postulaciones.map(p=>`<div style="display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:5px;font-size:10px;"><div style="flex:1;"><strong>${p.emp}</strong>${p.pue?' · '+p.pue:''}</div><span style="font-size:9px;color:var(--text3);">${p.fec?new Date(p.fec).toLocaleDateString('es-ES'):''}</span><span style="color:${cols[p.est]||'#555'};font-size:9px;font-weight:700;">● ${p.est}</span><button style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:11px;" onclick="eliminarPost(${p.id})">✕</button></div>`).join('');}
+function eliminarPost(id){DATA.postulaciones=DATA.postulaciones.filter(p=>p.id!==id);try{localStorage.setItem('fc_docs_v2',JSON.stringify(DATA));}catch(e){}renderPostulaciones();}
+
+// ══════════════════════════════════════════════════════
+// BÓVEDA
+// ══════════════════════════════════════════════════════
+function selectPerfil(id,el){document.querySelectorAll('.perfil-card').forEach(c=>c.classList.remove('act'));el.classList.add('act');document.getElementById('bovedaTitle').textContent=`📁 Documentos — ${el.querySelector('.perfil-name').textContent}`;}
+function addPerfil(){const nombre=prompt('Nombre del perfil:');if(!nombre)return;const grid=document.getElementById('perfilGrid');const last=grid.lastElementChild;const d=document.createElement('div');d.className='perfil-card';d.onclick=function(){selectPerfil(nombre,this);};d.innerHTML=`<div class="perfil-avatar">👤</div><div class="perfil-name">${nombre}</div><div class="perfil-role">Familiar</div>`;grid.insertBefore(d,last);}
+
+// ══════════════════════════════════════════════════════
+// SEGURIDAD BANCARIA
+// ══════════════════════════════════════════════════════
+function formatTarjeta(el){let val=el.value.replace(/\D/g,'').substring(0,16);el.value=val.replace(/(.{4})/g,'$1 ').trim();}
+function formatCaducidad(el){let val=el.value.replace(/\D/g,'').substring(0,4);if(val.length>2)val=val.substring(0,2)+'/'+val.substring(2);el.value=val;}
+function formatIban(el){let val=el.value.replace(/\s/g,'').toUpperCase().substring(0,24);el.value=val.replace(/(.{4})/g,'$1 ').trim();}
+function updateTarjetaPreview(){
+  const raw=v('tarjNumero').replace(/\s/g,''),modo=v('tarjMostrar'),nombre=v('tarjNombre')||'NOMBRE TITULAR',banco=v('tarjBanco')||'',cad=v('tarjCaducidad')||'••/••',prop=v('tarjPropósito')||'—';
+  let masked='●●●● ●●●● ●●●● ●●●●';
+  if(raw.length===16){if(modo==='last4')masked=`●●●● ●●●● ●●●● ${raw.slice(12)}`;else if(modo==='first4')masked=`${raw.slice(0,4)} ●●●● ●●●● ●●●●`;else if(modo==='first6last4')masked=`${raw.slice(0,4)} ${raw.slice(4,6)}●● ●●●● ${raw.slice(12)}`;}
+  document.getElementById('tvNumero').textContent=masked;document.getElementById('tvNombre').textContent=nombre.toUpperCase();document.getElementById('tvBanco').textContent=banco;document.getElementById('tvCaducidad').textContent=cad;
+  document.getElementById('tarjetaAvisoTxt').innerHTML=`<strong>Número:</strong> ${masked}<br><strong>Titular:</strong> ${nombre}<br><strong>Banco:</strong> ${banco}<br><strong>Propósito:</strong> ${prop}<br><span style="color:var(--red);">CVV: NO INCLUIDO</span>`;
+}
+function guardarApodoTarjeta(){const apodo=v('nuevaTarjApodo').trim(),ult=v('nuevaTarjUltimos').trim();if(!apodo)return;tarjetasData.push({id:Date.now(),apodo,ult:ult||'????'});try{localStorage.setItem('fc_tarjetas',JSON.stringify(tarjetasData));}catch(e){}setv('nuevaTarjApodo','');setv('nuevaTarjUltimos','');renderTarjetasGuardadas();showStatus('segStatus','✓ Tarjeta registrada','ok');}
+function renderTarjetasGuardadas(){const c=document.getElementById('tarjetasGuardadas');if(!tarjetasData.length){c.innerHTML='Sin tarjetas registradas.';return;}c.innerHTML=tarjetasData.map(t=>`<div style="display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:5px;font-size:10px;"><span>💳</span><div style="flex:1;"><strong>${t.apodo}</strong><br><span style="font-family:monospace;font-size:9px;color:var(--text3);">●●●● ●●●● ●●●● ${t.ult}</span></div><button style="background:none;border:1px solid #fca5a5;border-radius:3px;color:var(--red);font-size:9px;cursor:pointer;padding:2px 6px;" onclick="eliminarTarjeta(${t.id})">✕</button></div>`).join('');}
+function eliminarTarjeta(id){tarjetasData=tarjetasData.filter(t=>t.id!==id);try{localStorage.setItem('fc_tarjetas',JSON.stringify(tarjetasData));}catch(e){}renderTarjetasGuardadas();}
+function generarTarjetaPdf(){
+  const raw=v('tarjNumero').replace(/\s/g,''),modo=v('tarjMostrar'),nombre=v('tarjNombre')||'—',banco=v('tarjBanco')||'—',cad=v('tarjCaducidad')||'—',prop=v('tarjPropósito')||'No especificado',hoy=new Date().toLocaleDateString('es-ES');
+  let masked='●●●● ●●●● ●●●● ●●●●';
+  if(raw.length===16){if(modo==='last4')masked=`●●●● ●●●● ●●●● ${raw.slice(12)}`;else if(modo==='first4')masked=`${raw.slice(0,4)} ●●●● ●●●● ●●●●`;else if(modo==='first6last4')masked=`${raw.slice(0,4)} ${raw.slice(4,6)}●● ●●●● ${raw.slice(12)}`;}
+  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:'Segoe UI',Arial,sans-serif;padding:30mm 25mm;font-size:12px;line-height:1.9;max-width:500px;margin:0 auto;}.t{font-size:17pt;font-weight:700;color:#C9A84C;margin-bottom:4px;}.s{font-size:10pt;color:#888;margin-bottom:22px;}.c{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid #e0d9cc;}.l{color:#888;}.val{font-weight:700;font-family:monospace;}.av{margin-top:22px;background:#fff5f5;border:2px solid #DC2626;border-radius:7px;padding:13px;font-size:10pt;color:#DC2626;font-weight:700;text-align:center;line-height:1.6;}@media print{@page{size:A4;margin:15mm;}}</style></head><body><div class="t">DATOS BANCARIOS PROTEGIDOS</div><div class="s">Generado el ${hoy}</div><div class="c"><span class="l">Titular</span><span class="val">${nombre}</span></div><div class="c"><span class="l">Banco</span><span class="val">${banco}</span></div><div class="c"><span class="l">Número</span><span class="val">${masked}</span></div><div class="c"><span class="l">Caducidad</span><span class="val">${cad}</span></div><div class="c"><span class="l">CVV</span><span class="val" style="color:#DC2626;">NO INCLUIDO</span></div><div class="av">⚠ USO EXCLUSIVO: ${prop.toUpperCase()}<br>PROHIBIDO PARA OTROS TRÁMITES<br>${hoy}</div><script>window.onload=()=>window.print()<\/script></body></html>`;
+  const w=window.open('','_blank');if(!w)return;w.document.write(html);w.document.close();showStatus('segStatus','✓ PDF generado','ok');
+}
+function copiarTarjetaTexto(){navigator.clipboard.writeText(document.getElementById('tarjetaAvisoTxt').innerText).then(()=>showStatus('segStatus','✓ Copiado','ok'));}
+function updateIbanPreview(){
+  const raw=v('ibanCompleto').replace(/\s/g,''),modo=v('ibanMostrar'),titular=v('ibanTitular')||'—',banco=v('ibanBanco')||'—',prop=v('ibanPropósito')||'—';
+  let show=raw||'—';
+  if(raw.length>=10){if(modo==='full')show=raw.replace(/(.{4})/g,'$1 ').trim();else if(modo==='last8')show=raw.slice(0,-8).replace(/./g,'●').replace(/(.{4})/g,'$1 ').trim()+' '+raw.slice(-8).replace(/(.{4})/g,'$1 ').trim();else show=raw.slice(0,4)+' '+raw.slice(4,8)+' ●●●● ●●●● ●●●● ●●●●';}
+  document.getElementById('ipTitular').textContent=titular;document.getElementById('ipBanco').textContent=banco;document.getElementById('ipIban').textContent=show;document.getElementById('ipPropósito').textContent=prop;
+}
+function copiarIban(){navigator.clipboard.writeText(document.getElementById('ipIban').textContent).then(()=>showStatus('segStatus','✓ IBAN copiado','ok'));}
+function generarIbanPdf(){
+  const titular=v('ibanTitular')||'—',banco=v('ibanBanco')||'—',iban=document.getElementById('ipIban').textContent,prop=v('ibanPropósito')||'No especificado',hoy=new Date().toLocaleDateString('es-ES');
+  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:'Segoe UI',Arial,sans-serif;padding:28mm 22mm;font-size:12px;line-height:1.9;max-width:500px;margin:0 auto;}.t{font-size:17pt;font-weight:700;color:#C9A84C;margin-bottom:4px;}.s{font-size:10pt;color:#888;margin-bottom:22px;}.c{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid #e0d9cc;}.l{color:#888;}.vl{font-weight:700;}.iv{font-family:monospace;font-size:13pt;font-weight:700;}.av{margin-top:22px;background:#fff5f5;border:2px solid #DC2626;border-radius:7px;padding:13px;font-size:10pt;color:#DC2626;font-weight:700;text-align:center;}@media print{@page{size:A4;margin:15mm;}}</style></head><body><div class="t">DATOS BANCARIOS — IBAN</div><div class="s">${hoy}</div><div class="c"><span class="l">Titular</span><span class="vl">${titular}</span></div><div class="c"><span class="l">Banco</span><span class="vl">${banco}</span></div><div class="c"><span class="l">IBAN</span><span class="iv">${iban}</span></div><div class="av">⚠ USO EXCLUSIVO: ${prop.toUpperCase()}<br>PROHIBIDO OTROS TRÁMITES · ${hoy}</div><script>window.onload=()=>window.print()<\/script></body></html>`;
+  const w=window.open('','_blank');if(!w)return;w.document.write(html);w.document.close();showStatus('segStatus','✓ PDF IBAN generado','ok');
+}
+function addRegistro(){const dest=v('regDestinatario').trim();if(!dest)return;registros.unshift({id:Date.now(),doc:v('regDocumento'),dest,fec:v('regFecha'),canal:v('regCanal'),prop:v('regPropósito'),estado:v('regEstado')});try{localStorage.setItem('fc_registros',JSON.stringify(registros));}catch(e){}setv('regDestinatario','');setv('regPropósito','');renderRegistros();}
+function renderRegistros(){const list=document.getElementById('registroList');if(!registros.length){list.innerHTML='<div style="font-size:10px;color:var(--text3);text-align:center;padding:12px;">Sin registros.</div>';return;}const col={ok:'var(--green)',sospechoso:'#D97706',estafa:'var(--red)'};list.innerHTML=registros.map(r=>`<div style="display:flex;align-items:center;gap:8px;padding:8px 11px;background:${r.estado==='estafa'?'#fff5f5':'var(--bg3)'};border:1px solid ${r.estado==='estafa'?'#fca5a5':'var(--border)'};border-radius:5px;font-size:10px;"><span>${r.estado==='estafa'?'🔴':r.estado==='sospechoso'?'⚠️':'📄'}</span><div style="flex:1;"><strong>${r.doc}</strong> → ${r.dest}<br><span style="font-size:9px;color:var(--text3);">${r.canal}${r.fec?' · '+new Date(r.fec).toLocaleDateString('es-ES'):''}${r.prop?' · '+r.prop:''}</span></div><span style="color:${col[r.estado]||'#555'};font-weight:700;font-size:9px;">${r.estado}</span><button style="background:none;border:none;color:var(--text3);cursor:pointer;" onclick="eliminarRegistro(${r.id})">✕</button></div>`).join('');}
+function eliminarRegistro(id){registros=registros.filter(r=>r.id!==id);try{localStorage.setItem('fc_registros',JSON.stringify(registros));}catch(e){}renderRegistros();}
+
+// ══════════════════════════════════════════════════════
+// FORMULARIOS
+// ══════════════════════════════════════════════════════
+function renderFormDatosAuto(){
+  const campos=[{label:'Nombre completo',id:'faNombre',val:(v('cvNombre')+' '+v('cvApellidos')).trim()},{label:'Teléfono',id:'faTel',val:v('cvTelefono')},{label:'Email',id:'faEmail',val:v('cvEmail')},{label:'Dirección',id:'faDireccion',val:v('cvDireccion')},{label:'Nacionalidad',id:'faNacion',val:v('cvNacionalidad')},{label:'Profesión',id:'faProf',val:v('cvProfesion')}];
+  const wrap=document.getElementById('formDatosAuto');if(!wrap)return;
+  wrap.innerHTML=campos.map(c=>`<div class="f-group"><label class="f-label">${c.label}</label><div class="voice-wrap"><input class="f-input" id="${c.id}" value="${c.val||''}" placeholder="${c.label}"><button class="voice-btn" onclick="startVoice('${c.id}',this)">🎤</button></div></div>`).join('');
+}
+function handleFormUpload(e){const file=e.target.files[0];if(!file)return;const r=new FileReader();r.onload=ev=>{formImg=new Image();formImg.crossOrigin='anonymous';formImg.onload=()=>{const canvas=document.getElementById('formCanvas');canvas.width=formImg.width;canvas.height=formImg.height;document.getElementById('formEditorCard').style.display='block';renderFormDatosAuto();buildCamposDisponibles();drawFormCanvas();showStatus('formStatus','✓ Formulario cargado','ok');};formImg.src=ev.target.result;};r.readAsDataURL(file);e.target.value='';}
+function buildCamposDisponibles(){const campos=[{label:'Nombre completo',key:'faNombre'},{label:'Teléfono',key:'faTel'},{label:'Email',key:'faEmail'},{label:'Dirección',key:'faDireccion'},{label:'Nacionalidad',key:'faNacion'},{label:'Profesión',key:'faProf'},{label:'Fecha hoy',key:'_fecha'},{label:'Firma',key:'_firma'}];const wrap=document.getElementById('camposDisponibles');wrap.innerHTML=campos.map(c=>`<button class="add-btn" style="text-align:left;padding:5px 9px;font-size:9.5px;" onclick="activarCampoParaColocar('${c.key}','${c.label}')">+ ${c.label}</button>`).join('');}
+function activarCampoParaColocar(key,label){campoActivo={key,label};showStatus('formStatus','🎯 Clic en el formulario donde va "'+label+'"','ok');}
+function addCampoCustom(){const label=v('campoCustomLabel').trim(),valor=v('campoCustomValor').trim();if(!label)return;campoActivo={key:'_custom',label,valor};}
+function getCampoValor(campo){if(campo.valor)return campo.valor;if(campo.key==='_fecha')return new Date().toLocaleDateString('es-ES');if(campo.key==='_firma')return (v('cvNombre')+' '+v('cvApellidos')).trim()||'Fátima Caldea';const el=document.getElementById(campo.key);return el?el.value:'';}
+document.addEventListener('DOMContentLoaded',()=>{
+  const canvas=document.getElementById('formCanvas');if(!canvas)return;
+  canvas.addEventListener('click',e=>{if(!formImg||!campoActivo)return;const rect=canvas.getBoundingClientRect();const sx=canvas.width/rect.width,sy=canvas.height/rect.height;const x=(e.clientX-rect.left)*sx,y=(e.clientY-rect.top)*sy;const valor=getCampoValor(campoActivo);formFields.push({key:campoActivo.key,label:campoActivo.label,valor,x,y,size:Math.max(Math.round(canvas.width*0.022),14),color:'#1a1a2e'});campoActivo=null;canvas.style.cursor='default';drawFormCanvas();showStatus('formStatus','✓ Campo colocado','ok');});
+  let dragging=null,offX=0,offY=0;
+  canvas.addEventListener('mousedown',e=>{if(campoActivo)return;const rect=canvas.getBoundingClientRect();const sx=canvas.width/rect.width,sy=canvas.height/rect.height;const mx=(e.clientX-rect.left)*sx,my=(e.clientY-rect.top)*sy;for(let i=formFields.length-1;i>=0;i--){const f=formFields[i];if(mx>=f.x-5&&mx<=f.x+f.valor.length*f.size*.6+5&&my>=f.y-f.size&&my<=f.y+5){dragging=i;offX=mx-f.x;offY=my-f.y;break;}}});
+  canvas.addEventListener('mousemove',e=>{if(dragging===null)return;const rect=canvas.getBoundingClientRect();const sx=canvas.width/rect.width,sy=canvas.height/rect.height;formFields[dragging].x=(e.clientX-rect.left)*sx-offX;formFields[dragging].y=(e.clientY-rect.top)*sy-offY;drawFormCanvas();});
+  canvas.addEventListener('mouseup',()=>{dragging=null;});
+});
+function drawFormCanvas(){const canvas=document.getElementById('formCanvas');if(!canvas||!formImg)return;const ctx=canvas.getContext('2d');ctx.clearRect(0,0,canvas.width,canvas.height);ctx.drawImage(formImg,0,0);formFields.forEach(f=>{ctx.font=`bold ${f.size}px Arial`;ctx.fillStyle=f.color;ctx.shadowColor='rgba(255,255,255,0.9)';ctx.shadowBlur=4;ctx.fillText(f.valor,f.x,f.y);ctx.shadowBlur=0;});}
+function limpiarFormCanvas(){formFields=[];drawFormCanvas();}
+function descargarFormulario(){if(!formImg)return;drawFormCanvas();const a=document.createElement('a');a.download=`formulario_rellenado_${Date.now()}.jpg`;a.href=document.getElementById('formCanvas').toDataURL('image/jpeg',0.95);a.click();}
+function imprimirFormulario(){if(!formImg)return;const url=document.getElementById('formCanvas').toDataURL('image/jpeg',0.95);const w=window.open('','_blank');w.document.write(`<!DOCTYPE html><html><head><style>body{margin:0;}img{width:100%;}@media print{@page{size:A4;margin:0;}}</style></head><body><img src="${url}"><script>window.onload=()=>window.print()<\/script></body></html>`);w.document.close();}
+function generarExcelPreview(){
+  const tipo=v('excelTipo');if(!tipo)return;
+  const nom=(v('cvNombre')+' '+v('cvApellidos')).trim()||'—',tel=v('cvTelefono')||'—',eml=v('cvEmail')||'—',dir=v('cvDireccion')||'—',nac=v('cvNacionalidad')||'—',prof=v('cvProfesion')||'—',hoy=new Date().toLocaleDateString('es-ES');
+  const tablas={datos_personales:[['CAMPO','VALOR'],['Nombre completo',nom],['Teléfono',tel],['Email',eml],['Dirección',dir],['Nacionalidad',nac],['Fecha',hoy]],candidatura:[['CAMPO','VALOR'],['Nombre y apellidos',nom],['Teléfono',tel],['Email',eml],['Domicilio',dir],['Nacionalidad',nac],['Puesto solicitado',prof],['Disponibilidad','Inmediata'],['Jornada','Completa / Parcial'],['Fecha',hoy]],sepe:[['DATOS',''],['Nombre y apellidos',nom],['DNI/NIE',''],['Teléfono',tel],['Email',eml],['Domicilio',dir],['Situación','Desempleo'],['IBAN',''],['Entidad bancaria','']],bolsa_empleo:[['SOLICITUD BOLSA EMPLEO',''],['Nombre',nom],['DNI/NIE',''],['Dirección',dir],['Teléfono',tel],['Email',eml],['Especialidad',prof],['Disponibilidad',''],['Fecha',hoy]],banco:[['DATOS BANCARIOS',''],['Titular',nom],['DNI/NIE',''],['Banco',''],['IBAN',''],['Propósito','Nómina'],['Fecha',hoy]]};
+  const rows=tablas[tipo]||tablas.datos_personales;const table=document.getElementById('excelPreview');if(!table)return;
+  table.innerHTML=rows.map((row,ri)=>`<tr style="background:${ri===0?'#C9A84C':ri%2===0?'#f8f7f4':'#fff'};"><td style="padding:6px 10px;border:1px solid #e0d9cc;font-size:10.5px;font-weight:${ri===0||row[1]===''?'700':'400'};color:${ri===0?'#fff':'var(--text)'};">${row[0]}</td><td style="padding:6px 10px;border:1px solid #e0d9cc;font-size:10.5px;">${row[1]}</td></tr>`).join('');
+}
+function descargarExcelCsv(){const tipo=v('excelTipo')||'datos';const rows=[...document.getElementById('excelPreview').querySelectorAll('tr')];const csv=rows.map(r=>[...r.querySelectorAll('td')].map(td=>'"'+td.textContent.trim()+'"').join(',')).join('\n');const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});const a=document.createElement('a');a.download=`formulario_${tipo}_${Date.now()}.csv`;a.href=URL.createObjectURL(blob);a.click();showStatus('formStatus','✓ CSV descargado','ok');}
+function copiarTablaExcel(){const rows=[...document.getElementById('excelPreview').querySelectorAll('tr')];const txt=rows.map(r=>[...r.querySelectorAll('td')].map(td=>td.textContent.trim()).join('\t')).join('\n');navigator.clipboard.writeText(txt).then(()=>showStatus('formStatus','✓ Tabla copiada — pega en Excel con Ctrl+V','ok'));}
+function imprimirExcel(){const html=document.getElementById('excelPreview').outerHTML;const w=window.open('','_blank');w.document.write(`<!DOCTYPE html><html><head><style>table{border-collapse:collapse;width:100%;}td{padding:6px 10px;border:1px solid #ccc;font-size:11px;}@media print{@page{size:A4;}}</style></head><body>${html}<script>window.onload=()=>window.print()<\/script></body></html>`);w.document.close();}
+
+// ══════════════════════════════════════════════════════
+// CONTRATOS
+// ══════════════════════════════════════════════════════
+function autoRellenarContratos(){
+  const nom=(v('cvNombre')+' '+v('cvApellidos')).trim(),tel=v('cvTelefono'),dir=v('cvDireccion'),hoy=new Date().toISOString().split('T')[0];
+  const set=(id,val)=>{const el=document.getElementById(id);if(el&&val&&!el.value)el.value=val;};
+  set('inquNombre',nom);set('inquTel',tel);set('autNombre',nom);set('declNombre',nom);set('declDomicilio',dir);
+  ['pisoInicio','pisoFechaFirma','autValidez','declFecha'].forEach(id=>set(id,hoy));
+}
+function updateContratoPreview(){
+  const arrN=v('arrNombre')||'[Propietario]',arrD=v('arrDni')||'[DNI]',arrDir=v('arrDireccion')||'[Dirección]',inqN=v('inquNombre')||'[Inquilino]',inqD=v('inquDni')||'[NIE]',inqT=v('inquTel')||'[Tel]',pDir=v('pisoDir')||'[Dirección piso]',renta=v('pisoRenta')||'___',fianza=v('pisoFianza')||'___',dur=v('pisoDuracion')||'1 año',ocup=v('pisoOcupantes')||'los firmantes',sum=v('pisoSuministros')||'según acuerdo',masc=v('pisoMascotas')||'No se permiten mascotas',clex=v('pisoClausulas')||'';
+  const inicio=v('pisoInicio')?new Date(v('pisoInicio')).toLocaleDateString('es-ES'):'___';
+  const firma=v('pisoFechaFirma')?new Date(v('pisoFechaFirma')).toLocaleDateString('es-ES'):'___';
+  const html=`<div style="text-align:center;margin-bottom:14px;"><strong style="font-size:13px;">CONTRATO DE ARRENDAMIENTO DE VIVIENDA</strong><br><span style="font-size:9px;color:#888;">Ley 29/1994 de Arrendamientos Urbanos (LAU)</span></div><p>En <strong>${firma}</strong>, reunidas las partes:</p><br><p><strong>ARRENDADOR:</strong> ${arrN}, DNI/NIE ${arrD}, domicilio en ${arrDir}.</p><br><p><strong>ARRENDATARIO:</strong> ${inqN}, NIE/DNI ${inqD}, teléfono ${inqT}.</p><br><p><strong>PRIMERA — OBJETO:</strong> Inmueble en ${pDir}, uso exclusivo de vivienda.</p><p><strong>SEGUNDA — DURACIÓN:</strong> ${dur}, desde el ${inicio}.</p><p><strong>TERCERA — RENTA:</strong> ${renta} €/mes.</p><p><strong>CUARTA — FIANZA:</strong> ${fianza} €.</p><p><strong>QUINTA — OCUPANTES:</strong> ${ocup}.</p><p><strong>SEXTA — SUMINISTROS:</strong> ${sum}.</p><p><strong>SÉPTIMA — MASCOTAS:</strong> ${masc}.</p><p><strong>OCTAVA — CONSERVACIÓN:</strong> El arrendatario se obliga a conservar la vivienda en buen estado.</p><p><strong>NOVENA — PROHIBICIONES:</strong> Queda prohibida la subarrendación sin consentimiento.</p>${clex?`<p><strong>CLÁUSULAS ADICIONALES:</strong> ${clex}</p>`:''}<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:20px;"><div style="text-align:center;"><div style="border-top:1px solid #333;padding-top:7px;margin-top:36px;font-size:9.5px;"><strong>ARRENDADOR</strong><br>${arrN}</div></div><div style="text-align:center;"><div style="border-top:1px solid #333;padding-top:7px;margin-top:36px;font-size:9.5px;"><strong>ARRENDATARIO</strong><br>${inqN}</div></div></div>`;
+  const card=document.getElementById('contratoPreviewCard'),cont=document.getElementById('contratoPreviewContent');if(card)card.style.display='block';if(cont)cont.innerHTML=html;
+}
+function generarContratoAlquilerPdf(){updateContratoPreview();const cont=document.getElementById('contratoPreviewContent')?.innerHTML;if(!cont)return;const css=`body{font-family:'Segoe UI',Arial,sans-serif;padding:25mm 20mm;font-size:11px;line-height:1.8;max-width:680px;margin:0 auto;}p{margin-bottom:7px;}@media print{@page{size:A4;margin:18mm;}}`;const w=window.open('','_blank');if(!w)return;w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><style>${css}</style></head><body>${cont}<script>window.onload=()=>window.print()<\/script></body></html>`);w.document.close();showStatus('contratoStatus','✓ Contrato generado','ok');}
+function generarAutorizacionPdf(){
+  const nom=v('autNombre')||'—',dni=v('autDni')||'—',aut=v('autAutorizado')||'—',autD=v('autAutorizadoDni')||'—',tram=v('autTramite')||'—',val=v('autValidez')?new Date(v('autValidez')).toLocaleDateString('es-ES'):'—',ciu=v('autCiudad')||'—',hoy=new Date().toLocaleDateString('es-ES');
+  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:'Segoe UI',Arial,sans-serif;padding:28mm 22mm;font-size:12px;line-height:1.9;max-width:640px;margin:0 auto;}.t{font-size:16pt;font-weight:700;text-align:center;margin-bottom:20px;text-transform:uppercase;}.fw{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:46px;}.fi{text-align:center;border-top:1px solid #1a1a1a;padding-top:7px;margin-top:46px;font-size:9.5px;}@media print{@page{size:A4;margin:20mm;}}</style></head><body><div class="t">AUTORIZACIÓN</div><p>D./Dña. <strong>${nom}</strong>, con DNI/NIE/Cédula <strong>${dni}</strong>, <strong>AUTORIZA</strong> a D./Dña. <strong>${aut}</strong>, con DNI/NIE <strong>${autD}</strong>,</p><p>para realizar: <strong>${tram}</strong></p><p>Válida hasta: <strong>${val}</strong></p><p>En ${ciu}, a ${hoy}</p><div class="fw"><div class="fi"><strong>AUTORIZANTE</strong><br>${nom}</div><div class="fi"><strong>AUTORIZADO/A</strong><br>${aut}</div></div><script>window.onload=()=>window.print()<\/script></body></html>`;
+  const w=window.open('','_blank');if(!w)return;w.document.write(html);w.document.close();showStatus('contratoStatus','✓ Autorización generada','ok');
+}
+function generarDeclaracionAuto(){document.getElementById('declTexto').value=`Que todos los datos aportados son verídicos y exactos, asumiendo la responsabilidad de cualquier inexactitud.\n\nQue conozco y acepto las condiciones establecidas.\n\nQue me comprometo a comunicar cualquier variación de los datos declarados.`;}
+function generarDeclaracionPdf(){
+  const nom=v('declNombre')||'—',dni=v('declDni')||'—',dom=v('declDomicilio')||'—',dir=v('declDirigido')||'el organismo',txt=v('declTexto')||'—',ciu=v('declCiudad')||'—',fec=v('declFecha')?new Date(v('declFecha')).toLocaleDateString('es-ES'):new Date().toLocaleDateString('es-ES');
+  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:'Segoe UI',Arial,sans-serif;padding:26mm 20mm;font-size:12px;line-height:1.9;max-width:640px;margin:0 auto;}.t{font-size:15pt;font-weight:700;text-align:center;margin-bottom:18px;text-transform:uppercase;}.fi{text-align:center;max-width:200px;margin:50px auto 0;border-top:1px solid #1a1a1a;padding-top:7px;font-size:9.5px;}@media print{@page{size:A4;margin:18mm;}}</style></head><body><div class="t">DECLARACIÓN RESPONSABLE</div><p><strong>${nom}</strong> · DNI/NIE: <strong>${dni}</strong> · Domicilio: <strong>${dom}</strong></p><p>Ante <strong>${dir}</strong>, <strong>DECLARO RESPONSABLEMENTE:</strong></p><p style="background:#f8f7f4;border-left:3px solid #C9A84C;padding:10px 14px;margin:12px 0;white-space:pre-wrap;">${txt}</p><p>En <strong>${ciu}</strong>, a <strong>${fec}</strong></p><div class="fi">Fdo.: ${nom}</div><script>window.onload=()=>window.print()<\/script></body></html>`;
+  const w=window.open('','_blank');if(!w)return;w.document.write(html);w.document.close();showStatus('contratoStatus','✓ Declaración generada','ok');
+}
+function generarInstanciaGeneral(){const nom=(v('cvNombre')+' '+v('cvApellidos')).trim()||'[Nombre]',tel=v('cvTelefono')||'',eml=v('cvEmail')||'',hoy=new Date().toLocaleDateString('es-ES');const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:'Segoe UI',Arial,sans-serif;padding:26mm 20mm;font-size:12px;line-height:2;max-width:640px;margin:0 auto;}.t{font-size:15pt;font-weight:700;text-align:center;margin-bottom:16px;}.box{min-height:100px;border:1px solid #ccc;padding:10px;margin:10px 0;border-radius:4px;}.fi{text-align:center;max-width:200px;margin:46px auto 0;border-top:1px solid #1a1a1a;padding-top:7px;font-size:9.5px;}@media print{@page{size:A4;margin:18mm;}}</style></head><body><div class="t">INSTANCIA GENERAL</div><p>A: ___________________________________________________</p><p>Ref: __________________________________________________</p><p><strong>Solicitante:</strong> ${nom} · Tel: ${tel} · Email: ${eml}</p><p><strong>EXPONE:</strong></p><div class="box"></div><p><strong>SOLICITA:</strong></p><div class="box"></div><p>En _____________, a ${hoy}</p><div class="fi">Fdo.: ${nom}</div><script>window.onload=()=>window.print()<\/script></body></html>`;const w=window.open('','_blank');if(!w)return;w.document.write(html);w.document.close();}
+function generarEmpadronamientoPdf(){const nom=(v('cvNombre')+' '+v('cvApellidos')).trim()||'[Nombre]',hoy=new Date().toLocaleDateString('es-ES');const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:'Segoe UI',Arial,sans-serif;padding:24mm 18mm;font-size:11px;line-height:1.9;}.t{font-size:14pt;font-weight:700;text-align:center;margin-bottom:14px;}table{width:100%;border-collapse:collapse;margin:12px 0;}td{padding:7px 10px;border:1px solid #ccc;}td:first-child{background:#f8f7f4;font-weight:700;width:180px;}.fi{text-align:center;max-width:200px;margin:44px auto 0;border-top:1px solid #1a1a1a;padding-top:7px;font-size:9px;}@media print{@page{size:A4;margin:16mm;}}</style></head><body><div class="t">SOLICITUD DE EMPADRONAMIENTO</div><table><tr><td>Nombre y apellidos</td><td>${nom}</td></tr><tr><td>Fecha nacimiento</td><td></td></tr><tr><td>Nacionalidad</td><td>${v('cvNacionalidad')||''}</td></tr><tr><td>NIE / DNI / Pasaporte</td><td></td></tr><tr><td>Dirección a empadronar</td><td>${v('cvDireccion')||''}</td></tr><tr><td>Municipio</td><td></td></tr><tr><td>Código postal</td><td></td></tr><tr><td>Teléfono</td><td>${v('cvTelefono')||''}</td></tr><tr><td>Email</td><td>${v('cvEmail')||''}</td></tr></table><p>El/la abajo firmante solicita inscripción en el Padrón Municipal.</p><p>En _____________, a ${hoy}</p><div class="fi">Fdo.: ${nom}</div><script>window.onload=()=>window.print()<\/script></body></html>`;const w=window.open('','_blank');if(!w)return;w.document.write(html);w.document.close();}
+function generarAutMenorPdf(){const nom=(v('cvNombre')+' '+v('cvApellidos')).trim()||'[Nombre]',hoy=new Date().toLocaleDateString('es-ES');const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:'Segoe UI',Arial,sans-serif;padding:26mm 20mm;font-size:12px;line-height:1.9;max-width:640px;margin:0 auto;}.t{font-size:15pt;font-weight:700;text-align:center;margin-bottom:18px;}.box{min-height:80px;border:1px solid #ccc;padding:10px;margin:10px 0;}.fw{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:44px;}.fi{text-align:center;border-top:1px solid #1a1a1a;padding-top:7px;margin-top:44px;font-size:9.5px;}@media print{@page{size:A4;margin:18mm;}}</style></head><body><div class="t">AUTORIZACIÓN PARA MENOR DE EDAD</div><p>D./Dña. <strong>${nom}</strong>, DNI/NIE _____________, tutor/a legal de:</p><p><strong>Menor:</strong> ___________________________________ Nacimiento: ___________</p><p><strong>AUTORIZA</strong> para:</p><div class="box"></div><p>Tel. contacto: <strong>${v('cvTelefono')||'___'}</strong></p><p>Autorizo atención médica de urgencia si fuera necesario.</p><p>En _____________, a ${hoy}</p><div class="fw"><div class="fi"><strong>PADRE/MADRE/TUTOR</strong><br>${nom}</div><div class="fi"><strong>SELLO/RECIBÍ</strong></div></div><script>window.onload=()=>window.print()<\/script></body></html>`;const w=window.open('','_blank');if(!w)return;w.document.write(html);w.document.close();}
+function generarReclamacionPdf(){const nom=(v('cvNombre')+' '+v('cvApellidos')).trim()||'[Nombre]',hoy=new Date().toLocaleDateString('es-ES');const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:'Segoe UI',Arial,sans-serif;padding:26mm 20mm;font-size:12px;line-height:1.9;max-width:640px;margin:0 auto;}.t{font-size:15pt;font-weight:700;text-align:center;margin-bottom:16px;text-transform:uppercase;}.box{min-height:90px;border:1px solid #ccc;padding:10px;margin:10px 0;border-radius:4px;}.fi{text-align:center;max-width:200px;margin:46px auto 0;border-top:1px solid #1a1a1a;padding-top:7px;font-size:9.5px;}@media print{@page{size:A4;margin:18mm;}}</style></head><body><div class="t">ESCRITO DE RECLAMACIÓN</div><p>A: ___________________________________________________</p><p><strong>${nom}</strong>, NIE/DNI _____________, domicilio: <strong>${v('cvDireccion')||'___'}</strong></p><p><strong>EXPONE:</strong></p><div class="box"></div><p><strong>HECHOS:</strong></p><div class="box"></div><p><strong>SOLICITA:</strong></p><div class="box"></div><p>En _____________, a ${hoy}</p><div class="fi">Fdo.: ${nom}</div><script>window.onload=()=>window.print()<\/script></body></html>`;const w=window.open('','_blank');if(!w)return;w.document.write(html);w.document.close();}
+
+// ══════════════════════════════════════════════════════
+// PLANTILLAS COMPLETAS
+// ══════════════════════════════════════════════════════
+function selSector(btn,sector){document.querySelectorAll('#sectorList .plant-sector-btn').forEach(b=>b.classList.remove('act'));btn.classList.add('act');sectorActual=sector;generarPlantillaTrabajo();}
+function selBanco(btn,tipo){btn.closest('.card').querySelectorAll('.plant-sector-btn').forEach(b=>b.classList.remove('act'));btn.classList.add('act');bancoActual=tipo;generarPlantillaBanco();}
+function generarPlantillaTrabajo(){
+  const nom=(v('cvNombre')+' '+v('cvApellidos')).trim()||'[Tu nombre]';
+  const prof=v('cvProfesion')||'',tel=v('cvTelefono')||'',eml=v('cvEmail')||'';
+  const emp=v('plantEmpresa')||'[Empresa]',pue=v('plantPuesto')||'[Puesto]';
+  const tono=v('plantTono')||'formal';
+  const fec=v('plantFecha')?new Date(v('plantFecha')).toLocaleDateString('es-ES'):new Date().toLocaleDateString('es-ES');
+  const perfiles={peluqueria:{exp:'más de 15 años en peluquería y colorimetría profesional',skills:'técnicas de colorimetría avanzada, corte, peinado, tratamientos capilares y atención al cliente',motivo:'mi pasión por la belleza y el cuidado personal'},cuidadora:{exp:'experiencia en cuidado de personas mayores y apoyo en actividades diarias',skills:'empatía, paciencia, primeros auxilios básicos y gestión del hogar',motivo:'mi vocación de servicio y cuidado hacia las personas'},hosteleria:{exp:'experiencia en hostelería, atención al cliente y servicio en sala',skills:'atención al cliente, trabajo en equipo y organización en entornos de alta demanda',motivo:'mi dinamismo y capacidad de trabajo bajo presión'},limpieza:{exp:'experiencia en limpieza profesional de hogares y espacios comerciales',skills:'organización, discreción, manejo de productos de limpieza y atención al detalle',motivo:'mi compromiso con el orden y la higiene'},comercio:{exp:'experiencia en atención al cliente, ventas y gestión de punto de venta',skills:'orientación al cliente, técnicas de venta y cobro',motivo:'mi habilidad para conectar con los clientes'},fitness:{exp:'experiencia como instructora de fitness y entrenamiento personalizado',skills:'diseño de planes de entrenamiento, motivación y nutrición básica',motivo:'mi pasión por el deporte y el bienestar'},admin:{exp:'experiencia en administración, gestión documental y atención al público',skills:'manejo de herramientas ofimáticas, organización y comunicación',motivo:'mi capacidad organizativa y atención al detalle'},general:{exp:'experiencia laboral en distintos sectores con alta adaptabilidad',skills:'responsabilidad, puntualidad y disposición para aprender',motivo:'mi motivación y disponibilidad inmediata'}};
+  const p=perfiles[sectorActual]||perfiles.general;
+  const saludos={formal:'Estimado/a equipo de Recursos Humanos',cercano:'Hola, buenos días',urgente:'Estimado/a responsable de selección'};
+  const cierres={formal:'Quedo a su disposición para ampliar información y concertar una entrevista.\n\nAtentamente,',cercano:'Estoy disponible cuando mejor les venga. ¡Muchas gracias!\n\nUn saludo,',urgente:'Estoy disponible para incorporarme de forma inmediata.\n\nAtentamente,'};
+  const carta=`${fec}\n\n${saludos[tono]} de ${emp}:\n\nMe dirijo a ustedes para presentar mi candidatura al puesto de ${pue}.\n\nSoy ${nom}${prof?' — '+prof:''}, con ${p.exp}. He desarrollado competencias en ${p.skills}.\n\nMe motiva esta oportunidad por ${p.motivo} y considero que mi perfil encaja con las necesidades de ${emp}.\n\n${tel||eml?`Contacto: ${tel?'📞 '+tel+' ':''} ${eml?'✉️ '+eml:''}\n\n`:''}\n${cierres[tono]}\n\n${nom}`;
+  const ta=document.getElementById('plantTexto');if(ta)ta.value=carta;
+  const asunto=`Candidatura ${pue} — ${nom}`;
+  const asEl=document.getElementById('plantEmailAsunto');if(asEl)asEl.textContent=asunto;
+  const wa=`Hola, buenos días 🙂\n\nMe llamo ${nom} y me pongo en contacto por el puesto de ${pue} en ${emp}.\n\nTengo ${p.exp} y me gustaría enviarles mi currículum.\n\nMuchas gracias 🙏`;
+  const waEl=document.getElementById('plantWa');if(waEl)waEl.textContent=wa;
+}
+function exportarPlantillaPdf(){
+  const texto=v('plantTexto');if(!texto.trim()){showStatus('plantStatus','⚠ Genera primero una carta','err');return;}
+  const nom=(v('cvNombre')+' '+v('cvApellidos')).trim()||'Fátima Caldea';
+  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:'Segoe UI',Arial,sans-serif;padding:28mm 22mm;font-size:12px;line-height:1.9;max-width:680px;margin:0 auto;white-space:pre-wrap;}.hdr{border-bottom:3px solid #C9A84C;padding-bottom:10px;margin-bottom:20px;font-size:14pt;font-weight:700;color:#C9A84C;}@media print{@page{size:A4;margin:20mm;}}</style></head><body><div class="hdr">${nom}</div>${texto}<script>window.onload=()=>window.print()<\/script></body></html>`;
+  const w=window.open('','_blank');if(!w)return;w.document.write(html);w.document.close();showStatus('plantStatus','✓ PDF generado','ok');
+}
+function copiarPlantilla(){const ta=document.getElementById('plantTexto');if(!ta)return;navigator.clipboard.writeText(ta.value).then(()=>showStatus('plantStatus','✓ Carta copiada','ok'));}
+function copiarAsunto(){const el=document.getElementById('plantEmailAsunto');if(!el)return;navigator.clipboard.writeText(el.textContent).then(()=>showStatus('plantStatus','✓ Asunto copiado','ok'));}
+function copiarWaPlant(){const el=document.getElementById('plantWa');if(!el)return;navigator.clipboard.writeText(el.textContent).then(()=>showStatus('plantStatus','✓ WhatsApp copiado','ok'));}
+function generarTramite(tipo){
+  const nom=(v('cvNombre')+' '+v('cvApellidos')).trim()||'[Nombre]';
+  const dir=v('cvDireccion')||'[Dirección]',tel=v('cvTelefono')||'',eml=v('cvEmail')||'',nac=v('cvNacionalidad')||'venezolana';
+  const hoy=new Date().toLocaleDateString('es-ES');
+  const textos={empadronamiento:{tit:'SOLICITUD DE INSCRIPCIÓN EN EL PADRÓN MUNICIPAL',cuerpo:`${nom}, de nacionalidad ${nac}, con domicilio en ${dir},\n\nSOLICITA su inscripción en el Padrón Municipal de habitantes, aportando la documentación requerida.\n\nEn _____________, a ${hoy}\n\nFdo.: ${nom}\n${tel} · ${eml}`},nie_renovacion:{tit:'SOLICITUD DE RENOVACIÓN DE AUTORIZACIÓN DE RESIDENCIA',cuerpo:`${nom}, con NIE _____________, domiciliada en ${dir},\n\nSOLICITA la renovación de su autorización de residencia, manifestando el cumplimiento de los requisitos exigidos y aportando la documentación que se adjunta.\n\nEn _____________, a ${hoy}\n\nFdo.: ${nom}`},arraigo:{tit:'SOLICITUD DE AUTORIZACIÓN DE RESIDENCIA POR ARRAIGO SOCIAL',cuerpo:`${nom}, de nacionalidad ${nac}, con domicilio en ${dir},\n\nSOLICITA autorización de residencia por arraigo social, acreditando permanencia continuada en España de al menos 3 años y vínculos de integración.\n\nEn _____________, a ${hoy}\n\nFdo.: ${nom}`},sepe_prestacion:{tit:'SOLICITUD DE PRESTACIÓN POR DESEMPLEO — SEPE',cuerpo:`${nom}, con domicilio en ${dir}, teléfono ${tel},\n\nSOLICITA el reconocimiento de la prestación contributiva por desempleo, habiendo finalizado mi última relación laboral el _____________ por causa de _____________.\n\nEn _____________, a ${hoy}\n\nFdo.: ${nom}`},cita_medica:{tit:'SOLICITUD DE TARJETA SANITARIA INDIVIDUAL',cuerpo:`${nom}, de nacionalidad ${nac}, con domicilio en ${dir},\n\nSOLICITA la expedición de Tarjeta Sanitaria Individual, aportando NIE/residencia en vigor y empadronamiento.\n\nEn _____________, a ${hoy}\n\nFdo.: ${nom}\nTeléfono: ${tel}`},autonomo:{tit:'PRESENTACIÓN PROFESIONAL — ALTA DE ACTIVIDAD AUTÓNOMA',cuerpo:`${nom}, con domicilio profesional en ${dir},\n\nComunica el inicio de actividad profesional como autónoma en el sector de _____________, con el CNAE _____________.\n\nEn _____________, a ${hoy}\n\nFdo.: ${nom}\n${tel} · ${eml}`},apostilla_solicitud:{tit:'SOLICITUD DE APOSTILLA DE LA HAYA — MPPRE VENEZUELA',cuerpo:`${nom}, titular de la Cédula de Identidad Nº _____________,\n\nSOLICITA ante el MPPRE la apostilla del siguiente documento:\n\nTipo: _____________\nEmitido por: _____________\nFecha de emisión: _____________\n\nPara su uso en: España\n\nEn Caracas, a ${hoy}\n\nFdo.: ${nom}`},poder_notarial:{tit:'PODER NOTARIAL GENERAL — VENEZUELA',cuerpo:`Yo, ${nom}, mayor de edad, titular de la Cédula Nº _____________,\n\nOTORGO poder general amplio a: _____________  Cédula Nº _____________,\n\npara que en mi nombre realice toda clase de actos y gestiones ante cualquier organismo en la República Bolivariana de Venezuela.\n\nEn _____________, a ${hoy}\n\nFdo.: ${nom}`},carta_familiar:{tit:'DECLARACIÓN DE SOSTENIMIENTO FAMILIAR',cuerpo:`Yo, ${nom}, con NIE _____________, residente en ${dir}, España,\n\nDECLARO que proporciono apoyo económico mensual a mi familia en Venezuela, destinado a cubrir necesidades básicas de alimentación, vivienda y salud.\n\nEn _____________, a ${hoy}\n\nFdo.: ${nom}\n${tel}`},consulado_cita:{tit:'SOLICITUD DE CITA CONSULAR — CONSULADO DE VENEZUELA EN ESPAÑA',cuerpo:`${nom}, titular de la Cédula Nº _____________ / Pasaporte Nº _____________,\n\nSOLICITA cita en el Consulado General de Venezuela en _____________ para realizar el trámite de: _____________.\n\nTeléfono: ${tel} · Email: ${eml}\n\nEn _____________, a ${hoy}\n\nFdo.: ${nom}`},remesa_justificacion:{tit:'CARTA DE JUSTIFICACIÓN DE ENVÍO DE REMESAS',cuerpo:`${nom}, con NIE _____________, domiciliada en ${dir},\n\nCOMUNICA que realiza envíos periódicos de dinero a Venezuela con carácter familiar y de sostenimiento, no constituyendo actividad comercial ni lucrativa.\n\nEn _____________, a ${hoy}\n\nFdo.: ${nom}`},declaracion_bienes:{tit:'DECLARACIÓN DE BIENES EN EL EXTRANJERO (VENEZUELA)',cuerpo:`Yo, ${nom}, con NIE _____________, domiciliada en España,\n\nDECLARO que poseo los siguientes bienes en Venezuela:\n\n_____________ (tipo de bien, localización, valor aproximado)\n\nEsta declaración se emite a efectos de cumplimiento de obligaciones documentales ante organismos españoles.\n\nEn _____________, a ${hoy}\n\nFdo.: ${nom}`}};
+  const doc=textos[tipo];if(!doc){showStatus('plantStatus','⚠ Trámite no encontrado','err');return;}
+  const css=`body{font-family:'Segoe UI',Arial,sans-serif;padding:26mm 20mm;font-size:12px;line-height:1.9;max-width:680px;margin:0 auto;}.tit{font-size:13pt;font-weight:700;text-align:center;color:#C9A84C;border-bottom:3px solid #C9A84C;padding-bottom:8px;margin-bottom:20px;}.cuerpo{white-space:pre-wrap;line-height:2;}@media print{@page{size:A4;margin:20mm;}}`;
+  const w=window.open('','_blank');if(!w)return;
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><style>${css}</style></head><body><div class="tit">${doc.tit}</div><div class="cuerpo">${doc.cuerpo}</div><script>window.onload=()=>window.print()<\/script></body></html>`);
+  w.document.close();showStatus('plantStatus','✓ PDF generado','ok');
+}
+function generarQueja(tipo){
+  const nom=(v('cvNombre')+' '+v('cvApellidos')).trim()||'[Nombre]';
+  const dir=v('cvDireccion')||'[Dirección]',tel=v('cvTelefono')||'';
+  const hoy=new Date().toLocaleDateString('es-ES');
+  const textos={servicios_sociales:{tit:'SOLICITUD DE AYUDA A SERVICIOS SOCIALES MUNICIPALES',cuerpo:`${nom}, con domicilio en ${dir}, teléfono ${tel},\n\nSOLICITA valoración y acceso a ayudas económicas / alimentarias / de emergencia social.\n\nAdjunto documentación acreditativa de la situación socioeconómica.\n\nEn _____________, a ${hoy}\n\nFdo.: ${nom}`},renta_minima:{tit:'SOLICITUD DE INGRESO MÍNIMO VITAL — SEGURIDAD SOCIAL',cuerpo:`${nom}, con domicilio en ${dir}, NIE/DNI _____________,\n\nSOLICITA el reconocimiento del Ingreso Mínimo Vital conforme al RDL 20/2020.\n\nPersonas en la unidad de convivencia: _____\nIngresos mensuales aproximados: _____ €\n\nAdjunto: NIE, empadronamiento, extracto bancario de los últimos 3 meses.\n\nEn _____________, a ${hoy}\n\nFdo.: ${nom}`},queja_empresa:{tit:'ESCRITO DE RECLAMACIÓN FORMAL',cuerpo:`${nom}, con domicilio en ${dir},\n\nEXPONE que con fecha _____________ se produjo la siguiente incidencia:\n_____________\n\nQue a pesar de las reclamaciones previas, no se ha procedido a su resolución.\n\nSOLICITA: _____________\n\nEn caso de no atender esta reclamación en 15 días, se acudirá al organismo competente.\n\nEn _____________, a ${hoy}\n\nFdo.: ${nom}\n${tel}`},ayuda_alquiler:{tit:'SOLICITUD DE AYUDA AL ALQUILER — PLAN ESTATAL DE VIVIENDA',cuerpo:`${nom}, con domicilio en ${dir}, NIE/DNI _____________,\n\nSOLICITA acogerse a las ayudas al alquiler del Plan Estatal de Vivienda, siendo arrendataria del inmueble en: _____________\n\nRenta mensual: _____ €   Ingresos mensuales: _____ €\n\nAdjunto: contrato de alquiler, recibos, DNI/NIE, empadronamiento.\n\nEn _____________, a ${hoy}\n\nFdo.: ${nom}`},beca_comedor:{tit:'SOLICITUD DE BECA DE COMEDOR / AYUDA DE LIBROS ESCOLARES',cuerpo:`${nom}, madre/tutora de _____________  (alumno/a del centro _____________),\n\nSOLICITA concesión de beca de comedor / libros para el curso _____________, en atención a la situación económica familiar.\n\nIngresos familiares anuales: _____ €\n\nAdjunto: libro de familia, NIE, empadronamiento, declaración de renta.\n\nEn _____________, a ${hoy}\n\nFdo.: ${nom}\n${tel}`},denuncia_laboral:{tit:'DENUNCIA ANTE LA INSPECCIÓN DE TRABAJO Y SEGURIDAD SOCIAL',cuerpo:`${nom}, con domicilio en ${dir}, teléfono ${tel},\n\nDENUNCIA ante la Inspección de Trabajo las siguientes irregularidades en la empresa _____________:\n\n_____________\n\nHechos ocurridos entre el _____________ y el _____________.\n\nSolicita la correspondiente actuación inspectora.\n\nEn _____________, a ${hoy}\n\nFdo.: ${nom}`}};
+  const doc=textos[tipo];if(!doc){showStatus('plantStatus','⚠ Tipo no encontrado','err');return;}
+  const css=`body{font-family:'Segoe UI',Arial,sans-serif;padding:26mm 20mm;font-size:12px;line-height:1.9;max-width:680px;margin:0 auto;}.tit{font-size:13pt;font-weight:700;text-align:center;color:#C9A84C;border-bottom:3px solid #C9A84C;padding-bottom:8px;margin-bottom:20px;}.cuerpo{white-space:pre-wrap;line-height:2;}@media print{@page{size:A4;margin:20mm;}}`;
+  const w=window.open('','_blank');if(!w)return;
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><style>${css}</style></head><body><div class="tit">${doc.tit}</div><div class="cuerpo">${doc.cuerpo}</div><script>window.onload=()=>window.print()<\/script></body></html>`);
+  w.document.close();showStatus('plantStatus','✓ PDF generado','ok');
+}
+function generarPlantillaBanco(){
+  const nom=(v('cvNombre')+' '+v('cvApellidos')).trim()||'[Tu nombre]';
+  const dir=v('cvDireccion')||'',tel=v('cvTelefono')||'';
+  const banco=v('bancoNombre')||'[Entidad bancaria]',importe=v('bancoImporte')||'[importe]',prop=v('bancoPropósito')||'[propósito]';
+  const hoy=new Date().toLocaleDateString('es-ES');
+  const textos={credito_personal:`${hoy}\n\nEstimado/a equipo de ${banco}:\n\nMe dirijo a ustedes para solicitar un crédito personal por importe de ${importe}, destinado a: ${prop}.\n\nCuento con ingresos regulares que me permiten hacer frente a las cuotas. Adjunto NIE/DNI, justificante de ingresos y extracto bancario de los últimos 3 meses.\n\nAtentamente,\n${nom}\n${tel}`,hipoteca:`${hoy}\n\nEstimado/a equipo de ${banco}:\n\nSolicito información y valoración de préstamo hipotecario para adquisición de vivienda habitual.\n\nImporte solicitado: ${importe}\nDestino: ${prop}\n\nIngresos mensuales: _____ €\nSituación laboral: _____________\nAportación propia: _____ €\n\nAtentamente,\n${nom}\n${tel}`,cuenta_bancaria:`${hoy}\n\nEstimado/a equipo de ${banco}:\n\nSolicito la apertura de cuenta bancaria, aportando NIE/DNI en vigor y justificante de domicilio.\n\nUso previsto: ${prop}\n\nAtentamente,\n${nom}\n${dir}\n${tel}`,microcredito:`${hoy}\n\nEstimado/a equipo de ${banco}:\n\nSolicito acceso a microcrédito / línea ICO por importe de ${importe} para: ${prop}.\n\nActividad profesional: _____________ (autónoma)\nFecha de inicio de actividad: _____________\n\nAdjunto plan de negocio y documentación acreditativa.\n\nAtentamente,\n${nom}\n${tel}`,renegociacion:`${hoy}\n\nEstimado/a equipo de ${banco}:\n\nSolicito una renegociación de las condiciones de mi préstamo/deuda actual, ante la siguiente situación:\n\n_____________\n\nPropuesta: reducción de cuota mensual / ampliación de plazo / período de carencia de _____ meses.\n\nAtentamente,\n${nom}\n${tel}`};
+  const ta=document.getElementById('bancoTexto');if(ta)ta.value=textos[bancoActual]||textos.credito_personal;
+}
+function exportarBancoPdf(){
+  const texto=v('bancoTexto');if(!texto.trim()){showStatus('plantStatus','⚠ Genera primero la carta','err');return;}
+  const nom=(v('cvNombre')+' '+v('cvApellidos')).trim()||'Fátima Caldea';
+  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:'Segoe UI',Arial,sans-serif;padding:28mm 22mm;font-size:12px;line-height:1.9;max-width:680px;margin:0 auto;white-space:pre-wrap;}.hdr{border-bottom:3px solid #C9A84C;padding-bottom:10px;margin-bottom:20px;font-size:14pt;font-weight:700;color:#C9A84C;}@media print{@page{size:A4;margin:20mm;}}</style></head><body><div class="hdr">${nom}</div>${texto}<script>window.onload=()=>window.print()<\/script></body></html>`;
+  const w=window.open('','_blank');if(!w)return;w.document.write(html);w.document.close();showStatus('plantStatus','✓ PDF bancario generado','ok');
+}
+function copiarBanco(){const ta=document.getElementById('bancoTexto');if(!ta)return;navigator.clipboard.writeText(ta.value).then(()=>showStatus('plantStatus','✓ Carta bancaria copiada','ok'));}
+
+// ══════════════════════════════════════════════════════
+// UTILIDADES
+// ══════════════════════════════════════════════════════
+function showStatus(id,msg,type='ok'){const el=document.getElementById(id);if(!el)return;el.textContent=msg;el.className='status-bar visible'+(type==='err'?' err':'');setTimeout(()=>el.classList.remove('visible'),4000);}
+</script>
+</body>
+</html>

@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FÁTIMA CALDEA — SISTEMA LEGAL</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--gold:#C9A84C;--bg:#f5f4f0;--bg2:#fff;--bg3:#f0ede6;--text:#1a1a1a;--text2:#555;--text3:#888;--border:#e0d9cc;--green:#27AE60;--blue:#2563EB;--red:#DC2626;--shadow:0 2px 12px rgba(0,0,0,.08);}
+body{background:var(--bg);font-family:'Segoe UI',Arial,sans-serif;color:var(--text);min-height:100vh;}
+
+/* LOGIN */
+#loginScreen{position:fixed;inset:0;background:linear-gradient(135deg,#1a1a1a,#2d2d2d);display:flex;align-items:center;justify-content:center;z-index:9999;}
+.login-box{background:#fff;border-radius:16px;padding:36px 32px;width:340px;box-shadow:0 20px 60px rgba(0,0,0,.4);}
+.login-logo{text-align:center;margin-bottom:20px;}
+.login-logo div:first-child{font-size:32px;margin-bottom:8px;}
+.login-title{font-size:16px;font-weight:700;color:var(--text);}
+.login-sub{font-size:10px;color:var(--text3);margin-top:2px;}
+.login-field{margin-bottom:12px;}
+.login-field label{font-size:10px;font-weight:600;color:var(--text2);display:block;margin-bottom:4px;}
+.login-field input{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:7px;font-size:12px;font-family:inherit;outline:none;transition:.15s;}
+.login-field input:focus{border-color:var(--gold);background:#fffdf5;}
+.login-btn{width:100%;padding:11px;background:var(--gold);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;margin-top:4px;transition:.15s;}
+.login-btn:hover{background:#b8922e;}
+.login-err{background:#fff5f5;border:1px solid #fca5a5;border-radius:6px;padding:8px 12px;font-size:10px;color:var(--red);margin-top:10px;display:none;}
+.login-badge{text-align:center;margin-top:14px;font-size:9px;color:var(--text3);}
+#appContent{display:none;}
+
+/* HEADER */
+.hdr{background:var(--bg2);border-bottom:3px solid var(--gold);padding:11px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;box-shadow:var(--shadow);}
+.hdr-brand{display:flex;align-items:center;gap:10px;}
+.hdr-logo{width:38px;height:38px;background:linear-gradient(135deg,#1a1a1a,#333);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--gold);}
+.hdr-title{font-size:13px;font-weight:700;}
+.hdr-sub{font-size:8.5px;color:var(--text3);margin-top:1px;}
+.hdr-right{display:flex;align-items:center;gap:8px;}
+.nav-link{background:var(--gold);color:#1a1a1a;padding:6px 14px;border-radius:20px;font-size:10px;font-weight:700;text-decoration:none;transition:.15s;}
+.nav-link:hover{background:#b8922e;color:#fff;}
+.user-chip{display:flex;align-items:center;gap:5px;background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:20px;padding:3px 10px;}
+.user-dot{width:6px;height:6px;background:var(--green);border-radius:50%;}
+.user-name{font-size:9px;color:var(--green);font-weight:600;}
+.logout-btn{background:none;border:1px solid var(--border);border-radius:12px;padding:3px 10px;font-size:9px;color:var(--text3);cursor:pointer;}
+.logout-btn:hover{border-color:var(--red);color:var(--red);}
+
+/* FASES NAV */
+.fases-nav{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 20px;display:flex;gap:0;overflow-x:auto;}
+.fase-btn{padding:11px 18px;font-size:10.5px;font-weight:600;color:var(--text3);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;transition:.15s;display:flex;align-items:center;gap:5px;}
+.fase-btn.act{color:var(--gold);border-bottom-color:var(--gold);}
+.fase-num{width:17px;height:17px;border-radius:50%;background:var(--border);font-size:8px;font-weight:700;display:flex;align-items:center;justify-content:center;color:var(--text2);}
+.fase-btn.act .fase-num{background:var(--gold);color:#fff;}
+
+/* VIEWS */
+.view{display:none;} .view.act{display:block;}
+.page{max-width:1100px;margin:0 auto;padding:18px 14px;}
+
+/* CARDS */
+.card{background:var(--bg2);border:1.5px solid var(--border);border-radius:10px;padding:16px;margin-bottom:14px;box-shadow:var(--shadow);}
+.card-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px;display:flex;align-items:center;gap:6px;color:var(--text);}
+.card-title::before{content:'';width:3px;height:14px;background:var(--gold);border-radius:2px;display:block;}
+.sec-header{margin-bottom:18px;padding-bottom:10px;border-bottom:2px solid var(--border);}
+.sec-title{font-size:17px;font-weight:700;margin-bottom:3px;}
+.sec-sub{font-size:10px;color:var(--text3);}
+
+/* FORMS */
+.f-label{font-size:10px;font-weight:600;color:var(--text2);margin-bottom:3px;display:block;}
+.f-input{width:100%;padding:8px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:11px;color:var(--text);background:var(--bg2);font-family:inherit;transition:.15s;}
+.f-input:focus{outline:none;border-color:var(--gold);background:#fffdf5;}
+.f-input::placeholder{color:var(--text3);}
+.f-textarea{resize:vertical;min-height:70px;line-height:1.6;}
+.f-select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23888'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+.form-grid.three{grid-template-columns:1fr 1fr 1fr;}
+.f-group{display:flex;flex-direction:column;gap:3px;}
+.f-group.span2{grid-column:span 2;}
+.voice-wrap{position:relative;}
+.voice-wrap .f-input{padding-right:34px;}
+.vbtn{position:absolute;right:7px;top:50%;transform:translateY(-50%);width:22px;height:22px;background:none;border:none;cursor:pointer;font-size:13px;color:var(--text3);padding:0;border-radius:50%;}
+.vbtn:hover{background:rgba(201,168,76,.1);color:var(--gold);}
+.vbtn.rec{color:var(--red);animation:vp 1s infinite;}
+@keyframes vp{0%,100%{opacity:1;}50%{opacity:.3;}}
+
+/* TABLA EDITABLE */
+.tbl-wrap{overflow-x:auto;margin-bottom:14px;}
+.tbl-edit{width:100%;border-collapse:collapse;font-size:11px;}
+.tbl-edit th{background:var(--gold);color:#fff;padding:9px 12px;text-align:left;font-size:10px;font-weight:700;}
+.tbl-edit td{padding:0;border:1px solid var(--border);}
+.tbl-edit td.lbl{background:var(--bg3);font-weight:600;font-size:10px;padding:8px 10px;white-space:nowrap;color:var(--text2);min-width:160px;}
+.tbl-edit td.val input{width:100%;border:none;padding:8px 10px;font-size:11px;font-family:inherit;color:var(--text);background:transparent;outline:none;}
+.tbl-edit td.val input.auto{color:var(--blue);font-style:italic;}
+.tbl-edit td.val input.auto:focus{color:var(--text);font-style:normal;}
+
+/* BOTONES */
+.btn{padding:8px 18px;border-radius:7px;font-size:11px;font-weight:600;cursor:pointer;transition:.15s;border:none;}
+.btn-gold{background:var(--gold);color:#fff;}
+.btn-gold:hover{background:#b8922e;}
+.btn-outline{background:var(--bg3);border:1.5px solid var(--border);color:var(--text2);}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold);}
+.btn-blue{background:var(--blue);color:#fff;}
+.btns-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;}
+
+/* STATUS */
+.status{background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:6px;padding:7px 12px;font-size:10px;color:var(--green);margin-bottom:12px;display:none;}
+.status.vis{display:block;}
+.status.err{background:#fff5f5;border-color:#fca5a5;color:var(--red);}
+.status.info{background:#eff6ff;border-color:#bfdbfe;color:var(--blue);}
+
+/* FORMULARIO OFICIAL */
+.form-oficial{background:#fff;border:2px solid #1a1a1a;border-radius:4px;padding:0;margin-bottom:16px;font-family:'Times New Roman',serif;}
+.fo-header{background:#1a1a1a;color:#fff;padding:10px 16px;text-align:center;}
+.fo-title{font-size:13px;font-weight:700;letter-spacing:.05em;}
+.fo-sub{font-size:9px;opacity:.8;margin-top:2px;}
+.fo-escudo{font-size:22px;margin-bottom:4px;}
+.fo-body{padding:14px;}
+.fo-row{display:grid;grid-template-columns:180px 1fr;border-bottom:1px solid #ccc;min-height:32px;}
+.fo-row:last-child{border-bottom:none;}
+.fo-lbl{padding:6px 10px;font-size:9.5px;font-weight:700;border-right:1px solid #ccc;display:flex;align-items:center;background:#f8f8f8;color:#333;}
+.fo-val{padding:4px 6px;display:flex;align-items:center;}
+.fo-val input{width:100%;border:none;font-size:11px;font-family:'Times New Roman',serif;color:#1a1a1a;background:transparent;outline:none;padding:2px 4px;}
+.fo-val input:focus{background:#fffdf5;}
+.fo-val input.auto-fill{color:#2563EB;}
+.fo-section-title{background:#e0e0e0;padding:5px 10px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;border-bottom:1px solid #ccc;}
+.fo-firma{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;padding:14px;border-top:2px solid #1a1a1a;}
+.fo-firma-box{text-align:center;}
+.fo-firma-linea{border-top:1px solid #333;margin-top:38px;padding-top:5px;font-size:9px;}
+
+/* GUÍA */
+.guia-card{background:linear-gradient(135deg,#eff6ff,#f0f9ff);border:1.5px solid #bfdbfe;border-radius:10px;padding:14px;margin-bottom:12px;}
+.guia-paso{display:flex;gap:12px;margin-bottom:10px;align-items:flex-start;}
+.guia-num{width:26px;height:26px;background:var(--blue);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;}
+.guia-txt{font-size:10.5px;line-height:1.7;color:var(--text2);}
+.enlace-oficial{display:flex;align-items:center;gap:10px;background:#fff;border:1.5px solid var(--blue);border-radius:8px;padding:10px 14px;margin-top:8px;cursor:pointer;transition:.15s;}
+.enlace-oficial:hover{background:#eff6ff;}
+.enlace-txt{font-size:10.5px;font-weight:600;color:var(--blue);}
+.enlace-sub{font-size:9px;color:var(--text3);}
+
+/* TASA */
+.tasa-card{background:linear-gradient(135deg,#fff5f5,#fff8f0);border:1.5px solid #fca5a5;border-radius:8px;padding:14px;margin-bottom:12px;}
+.tasa-title{font-size:11px;font-weight:700;color:var(--red);margin-bottom:8px;}
+.tasa-campo{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #fee2e2;font-size:10px;}
+.tasa-lbl{color:var(--text2);}
+.tasa-val{font-weight:700;color:var(--text);}
+
+/* PROGRESO */
+.progreso{display:flex;gap:0;margin-bottom:18px;overflow-x:auto;}
+.prog-paso{flex:1;min-width:100px;text-align:center;position:relative;}
+.prog-paso::after{content:'';position:absolute;top:13px;left:50%;right:-50%;height:2px;background:var(--border);z-index:0;}
+.prog-paso:last-child::after{display:none;}
+.prog-circulo{width:26px;height:26px;border-radius:50%;background:var(--border);color:var(--text3);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 5px;position:relative;z-index:1;}
+.prog-paso.done .prog-circulo{background:var(--green);color:#fff;}
+.prog-paso.act .prog-circulo{background:var(--gold);color:#fff;}
+.prog-paso.done::after{background:var(--green);}
+.prog-lbl{font-size:8px;color:var(--text3);}
+.prog-paso.act .prog-lbl{color:var(--gold);font-weight:700;}
+
+/* TABS */
+.tabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:16px;flex-wrap:wrap;}
+.tab{padding:9px 15px;font-size:10px;font-weight:600;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:.15s;}
+.tab.act{color:var(--gold);border-bottom-color:var(--gold);}
+.tab-content{display:none;} .tab-content.act{display:block;}
+
+/* CHECKLIST */
+.checklist{display:flex;flex-direction:column;gap:7px;margin:10px 0;}
+.chk-item{display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;font-size:10.5px;}
+.chk-item input[type=checkbox]{width:16px;height:16px;accent-color:var(--gold);flex-shrink:0;}
+.chk-item.done{background:#f0fdf4;border-color:#bbf7d0;text-decoration:line-through;color:var(--text3);}
+.chk-badge{margin-left:auto;font-size:8.5px;padding:2px 7px;border-radius:10px;font-weight:600;}
+.badge-req{background:#fee2e2;color:var(--red);}
+.badge-opt{background:#f0fdf4;color:var(--green);}
+.badge-orig{background:#fffbeb;color:#D97706;}
+
+/* ALERTA */
+.alerta{border-radius:8px;padding:10px 14px;font-size:10.5px;line-height:1.7;margin-bottom:12px;}
+.alerta-info{background:#eff6ff;border-left:4px solid var(--blue);color:#1e40af;}
+.alerta-warn{background:#fffbeb;border-left:4px solid #F59E0B;color:#92400E;}
+.alerta-gold{background:#fffdf5;border-left:4px solid var(--gold);color:var(--text2);}
+
+/* SEDE */
+.sede-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;}
+.sede-card{background:var(--bg2);border:1.5px solid var(--border);border-radius:8px;padding:14px;transition:.2s;cursor:pointer;}
+.sede-card:hover{border-color:var(--gold);box-shadow:var(--shadow);}
+.sede-icon{font-size:26px;margin-bottom:7px;}
+.sede-name{font-size:11px;font-weight:700;margin-bottom:3px;}
+.sede-url{font-size:9px;color:var(--blue);margin-bottom:7px;}
+.sede-desc{font-size:9.5px;color:var(--text3);line-height:1.5;}
+
+/* MARCA */
+.marca-preview{background:#1a1a1a;border-radius:10px;padding:22px;text-align:center;margin-bottom:14px;}
+.marca-nombre{font-size:22px;font-weight:700;color:var(--gold);letter-spacing:.2em;}
+.marca-sub{font-size:10px;color:rgba(201,168,76,.6);letter-spacing:.15em;margin-top:4px;}
+.niza-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px;}
+.niza-item{background:var(--bg3);border:1.5px solid var(--border);border-radius:6px;padding:10px 12px;cursor:pointer;transition:.15s;}
+.niza-item.sel{border-color:var(--gold);background:#fffdf5;}
+.niza-num{font-size:10px;font-weight:700;color:var(--gold);}
+.niza-desc{font-size:9.5px;color:var(--text2);margin-top:2px;}
+
+/* DATOS COPIAR */
+.datos-copiar{background:#1a1a1a;border-radius:6px;padding:12px;margin-top:10px;font-family:monospace;font-size:10px;color:#e8e0d0;line-height:1.8;position:relative;white-space:pre-wrap;}
+.copy-btn-abs{position:absolute;top:8px;right:8px;padding:3px 8px;background:var(--gold);border:none;border-radius:4px;font-size:9px;color:#000;cursor:pointer;font-weight:700;}
+
+/* VOZ */
+.voz-ind{position:fixed;bottom:90px;right:20px;background:var(--red);color:#fff;border-radius:20px;padding:7px 14px;font-size:10px;font-weight:700;display:none;align-items:center;gap:5px;box-shadow:0 4px 14px rgba(220,38,38,.4);z-index:998;}
+.voz-ind.vis{display:flex;}
+.voz-dot{width:7px;height:7px;background:#fff;border-radius:50%;animation:vp 1s infinite;}
+
+/* COPILOTO */
+#copiloBtn{position:fixed;bottom:22px;right:22px;width:52px;height:52px;background:linear-gradient(135deg,#1a1a1a,#C9A84C);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;box-shadow:0 4px 20px rgba(201,168,76,.5);z-index:1000;transition:.2s;}
+#copiloPanel{position:fixed;bottom:84px;right:22px;width:320px;max-height:490px;background:#fff;border:2px solid var(--gold);border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,.18);z-index:1000;display:none;flex-direction:column;overflow:hidden;}
+
+/* FOOTER */
+.ftr{background:var(--bg2);border-top:2px solid var(--border);padding:8px 20px;display:flex;gap:14px;align-items:center;font-size:9px;color:var(--text3);}
+.ftr span{color:var(--gold);font-weight:600;}
+
+@media(max-width:650px){.form-grid,.form-grid.three{grid-template-columns:1fr;}.f-group.span2{grid-column:span 1;}.fo-row{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<!-- ══ PANTALLA DE LOGIN ══ -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">
+      <div>⚖️</div>
+      <div class="login-title">FÁTIMA CALDEA — SISTEMA LEGAL</div>
+      <div class="login-sub">Sistema Privado Familiar · España & Venezuela</div>
+    </div>
+    <div class="login-field">
+      <label>Email</label>
+      <input type="email" id="loginEmail" placeholder="tu@email.com" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <div class="login-field">
+      <label>Contraseña</label>
+      <input type="password" id="loginPass" placeholder="Contraseña" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <button class="login-btn" onclick="doLogin()">🔐 Entrar al sistema</button>
+    <div class="login-err" id="loginErr"></div>
+    <div class="login-badge">🔒 Acceso exclusivo · Familia Caldea</div>
+  </div>
+</div>
+
+<!-- ══ CONTENIDO PRINCIPAL ══ -->
+<div id="appContent">
+<div class="voz-ind" id="vozInd"><div class="voz-dot"></div><span>Grabando...</span></div>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-brand">
+    <div class="hdr-logo">⚖️</div>
+    <div>
+      <div class="hdr-title">FÁTIMA CALDEA — SISTEMA LEGAL</div>
+      <div class="hdr-sub">Legal · Extranjería · Marca Personal · España & Venezuela</div>
+    </div>
+  </div>
+  <div class="hdr-right">
+    <a href="documentos.html" class="nav-link">📄 Documentos Pro →</a>
+    <div class="user-chip"><div class="user-dot"></div><span class="user-name" id="userChipName">Cargando...</span></div>
+    <button class="logout-btn" onclick="doLogout()">Salir</button>
+  </div>
+</div>
+
+<!-- FASES NAV -->
+<div class="fases-nav">
+  <div class="fase-btn act" onclick="setFase('f1',this)"><div class="fase-num">1</div>🔧 Bóveda & Tablas</div>
+  <div class="fase-btn" onclick="setFase('f2',this)"><div class="fase-num">2</div>🇪🇸 Legal España</div>
+  <div class="fase-btn" onclick="setFase('f3',this)"><div class="fase-num">3</div>🇻🇪 Puente Venezuela</div>
+  <div class="fase-btn" onclick="setFase('f4',this)"><div class="fase-num">4</div>™️ Marca Personal</div>
+  <div class="fase-btn" onclick="setFase('f5',this)"><div class="fase-num">5</div>🏛️ Sedes & Cl@ve</div>
+</div>
+
+<!-- FASE 1 — BÓVEDA -->
+<div class="view act" id="view-f1"><div class="page">
+  <div class="sec-header"><div class="sec-title">🔧 Bóveda Familiar & Motor de Exportación</div><div class="sec-sub">Datos centrales · Tablas editables · CSV/PDF en tiempo real</div></div>
+  <div class="status" id="f1Status"></div>
+  <div class="card">
+    <div class="card-title">🏠 Bóveda Familiar — datos para todos los formularios</div>
+    <div class="alerta alerta-gold">✦ Rellena aquí una sola vez. Todos los formularios del sistema usan estos datos automáticamente.</div>
+    <div class="form-grid three" style="margin-top:12px;">
+      <div class="f-group"><label class="f-label">Nombre completo</label><div class="voice-wrap"><input class="f-input" id="bNombre" placeholder="Tu nombre y apellidos" oninput="sincronizarBoveda()"><button class="vbtn" onclick="voz('bNombre',this)">🎤</button></div></div>
+      <div class="f-group"><label class="f-label">NIE / DNI</label><input class="f-input" id="bNie" placeholder="X1234567A" oninput="sincronizarBoveda()"></div>
+      <div class="f-group"><label class="f-label">Fecha nacimiento</label><input class="f-input" id="bFechaNac" type="date" onchange="sincronizarBoveda()"></div>
+      <div class="f-group"><label class="f-label">Teléfono</label><div class="voice-wrap"><input class="f-input" id="bTel" placeholder="+34 600 000 000" oninput="sincronizarBoveda()"><button class="vbtn" onclick="voz('bTel',this)">🎤</button></div></div>
+      <div class="f-group"><label class="f-label">Email</label><div class="voice-wrap"><input class="f-input" id="bEmail" placeholder="tu@email.com" oninput="sincronizarBoveda()"><button class="vbtn" onclick="voz('bEmail',this)">🎤</button></div></div>
+      <div class="f-group"><label class="f-label">Domicilio completo</label><div class="voice-wrap"><input class="f-input" id="bDomicilio" placeholder="Calle, nº, piso, ciudad, CP" oninput="sincronizarBoveda()"><button class="vbtn" onclick="voz('bDomicilio',this)">🎤</button></div></div>
+      <div class="f-group"><label class="f-label">Municipio</label><div class="voice-wrap"><input class="f-input" id="bMunicipio" placeholder="Madrid" oninput="sincronizarBoveda()"><button class="vbtn" onclick="voz('bMunicipio',this)">🎤</button></div></div>
+      <div class="f-group"><label class="f-label">Provincia</label><div class="voice-wrap"><input class="f-input" id="bProvincia" placeholder="Madrid" oninput="sincronizarBoveda()"><button class="vbtn" onclick="voz('bProvincia',this)">🎤</button></div></div>
+      <div class="f-group"><label class="f-label">Código postal</label><input class="f-input" id="bCp" placeholder="28001" oninput="sincronizarBoveda()"></div>
+      <div class="f-group"><label class="f-label">Nacionalidad</label><div class="voice-wrap"><input class="f-input" id="bNacionalidad" placeholder="Venezolana" oninput="sincronizarBoveda()"><button class="vbtn" onclick="voz('bNacionalidad',this)">🎤</button></div></div>
+      <div class="f-group"><label class="f-label">País nacimiento</label><input class="f-input" id="bPaisNac" placeholder="Venezuela" oninput="sincronizarBoveda()"></div>
+      <div class="f-group"><label class="f-label">Profesión</label><div class="voice-wrap"><input class="f-input" id="bProfesion" placeholder="Peluquera y Colorista" oninput="sincronizarBoveda()"><button class="vbtn" onclick="voz('bProfesion',this)">🎤</button></div></div>
+      <div class="f-group"><label class="f-label">Nombre marido</label><div class="voice-wrap"><input class="f-input" id="bMarido" placeholder="Nombre completo" oninput="sincronizarBoveda()"><button class="vbtn" onclick="voz('bMarido',this)">🎤</button></div></div>
+      <div class="f-group"><label class="f-label">DNI marido</label><input class="f-input" id="bMaridoDni" placeholder="DNI/NIE" oninput="sincronizarBoveda()"></div>
+      <div class="f-group"><label class="f-label">Nombre hija</label><div class="voice-wrap"><input class="f-input" id="bHija" placeholder="Nombre completo" oninput="sincronizarBoveda()"><button class="vbtn" onclick="voz('bHija',this)">🎤</button></div></div>
+    </div>
+    <div class="btns-row"><button class="btn btn-gold" onclick="guardarBoveda()">💾 Guardar Bóveda</button><div id="bovedaOk" style="font-size:10px;color:var(--green);display:none;align-items:center;gap:5px;">✓ Guardado y sincronizado</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title">📊 Tablas editables en tiempo real</div>
+    <div class="alerta alerta-info">💡 Los campos en <strong style="color:var(--blue);">azul</strong> vienen de tu Bóveda Familiar automáticamente. Edita cualquier celda directamente.</div>
+    <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
+      <select class="f-input f-select" id="tablaSelector" onchange="cargarTabla()" style="max-width:280px;">
+        <option value="datos_personales">Datos personales básicos</option>
+        <option value="candidatura_ett">Candidatura ETT</option>
+        <option value="sepe">Formulario SEPE / Paro</option>
+        <option value="bolsa_empleo">Bolsa de empleo municipal</option>
+        <option value="banco_nomina">Datos bancarios nómina</option>
+        <option value="extranjeria">Extranjería — datos generales</option>
+        <option value="nacionalidad">Solicitud Nacionalidad</option>
+      </select>
+      <button class="btn btn-gold" onclick="exportarCsvReal()">📥 CSV real</button>
+      <button class="btn btn-outline" onclick="exportarPdfReal()">📄 PDF real</button>
+      <button class="btn btn-outline" onclick="copiarTablaReal()">📋 Copiar</button>
+      <button class="btn btn-outline" onclick="reinyectarBoveda()" style="color:var(--blue);border-color:var(--blue);">🔄 Reinyectar</button>
+    </div>
+    <div class="tbl-wrap">
+      <table class="tbl-edit" id="tablaEditable">
+        <thead><tr><th style="width:200px;">Campo</th><th>Valor (editable)</th><th style="width:80px;">Fuente</th></tr></thead>
+        <tbody id="tablaCuerpo"></tbody>
+      </table>
+    </div>
+  </div>
+</div></div>
+
+<!-- FASE 2 — LEGAL ESPAÑA -->
+<div class="view" id="view-f2"><div class="page">
+  <div class="sec-header"><div class="sec-title">🇪🇸 Módulo Legal España</div><div class="sec-sub">Nacionalidad · Homologación · Defensa Consumidor · Recursos</div></div>
+  <div class="status" id="f2Status"></div>
+  <div class="tabs">
+    <div class="tab act" onclick="setTab2('nacionalidad',this)">🏛️ Nacionalidad</div>
+    <div class="tab" onclick="setTab2('homologacion',this)">🎓 Homologación</div>
+    <div class="tab" onclick="setTab2('consumidor',this)">⚖️ Defensa Consumidor</div>
+    <div class="tab" onclick="setTab2('recursos',this)">📋 Recursos</div>
+  </div>
+  <div class="tab-content act" id="tab2-nacionalidad">
+    <div class="alerta alerta-info">ℹ️ <strong>Vía Residencia (art. 22 CC):</strong> Como venezolana solo necesitas <strong>2 años</strong> de residencia legal en España.</div>
+    <div class="progreso">
+      <div class="prog-paso done"><div class="prog-circulo">✓</div><div class="prog-lbl">Residencia legal</div></div>
+      <div class="prog-paso act"><div class="prog-circulo">2</div><div class="prog-lbl">Solicitud</div></div>
+      <div class="prog-paso"><div class="prog-circulo">3</div><div class="prog-lbl">CCSE/DELE</div></div>
+      <div class="prog-paso"><div class="prog-circulo">4</div><div class="prog-lbl">Registro Civil</div></div>
+      <div class="prog-paso"><div class="prog-circulo">5</div><div class="prog-lbl">Jura</div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">📄 Solicitud de Nacionalidad — Formulario espejo</div>
+      <div class="form-oficial">
+        <div class="fo-header"><div class="fo-escudo">🏛️</div><div class="fo-title">MINISTERIO DE JUSTICIA — REGISTRO CIVIL</div><div class="fo-sub">SOLICITUD DE NACIONALIDAD ESPAÑOLA POR RESIDENCIA (Art. 22 CC)</div></div>
+        <div class="fo-body">
+          <div class="fo-section-title">1. DATOS DEL SOLICITANTE</div>
+          <div class="fo-row"><div class="fo-lbl">Apellido 1</div><div class="fo-val"><input id="nacApe1" class="auto-fill" placeholder="Primer apellido"></div></div>
+          <div class="fo-row"><div class="fo-lbl">Nombre/s</div><div class="fo-val"><input id="nacNombre" class="auto-fill" placeholder="Nombre completo"></div></div>
+          <div class="fo-row"><div class="fo-lbl">Fecha nacimiento</div><div class="fo-val"><input id="nacFechaNac" class="auto-fill" placeholder="DD/MM/AAAA"></div></div>
+          <div class="fo-row"><div class="fo-lbl">Nacionalidad actual</div><div class="fo-val"><input id="nacNacionalidad" class="auto-fill" placeholder="Venezolana"></div></div>
+          <div class="fo-row"><div class="fo-lbl">NIE / Pasaporte</div><div class="fo-val"><input id="nacNie" class="auto-fill" placeholder="Número de documento"></div></div>
+          <div class="fo-section-title">2. DOMICILIO EN ESPAÑA</div>
+          <div class="fo-row"><div class="fo-lbl">Calle y número</div><div class="fo-val"><input id="nacCalle" class="auto-fill" placeholder="Dirección completa"></div></div>
+          <div class="fo-row"><div class="fo-lbl">Municipio</div><div class="fo-val"><input id="nacMunicipio" class="auto-fill" placeholder="Ciudad"></div></div>
+          <div class="fo-row"><div class="fo-lbl">Provincia</div><div class="fo-val"><input id="nacProvincia" class="auto-fill" placeholder="Provincia"></div></div>
+          <div class="fo-row"><div class="fo-lbl">Teléfono</div><div class="fo-val"><input id="nacTel" class="auto-fill" placeholder="Teléfono"></div></div>
+          <div class="fo-row"><div class="fo-lbl">Email</div><div class="fo-val"><input id="nacEmail" class="auto-fill" placeholder="Email"></div></div>
+          <div class="fo-section-title">3. DATOS DE RESIDENCIA</div>
+          <div class="fo-row"><div class="fo-lbl">Años de residencia legal</div><div class="fo-val"><input id="nacAniosRes" placeholder="Ej: 2 años (venezolanos)"></div></div>
+          <div class="fo-row"><div class="fo-lbl">Vía de solicitud</div><div class="fo-val"><input id="nacVia" value="Residencia — Art. 22 CC (Iberoamérica — 2 años)"></div></div>
+          <div class="fo-section-title">4. EXÁMENES</div>
+          <div class="fo-row"><div class="fo-lbl">CCSE (Cultura española)</div><div class="fo-val"><input id="nacCcse" placeholder="Aprobado / Pendiente / Exento"></div></div>
+          <div class="fo-row"><div class="fo-lbl">DELE A2 (Español)</div><div class="fo-val"><input id="nacDele" placeholder="Exento (hispanohablante)"></div></div>
+          <div class="fo-firma"><div class="fo-firma-box"><div class="fo-firma-linea">Lugar y fecha</div></div><div class="fo-firma-box"><div class="fo-firma-linea">Firma del solicitante</div></div><div class="fo-firma-box"><div class="fo-firma-linea">Sello Registro Civil</div></div></div>
+        </div>
+      </div>
+      <div class="btns-row"><button class="btn btn-gold" onclick="imprimirFormOficial('nac')">📥 Generar PDF solicitud</button><button class="btn btn-outline" onclick="inyectarBovedaEnNac()">🔄 Inyectar mis datos</button></div>
+    </div>
+    <div class="tasa-card">
+      <div class="tasa-title">💳 Tasa 790-026 — Nacionalidad por Residencia</div>
+      <div class="tasa-campo"><span class="tasa-lbl">Modelo</span><span class="tasa-val">790 — Código 026</span></div>
+      <div class="tasa-campo"><span class="tasa-lbl">Importe actual</span><span class="tasa-val">100,00 €</span></div>
+      <div class="tasa-campo"><span class="tasa-lbl">Cuándo pagar</span><span class="tasa-val">Antes de presentar la solicitud</span></div>
+      <div class="btns-row" style="margin-top:10px;"><button class="btn btn-blue" onclick="abrirEnlace('https://sede.mjusticia.gob.es/es/tramites/tasa-nacionalidad')">🌐 Pagar tasa online</button></div>
+    </div>
+    <div class="card"><div class="card-title">📋 Documentos necesarios</div>
+      <div class="checklist">
+        <label class="chk-item"><input type="checkbox" onchange="marcarCheck(this)"> Pasaporte en vigor (original + copia) <span class="chk-badge badge-req">OBLIGATORIO</span></label>
+        <label class="chk-item"><input type="checkbox" onchange="marcarCheck(this)"> NIE vigente (original + copia) <span class="chk-badge badge-req">OBLIGATORIO</span></label>
+        <label class="chk-item"><input type="checkbox" onchange="marcarCheck(this)"> Certificado de nacimiento apostillado <span class="chk-badge badge-req">OBLIGATORIO</span></label>
+        <label class="chk-item"><input type="checkbox" onchange="marcarCheck(this)"> Antecedentes penales Venezuela (apostillado) <span class="chk-badge badge-req">OBLIGATORIO</span></label>
+        <label class="chk-item"><input type="checkbox" onchange="marcarCheck(this)"> Antecedentes penales España <span class="chk-badge badge-req">OBLIGATORIO</span></label>
+        <label class="chk-item"><input type="checkbox" onchange="marcarCheck(this)"> Certificado de empadronamiento <span class="chk-badge badge-req">OBLIGATORIO</span></label>
+        <label class="chk-item"><input type="checkbox" onchange="marcarCheck(this)"> Certificado CCSE aprobado <span class="chk-badge badge-req">OBLIGATORIO</span></label>
+        <label class="chk-item"><input type="checkbox" onchange="marcarCheck(this)"> Justificante pago Tasa 790-026 (100€) <span class="chk-badge badge-req">OBLIGATORIO</span></label>
+      </div>
+    </div>
+  </div>
+  <div class="tab-content" id="tab2-homologacion">
+    <div class="alerta alerta-info">ℹ️ <strong>Homologación de títulos extranjeros</strong> ante el Ministerio de Educación. Convierte tu título venezolano en equivalente español.</div>
+    <div class="card"><div class="card-title">📄 Solicitud de Homologación</div>
+      <div class="form-oficial">
+        <div class="fo-header"><div class="fo-escudo">🎓</div><div class="fo-title">MINISTERIO DE EDUCACIÓN, FP Y DEPORTE</div><div class="fo-sub">SOLICITUD DE HOMOLOGACIÓN DE TÍTULO EXTRANJERO</div></div>
+        <div class="fo-body">
+          <div class="fo-row"><div class="fo-lbl">Nombre y apellidos</div><div class="fo-val"><input id="homNombre" class="auto-fill"></div></div>
+          <div class="fo-row"><div class="fo-lbl">NIE / Pasaporte</div><div class="fo-val"><input id="homNie" class="auto-fill"></div></div>
+          <div class="fo-row"><div class="fo-lbl">Domicilio</div><div class="fo-val"><input id="homDomicilio" class="auto-fill"></div></div>
+          <div class="fo-row"><div class="fo-lbl">Contacto</div><div class="fo-val"><input id="homContacto" class="auto-fill"></div></div>
+          <div class="fo-row"><div class="fo-lbl">Título a homologar</div><div class="fo-val"><input id="homTitulo" placeholder="Ej: Técnico en Peluquería"></div></div>
+          <div class="fo-row"><div class="fo-lbl">Centro emisor</div><div class="fo-val"><input id="homCentro" placeholder="Escuela o Universidad en Venezuela"></div></div>
+          <div class="fo-row"><div class="fo-lbl">País</div><div class="fo-val"><input id="homPais" value="Venezuela"></div></div>
+          <div class="fo-row"><div class="fo-lbl">Equivalencia solicitada</div><div class="fo-val"><input id="homEquivalencia" placeholder="Título español equivalente"></div></div>
+          <div class="fo-firma"><div class="fo-firma-box"><div class="fo-firma-linea">Lugar y fecha</div></div><div class="fo-firma-box"><div class="fo-firma-linea">Firma</div></div><div class="fo-firma-box"><div class="fo-firma-linea">Sello</div></div></div>
+        </div>
+      </div>
+      <div class="btns-row"><button class="btn btn-gold" onclick="imprimirFormOficial('hom')">📥 Generar PDF</button><button class="btn btn-outline" onclick="inyectarBovedaEnHom()">🔄 Inyectar mis datos</button></div>
+    </div>
+    <div class="tasa-card"><div class="tasa-title">💳 Tasa 059 — Homologación</div><div class="tasa-campo"><span class="tasa-lbl">Importe</span><span class="tasa-val">~170,77 €</span></div><div class="btns-row" style="margin-top:8px;"><button class="btn btn-blue" onclick="abrirEnlace('https://www.educacion.gob.es')">🌐 Sede Educación</button></div></div>
+  </div>
+  <div class="tab-content" id="tab2-consumidor">
+    <div class="card"><div class="card-title">⚖️ Generador de Reclamaciones Jurídicas</div>
+      <div class="form-grid">
+        <div class="f-group"><label class="f-label">Tipo de reclamación</label><select class="f-input f-select" id="recTipo" onchange="generarTextoReclamacion()"><option value="luz">Compañía Eléctrica</option><option value="agua">Compañía de Agua</option><option value="gas">Compañía de Gas</option><option value="telefonia">Telefonía / Internet</option><option value="ss">Seguridad Social</option><option value="arrendador">Arrendador</option><option value="banco">Entidad bancaria</option><option value="empresa">Empresa empleadora</option></select></div>
+        <div class="f-group"><label class="f-label">Empresa reclamada</label><div class="voice-wrap"><input class="f-input" id="recEmpresa" placeholder="Nombre de la empresa"><button class="vbtn" onclick="voz('recEmpresa',this)">🎤</button></div></div>
+        <div class="f-group span2"><label class="f-label">Describe el problema</label><div style="position:relative;"><textarea class="f-input f-textarea" id="recProblema" placeholder="Explica qué pasó..." style="padding-right:34px;" oninput="generarTextoReclamacion()"></textarea><button class="vbtn" style="position:absolute;right:7px;top:8px;transform:none;" onclick="voz('recProblema',this)">🎤</button></div></div>
+        <div class="f-group"><label class="f-label">Nº contrato / referencia</label><input class="f-input" id="recContrato" placeholder="Nº contrato"></div>
+        <div class="f-group"><label class="f-label">Importe reclamado</label><input class="f-input" id="recImporte" placeholder="Ej: 234,50 €"></div>
+      </div>
+      <div class="f-group" style="margin-top:10px;"><label class="f-label">Texto del oficio generado (editable)</label><textarea class="f-input f-textarea" id="recTexto" rows="10" style="font-size:10.5px;line-height:1.7;"></textarea></div>
+      <div class="btns-row"><button class="btn btn-gold" onclick="generarPdfReclamacion()">📥 PDF jurídico</button><button class="btn btn-outline" onclick="generarTextoReclamacion()">✨ Regenerar</button></div>
+    </div>
+  </div>
+  <div class="tab-content" id="tab2-recursos">
+    <div class="alerta alerta-warn">⚠️ Tienes <strong>1 mes</strong> desde la notificación para presentar el Recurso de Reposición.</div>
+    <div class="card"><div class="card-title">📋 Generador de Recurso de Reposición</div>
+      <div class="form-grid">
+        <div class="f-group"><label class="f-label">Organismo que denegó</label><div class="voice-wrap"><input class="f-input" id="recOrganismo" placeholder="Ej: Oficina de Extranjería"><button class="vbtn" onclick="voz('recOrganismo',this)">🎤</button></div></div>
+        <div class="f-group"><label class="f-label">Número de expediente</label><input class="f-input" id="recExpediente" placeholder="Nº expediente"></div>
+        <div class="f-group"><label class="f-label">Trámite denegado</label><div class="voice-wrap"><input class="f-input" id="recTramite" placeholder="Ej: Renovación de residencia"><button class="vbtn" onclick="voz('recTramite',this)">🎤</button></div></div>
+        <div class="f-group"><label class="f-label">Fecha de la resolución</label><input class="f-input" id="recFechaRes" type="date"></div>
+        <div class="f-group span2"><label class="f-label">Motivo de la denegación</label><div style="position:relative;"><textarea class="f-input f-textarea" id="recMotivo" rows="3" style="padding-right:34px;"></textarea><button class="vbtn" style="position:absolute;right:7px;top:8px;transform:none;" onclick="voz('recMotivo',this)">🎤</button></div></div>
+        <div class="f-group span2"><label class="f-label">Tus alegaciones</label><div style="position:relative;"><textarea class="f-input f-textarea" id="recAlegaciones" rows="4" style="padding-right:34px;"></textarea><button class="vbtn" style="position:absolute;right:7px;top:8px;transform:none;" onclick="voz('recAlegaciones',this)">🎤</button></div></div>
+      </div>
+      <div class="btns-row"><button class="btn btn-gold" onclick="generarRecurso()">📥 Generar Recurso PDF</button></div>
+    </div>
+  </div>
+</div></div>
+
+<!-- FASE 3 — VENEZUELA -->
+<div class="view" id="view-f3"><div class="page">
+  <div class="sec-header"><div class="sec-title">🇻🇪 Puente Migratorio Venezuela</div><div class="sec-sub">Reagrupación · Permisos menores · Marido español · Visado Transeúnte · SAIME · Apostillas</div></div>
+  <div class="status" id="f3Status"></div>
+  <div class="tabs">
+    <div class="tab act" onclick="setTab3('reagrupacion',this)">👨‍👩‍👧 Reagrupación Hijas</div>
+    <div class="tab" onclick="setTab3('menores',this)">👧 Permisos Menores</div>
+    <div class="tab" onclick="setTab3('marido',this)">💍 Marido & Retorno</div>
+    <div class="tab" onclick="setTab3('apostillas',this)">📜 Apostillas & GTU</div>
+  </div>
+  <div class="tab-content act" id="tab3-reagrupacion">
+    <div class="alerta alerta-info">ℹ️ Como cónyuge de ciudadano español, tienes derecho a reagrupar a tus hijos mayores de 18 años si son dependientes económicamente.</div>
+    <div class="card"><div class="card-title">📄 Solicitud de Reagrupación Familiar</div>
+      <div class="form-grid">
+        <div class="f-group"><label class="f-label">Nombre del reagrupante (tú)</label><div class="voice-wrap"><input class="f-input" id="reaNombre" placeholder="Tu nombre completo"><button class="vbtn" onclick="voz('reaNombre',this)">🎤</button></div></div>
+        <div class="f-group"><label class="f-label">NIE del reagrupante</label><input class="f-input" id="reaNie" placeholder="Tu NIE"></div>
+        <div class="f-group"><label class="f-label">Nombre de la hija</label><div class="voice-wrap"><input class="f-input" id="reaHijaNombre" placeholder="Nombre completo"><button class="vbtn" onclick="voz('reaHijaNombre',this)">🎤</button></div></div>
+        <div class="f-group"><label class="f-label">Pasaporte hija</label><input class="f-input" id="reaHijaPas" placeholder="Nº pasaporte"></div>
+        <div class="f-group span2"><label class="f-label">Acreditación de dependencia económica</label><div style="position:relative;"><textarea class="f-input f-textarea" id="reaDependencia" rows="2" style="padding-right:34px;" placeholder="Justificación de dependencia..."></textarea><button class="vbtn" style="position:absolute;right:7px;top:8px;transform:none;" onclick="voz('reaDependencia',this)">🎤</button></div></div>
+      </div>
+      <div class="btns-row"><button class="btn btn-gold" onclick="generarReagrupacion()">📥 Generar solicitud PDF</button></div>
+    </div>
+  </div>
+  <div class="tab-content" id="tab3-menores">
+    <div class="card"><div class="card-title">👧 Permiso de Viaje Internacional para Menores</div>
+      <div class="form-oficial">
+        <div class="fo-header"><div class="fo-escudo">👧</div><div class="fo-title">PERMISO DE VIAJE INTERNACIONAL — MENOR DE EDAD</div><div class="fo-sub">Autorización notarial</div></div>
+        <div class="fo-body">
+          <div class="fo-row"><div class="fo-lbl">Nombre del menor</div><div class="fo-val"><input id="menNombre" placeholder="Nombre completo del nieto/a"></div></div>
+          <div class="fo-row"><div class="fo-lbl">Fecha nacimiento</div><div class="fo-val"><input id="menFecNac" type="date"></div></div>
+          <div class="fo-row"><div class="fo-lbl">Padre</div><div class="fo-val"><input id="menPadre" placeholder="Nombre y cédula del padre"></div></div>
+          <div class="fo-row"><div class="fo-lbl">Madre</div><div class="fo-val"><input id="menMadre" placeholder="Nombre y cédula de la madre"></div></div>
+          <div class="fo-row"><div class="fo-lbl">Acompañante</div><div class="fo-val"><input id="menAcompanante" placeholder="Nombre del adulto responsable"></div></div>
+          <div class="fo-row"><div class="fo-lbl">Destino del viaje</div><div class="fo-val"><input id="menDestino" placeholder="Ej: España"></div></div>
+          <div class="fo-row"><div class="fo-lbl">Fecha de viaje</div><div class="fo-val"><input id="menFecViaje" type="date"></div></div>
+          <div class="fo-firma"><div class="fo-firma-box"><div class="fo-firma-linea">Firma del padre</div></div><div class="fo-firma-box"><div class="fo-firma-linea">Firma de la madre</div></div><div class="fo-firma-box"><div class="fo-firma-linea">Sello notarial</div></div></div>
+        </div>
+      </div>
+      <div class="btns-row"><button class="btn btn-gold" onclick="generarPermisoMenor()">📥 Generar permiso PDF</button></div>
+    </div>
+  </div>
+  <div class="tab-content" id="tab3-marido">
+    <div class="alerta alerta-gold">✦ <strong>Tu situación real:</strong> Casados en Venezuela con todo apostillado. Tu marido es español. Módulo: Visado Transeúnte + Cédula SAIME.</div>
+    <div style="display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:16px;flex-wrap:wrap;">
+      <div class="tab act" onclick="setTabMarido('transeúnte',this)" style="font-size:10px;">✈️ Visado Transeúnte</div>
+      <div class="tab" onclick="setTabMarido('saime',this)" style="font-size:10px;">🪪 Cédula SAIME</div>
+      <div class="tab" onclick="setTabMarido('consular',this)" style="font-size:10px;">🏛️ Registro Consular</div>
+      <div class="tab" onclick="setTabMarido('menaje',this)" style="font-size:10px;">📦 Menaje Aduanas</div>
+    </div>
+    <div id="tabMarido-transeúnte" class="tab-content act">
+      <div class="alerta alerta-info">ℹ️ <strong>Visado de Transeúnte (Venezuela):</strong> Tu marido español lo tramita en el Consulado de Venezuela en España <strong>antes de viajar</strong>. Con el matrimonio apostillado ya en mano, el proceso es más directo.</div>
+      <div class="progreso">
+        <div class="prog-paso done"><div class="prog-circulo">✓</div><div class="prog-lbl">Matrimonio apostillado</div></div>
+        <div class="prog-paso act"><div class="prog-circulo">2</div><div class="prog-lbl">Solicitud Consulado</div></div>
+        <div class="prog-paso"><div class="prog-circulo">3</div><div class="prog-lbl">Entrevista consular</div></div>
+        <div class="prog-paso"><div class="prog-circulo">4</div><div class="prog-lbl">Visado emitido</div></div>
+        <div class="prog-paso"><div class="prog-circulo">5</div><div class="prog-lbl">Entrada Venezuela</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">✈️ Solicitud Visado de Transeúnte — Cónyuge de venezolana</div>
+        <button onclick="escucharInstruccion('Visado transeúnte para tu marido español. Punto 1: el visado de transeúnte permite estancias en Venezuela de hasta 90 días. Punto 2: necesitas el certificado de matrimonio apostillado en el Consulado venezolano de España. Punto 3: tu marido debe ir en persona a la cita consular con su pasaporte español en vigor.')" style="background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);border-radius:6px;padding:6px 12px;font-size:9.5px;color:var(--gold);cursor:pointer;margin-bottom:14px;display:flex;align-items:center;gap:6px;">🎧 Escuchar instrucciones</button>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <div>
+            <div style="font-size:10px;font-weight:700;color:var(--gold);margin-bottom:8px;">DATOS DEL SOLICITANTE (Marido español)</div>
+            <div class="f-group" style="margin-bottom:8px;"><label class="f-label">Nombre completo</label><div class="voice-wrap"><input class="f-input" id="visNombreMarido" placeholder="Nombre y apellidos del marido"><button class="vbtn" onclick="voz('visNombreMarido',this)">🎤</button></div></div>
+            <div class="f-group" style="margin-bottom:8px;"><label class="f-label">Número de pasaporte español</label><input class="f-input" id="visPasaporte" placeholder="Nº pasaporte vigente"></div>
+            <div class="f-group" style="margin-bottom:8px;"><label class="f-label">DNI español</label><input class="f-input" id="visDni" placeholder="DNI del marido"></div>
+            <div class="f-group" style="margin-bottom:8px;"><label class="f-label">Fecha nacimiento</label><input class="f-input" id="visFechaNac" type="date"></div>
+            <div class="f-group" style="margin-bottom:8px;"><label class="f-label">Profesión</label><div class="voice-wrap"><input class="f-input" id="visProfesion" placeholder="Profesión del marido"><button class="vbtn" onclick="voz('visProfesion',this)">🎤</button></div></div>
+            <div class="f-group"><label class="f-label">Domicilio en España</label><div class="voice-wrap"><input class="f-input" id="visDomicilio" placeholder="Dirección actual en España"><button class="vbtn" onclick="voz('visDomicilio',this)">🎤</button></div></div>
+          </div>
+          <div>
+            <div style="font-size:10px;font-weight:700;color:var(--gold);margin-bottom:8px;">DATOS DEL VIAJE Y VÍNCULO</div>
+            <div class="f-group" style="margin-bottom:8px;"><label class="f-label">Cónyuge venezolana (tú)</label><div class="voice-wrap"><input class="f-input" id="visConyuge" placeholder="Tu nombre completo"><button class="vbtn" onclick="voz('visConyuge',this)">🎤</button></div></div>
+            <div class="f-group" style="margin-bottom:8px;"><label class="f-label">Tu cédula venezolana</label><input class="f-input" id="visCedulaConyuge" placeholder="Nº cédula venezolana"></div>
+            <div class="f-group" style="margin-bottom:8px;"><label class="f-label">Nº acta matrimonio Venezuela</label><input class="f-input" id="visActaMatrimonio" placeholder="Número del acta"></div>
+            <div class="f-group" style="margin-bottom:8px;"><label class="f-label">Fecha de matrimonio</label><input class="f-input" id="visFechaMatrimonio" type="date"></div>
+            <div class="f-group" style="margin-bottom:8px;"><label class="f-label">Ciudad donde se celebró</label><div class="voice-wrap"><input class="f-input" id="visCiudadMatrimonio" placeholder="Ciudad, Venezuela"><button class="vbtn" onclick="voz('visCiudadMatrimonio',this)">🎤</button></div></div>
+            <div class="f-group" style="margin-bottom:8px;"><label class="f-label">Motivo del viaje</label><select class="f-input f-select" id="visMotivo"><option>Visita conyugal y familiar</option><option>Gestiones administrativas (SAIME)</option><option>Visita conyugal + trámites SAIME</option></select></div>
+            <div class="f-group"><label class="f-label">Duración prevista</label><select class="f-input f-select" id="visDuracion"><option>30 días</option><option>60 días</option><option>90 días (máximo transeúnte)</option></select></div>
+          </div>
+        </div>
+        <div class="tasa-card" style="margin-top:14px;">
+          <div class="tasa-title">💳 Tasa Visado Transeúnte — Consulado Venezuela en España</div>
+          <div class="tasa-campo"><span class="tasa-lbl">Tipo</span><span class="tasa-val">Transeúnte — cónyuge de venezolana</span></div>
+          <div class="tasa-campo"><span class="tasa-lbl">Vigencia</span><span class="tasa-val">Hasta 90 días — prorrogable en Venezuela</span></div>
+          <div class="tasa-campo"><span class="tasa-lbl">Dónde tramitar</span><span class="tasa-val">Consulado General de Venezuela en Madrid / Barcelona</span></div>
+          <div class="tasa-campo"><span class="tasa-lbl">Cita previa</span><span class="tasa-val">Obligatoria — portal consular venezolano</span></div>
+          <div class="tasa-campo"><span class="tasa-lbl">⚠️ Importante</span><span class="tasa-val" style="color:var(--red);">Llevar ORIGINALES + copias de TODOS los documentos</span></div>
+        </div>
+        <div class="card" style="margin-top:14px;background:var(--bg3);">
+          <div class="card-title" style="font-size:10px;">📋 Documentos para el Visado Transeúnte</div>
+          <div class="checklist">
+            <label class="chk-item"><input type="checkbox" onchange="marcarCheck(this)"> Pasaporte español vigente (mínimo 6 meses) <span class="chk-badge badge-req">OBLIGATORIO</span></label>
+            <label class="chk-item"><input type="checkbox" onchange="marcarCheck(this)"> Formulario de solicitud de visado <span class="chk-badge badge-req">OBLIGATORIO</span></label>
+            <label class="chk-item"><input type="checkbox" onchange="marcarCheck(this)"> Acta de matrimonio venezolana apostillada (original) <span class="chk-badge badge-req">OBLIGATORIO</span></label>
+            <label class="chk-item"><input type="checkbox" onchange="marcarCheck(this)"> Cédula venezolana del cónyuge (tu cédula) <span class="chk-badge badge-req">OBLIGATORIO</span></label>
+            <label class="chk-item"><input type="checkbox" onchange="marcarCheck(this)"> Foto tamaño carnet fondo blanco <span class="chk-badge badge-req">OBLIGATORIO</span></label>
+            <label class="chk-item"><input type="checkbox" onchange="marcarCheck(this)"> Carta de invitación del cónyuge <span class="chk-badge badge-opt">RECOMENDADO</span></label>
+            <label class="chk-item"><input type="checkbox" onchange="marcarCheck(this)"> Seguro de viaje con cobertura en Venezuela <span class="chk-badge badge-opt">RECOMENDADO</span></label>
+          </div>
+        </div>
+        <div class="guia-card" style="margin-top:14px;">
+          <div style="font-size:11px;font-weight:700;margin-bottom:10px;color:var(--blue);">📍 Guía paso a paso — Visado Transeúnte</div>
+          <div class="guia-paso"><div class="guia-num">1</div><div class="guia-txt"><strong>Solicita cita previa</strong> en el portal del Consulado General de Venezuela en Madrid o Barcelona. Pide con 3-4 semanas de antelación.</div></div>
+          <div class="guia-paso"><div class="guia-num">2</div><div class="guia-txt"><strong>Reúne todos los documentos</strong> del checklist en original y copia. El acta de matrimonio apostillada es el documento central.</div></div>
+          <div class="guia-paso"><div class="guia-num">3</div><div class="guia-txt"><strong>Presenta en el consulado</strong> el día de la cita. Tu marido debe ir en persona.</div></div>
+          <div class="guia-paso"><div class="guia-num">4</div><div class="guia-txt"><strong>Recoge el visado</strong> en 5-15 días hábiles. Lo estampan en el pasaporte español.</div></div>
+          <div class="enlace-oficial" onclick="abrirEnlace('https://embajada-venezolana.es')"><div style="font-size:20px;">🇻🇪</div><div><div class="enlace-txt">Consulado General de Venezuela en España</div><div class="enlace-sub">embajada-venezolana.es</div></div><span style="margin-left:auto;font-size:16px;">→</span></div>
+        </div>
+        <div class="btns-row"><button class="btn btn-gold" onclick="generarSolicitudTranseunte()">📥 Generar solicitud visado PDF</button><button class="btn btn-outline" onclick="generarCartaInvitacion()">✉️ Carta de invitación</button></div>
+      </div>
+    </div>
+    <div id="tabMarido-saime" class="tab-content">
+      <div class="alerta alerta-info">ℹ️ <strong>Cédula venezolana (SAIME):</strong> Tu marido español puede obtener la cédula venezolana por matrimonio. Se tramita en Venezuela durante su estancia con el visado transeúnte.</div>
+      <div class="progreso">
+        <div class="prog-paso done"><div class="prog-circulo">✓</div><div class="prog-lbl">Visado transeúnte</div></div>
+        <div class="prog-paso done"><div class="prog-circulo">✓</div><div class="prog-lbl">Matrimonio apostillado</div></div>
+        <div class="prog-paso act"><div class="prog-circulo">3</div><div class="prog-lbl">Solicitud SAIME</div></div>
+        <div class="prog-paso"><div class="prog-circulo">4</div><div class="prog-lbl">Biometría</div></div>
+        <div class="prog-paso"><div class="prog-circulo">5</div><div class="prog-lbl">Cédula emitida</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">🪪 Solicitud Cédula Venezolana — SAIME</div>
+        <button onclick="escucharInstruccion('Cédula venezolana para tu marido en el SAIME. Punto 1: puede obtenerla como cónyuge de venezolana por naturalización por matrimonio, artículo 45 de la Ley de Identificación. Punto 2: debe presentarse en persona en el SAIME con el acta de matrimonio apostillada y su pasaporte. Punto 3: la cédula le facilita abrir cuentas, circular libremente y hacer trámites en Venezuela.')" style="background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);border-radius:6px;padding:6px 12px;font-size:9.5px;color:var(--gold);cursor:pointer;margin-bottom:14px;display:flex;align-items:center;gap:6px;">🎧 Escuchar instrucciones SAIME</button>
+        <div class="form-grid">
+          <div class="f-group"><label class="f-label">Nombre del solicitante</label><div class="voice-wrap"><input class="f-input" id="saimeNombre" placeholder="Nombre y apellidos del marido"><button class="vbtn" onclick="voz('saimeNombre',this)">🎤</button></div></div>
+          <div class="f-group"><label class="f-label">Nacionalidad de origen</label><input class="f-input" id="saimeNacionalidad" value="Española"></div>
+          <div class="f-group"><label class="f-label">Pasaporte</label><input class="f-input" id="saimePasaporte" placeholder="Nº pasaporte español"></div>
+          <div class="f-group"><label class="f-label">Fecha nacimiento</label><input class="f-input" id="saimeFechaNac" type="date"></div>
+          <div class="f-group"><label class="f-label">Nombre del cónyuge (tú)</label><div class="voice-wrap"><input class="f-input" id="saimeConyuge" placeholder="Tu nombre completo"><button class="vbtn" onclick="voz('saimeConyuge',this)">🎤</button></div></div>
+          <div class="f-group"><label class="f-label">Cédula del cónyuge</label><input class="f-input" id="saimeCedulaConyuge" placeholder="Tu cédula venezolana"></div>
+          <div class="f-group"><label class="f-label">Nº Acta matrimonio</label><input class="f-input" id="saimeActa" placeholder="Nº del acta de matrimonio"></div>
+          <div class="f-group"><label class="f-label">Fecha del matrimonio</label><input class="f-input" id="saimeFechaMatrimonio" type="date"></div>
+          <div class="f-group"><label class="f-label">Domicilio en Venezuela</label><div class="voice-wrap"><input class="f-input" id="saimeDomVenezuela" placeholder="Dirección en Venezuela"><button class="vbtn" onclick="voz('saimeDomVenezuela',this)">🎤</button></div></div>
+          <div class="f-group"><label class="f-label">Estado / Municipio Venezuela</label><div class="voice-wrap"><input class="f-input" id="saimeEstado" placeholder="Estado venezolano"><button class="vbtn" onclick="voz('saimeEstado',this)">🎤</button></div></div>
+        </div>
+        <div class="card" style="margin-top:14px;background:var(--bg3);">
+          <div class="card-title" style="font-size:10px;">📋 Documentos para cédula — SAIME</div>
+          <div class="checklist">
+            <label class="chk-item"><input type="checkbox" onchange="marcarCheck(this)"> Pasaporte español original y copia <span class="chk-badge badge-req">OBLIGATORIO</span></label>
+            <label class="chk-item"><input type="checkbox" onchange="marcarCheck(this)"> Acta de matrimonio venezolana apostillada (original) <span class="chk-badge badge-req">OBLIGATORIO</span></label>
+            <label class="chk-item"><input type="checkbox" onchange="marcarCheck(this)"> Cédula de identidad del cónyuge venezolano/a <span class="chk-badge badge-req">OBLIGATORIO</span></label>
+            <label class="chk-item"><input type="checkbox" onchange="marcarCheck(this)"> Partida de nacimiento apostillada del solicitante <span class="chk-badge badge-req">OBLIGATORIO</span></label>
+            <label class="chk-item"><input type="checkbox" onchange="marcarCheck(this)"> Visado de transeúnte vigente <span class="chk-badge badge-req">OBLIGATORIO</span></label>
+            <label class="chk-item"><input type="checkbox" onchange="marcarCheck(this)"> Comprobante de domicilio en Venezuela <span class="chk-badge badge-req">OBLIGATORIO</span></label>
+            <label class="chk-item"><input type="checkbox" onchange="marcarCheck(this)"> 2 fotos tamaño carnet fondo blanco <span class="chk-badge badge-req">OBLIGATORIO</span></label>
+            <label class="chk-item"><input type="checkbox" onchange="marcarCheck(this)"> Pago de aranceles SAIME <span class="chk-badge badge-req">OBLIGATORIO</span></label>
+          </div>
+        </div>
+        <div class="guia-card" style="margin-top:14px;">
+          <div style="font-size:11px;font-weight:700;margin-bottom:10px;color:var(--blue);">📍 Guía paso a paso — Cédula venezolana SAIME</div>
+          <div class="guia-paso"><div class="guia-num">1</div><div class="guia-txt"><strong>Al llegar a Venezuela</strong> con el visado transeúnte, ve a la oficina SAIME de tu municipio con todos los documentos en original y copia.</div></div>
+          <div class="guia-paso"><div class="guia-num">2</div><div class="guia-txt"><strong>Solicita el formulario de naturalización por matrimonio</strong> — Art. 45 Ley Orgánica de Identificación venezolana.</div></div>
+          <div class="guia-paso"><div class="guia-num">3</div><div class="guia-txt"><strong>Toma de datos biométricos</strong> (huellas, foto, firma digital) en la oficina SAIME. Es presencial e intransferible.</div></div>
+          <div class="guia-paso"><div class="guia-num">4</div><div class="guia-txt"><strong>Pago de aranceles</strong> en el banco designado por el SAIME. Guarda el comprobante.</div></div>
+          <div class="guia-paso"><div class="guia-num">5</div><div class="guia-txt"><strong>Recogida de la cédula</strong> — el tiempo varía según la oficina SAIME local. Confirma el plazo al presentar.</div></div>
+          <div class="alerta alerta-warn" style="margin-top:10px;">⚠️ El SAIME puede tener requisitos adicionales según el estado venezolano. Verifica los requisitos actualizados en la oficina local antes de ir.</div>
+        </div>
+        <div class="btns-row"><button class="btn btn-gold" onclick="generarSolicitudSaime()">📥 Generar solicitud SAIME PDF</button></div>
+      </div>
+    </div>
+    <div id="tabMarido-consular" class="tab-content">
+      <div class="card"><div class="card-title">🏛️ Registro de Matrimonio — Consulado Venezuela</div>
+        <div class="form-grid">
+          <div class="f-group"><label class="f-label">Nombre esposa (tú)</label><div class="voice-wrap"><input class="f-input" id="matEsposa" placeholder="Tu nombre completo"><button class="vbtn" onclick="voz('matEsposa',this)">🎤</button></div></div>
+          <div class="f-group"><label class="f-label">Cédula esposa</label><input class="f-input" id="matCedEsposa" placeholder="Tu cédula venezolana"></div>
+          <div class="f-group"><label class="f-label">Nombre esposo</label><div class="voice-wrap"><input class="f-input" id="matEsposo" placeholder="Nombre marido"><button class="vbtn" onclick="voz('matEsposo',this)">🎤</button></div></div>
+          <div class="f-group"><label class="f-label">DNI esposo</label><input class="f-input" id="matDniEsposo" placeholder="DNI del marido"></div>
+          <div class="f-group"><label class="f-label">Fecha de matrimonio</label><input class="f-input" id="matFecha" type="date"></div>
+          <div class="f-group"><label class="f-label">Lugar de matrimonio</label><div class="voice-wrap"><input class="f-input" id="matLugar" placeholder="Ciudad, país"><button class="vbtn" onclick="voz('matLugar',this)">🎤</button></div></div>
+        </div>
+        <div class="btns-row"><button class="btn btn-gold" onclick="generarSolicitudConsular()">📥 Generar solicitud PDF</button></div>
+      </div>
+    </div>
+    <div id="tabMarido-menaje" class="tab-content">
+      <div class="card"><div class="card-title">📦 Declaración de Menaje de Casa (Aduanas)</div>
+        <div class="form-grid">
+          <div class="f-group"><label class="f-label">Nombre declarante</label><div class="voice-wrap"><input class="f-input" id="menajNombre" placeholder="Tu nombre"><button class="vbtn" onclick="voz('menajNombre',this)">🎤</button></div></div>
+          <div class="f-group"><label class="f-label">Pasaporte / NIE</label><input class="f-input" id="menajDoc" placeholder="Documento de identidad"></div>
+          <div class="f-group"><label class="f-label">Origen</label><input class="f-input" id="menajOrigen" placeholder="Venezuela / España"></div>
+          <div class="f-group"><label class="f-label">Destino</label><input class="f-input" id="menajDestino" placeholder="Dirección destino"></div>
+          <div class="f-group span2"><label class="f-label">Descripción del menaje</label><div style="position:relative;"><textarea class="f-input f-textarea" id="menajDesc" rows="4" style="padding-right:34px;" placeholder="Lista los bienes..."></textarea><button class="vbtn" style="position:absolute;right:7px;top:8px;transform:none;" onclick="voz('menajDesc',this)">🎤</button></div></div>
+        </div>
+        <div class="btns-row"><button class="btn btn-gold" onclick="generarMenaje()">📥 Generar declaración PDF</button></div>
+      </div>
+    </div>
+  </div>
+  <div class="tab-content" id="tab3-apostillas">
+    <div class="card"><div class="card-title">📜 Control de Apostillas y GTU</div>
+      <div class="alerta alerta-info">ℹ️ La apostilla venezolana tiene una vigencia práctica de 3 meses para trámites en España.</div>
+      <div id="apostillasList" style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px;"><div style="font-size:10px;color:var(--text3);padding:10px;">Sin documentos registrados aún.</div></div>
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:12px;margin-bottom:10px;">
+        <div class="form-grid three">
+          <div class="f-group"><label class="f-label">Documento</label><div class="voice-wrap"><input class="f-input" id="apDocumento" placeholder="Partida de nacimiento"><button class="vbtn" onclick="voz('apDocumento',this)">🎤</button></div></div>
+          <div class="f-group"><label class="f-label">Para quién</label><div class="voice-wrap"><input class="f-input" id="apPersona" placeholder="Nombre del titular"><button class="vbtn" onclick="voz('apPersona',this)">🎤</button></div></div>
+          <div class="f-group"><label class="f-label">Estado</label><select class="f-input f-select" id="apEstado"><option value="pendiente">⏳ Pendiente</option><option value="tramitando">🔄 En trámite</option><option value="apostillado">✅ Apostillado</option><option value="vencido">⚠️ Por renovar</option></select></div>
+          <div class="f-group"><label class="f-label">Fecha apostilla</label><input class="f-input" id="apFecha" type="date"></div>
+          <div class="f-group"><label class="f-label">Nº GTU / Referencia</label><input class="f-input" id="apGtu" placeholder="Número de referencia"></div>
+          <div class="f-group"><label class="f-label">Caducidad</label><input class="f-input" id="apCaducidad" type="date"></div>
+        </div>
+        <button class="btn btn-gold" style="margin-top:8px;" onclick="addApostilla()">+ Registrar</button>
+      </div>
+      <div class="btns-row"><button class="btn btn-outline" onclick="exportarApostillasCsv()">📥 Exportar CSV</button><button class="btn btn-outline" onclick="imprimirApostillas()">🖨️ Imprimir</button></div>
+    </div>
+  </div>
+</div></div>
+
+<!-- FASE 4 — MARCA -->
+<div class="view" id="view-f4"><div class="page">
+  <div class="sec-header"><div class="sec-title">™️ Marca Personal y Propiedad Intelectual</div><div class="sec-sub">Registro OEPM · Clasificación de Niza · Memoria técnica del software</div></div>
+  <div class="status" id="f4Status"></div>
+  <div class="tabs">
+    <div class="tab act" onclick="setTab4('oepm',this)">™️ Registro OEPM</div>
+    <div class="tab" onclick="setTab4('pi',this)">💻 Propiedad Intelectual</div>
+  </div>
+  <div class="tab-content act" id="tab4-oepm">
+    <div class="marca-preview"><div class="marca-nombre">FÁTIMA CALDEA</div><div class="marca-sub">MARCA REGISTRADA · OEPM ESPAÑA</div></div>
+    <div class="card"><div class="card-title">™️ Solicitud de Registro de Marca — OEPM</div>
+      <div class="form-oficial">
+        <div class="fo-header"><div class="fo-escudo">™️</div><div class="fo-title">OFICINA ESPAÑOLA DE PATENTES Y MARCAS (OEPM)</div><div class="fo-sub">SOLICITUD DE REGISTRO DE MARCA NACIONAL</div></div>
+        <div class="fo-body">
+          <div class="fo-row"><div class="fo-lbl">Denominación</div><div class="fo-val"><input id="marcaDenom" value="FÁTIMA CALDEA"></div></div>
+          <div class="fo-row"><div class="fo-lbl">Tipo de marca</div><div class="fo-val"><input id="marcaTipo" value="Denominativa"></div></div>
+          <div class="fo-row"><div class="fo-lbl">Solicitante / Titular</div><div class="fo-val"><input id="marcaSol" class="auto-fill" placeholder="Tu nombre completo"></div></div>
+          <div class="fo-row"><div class="fo-lbl">NIE / DNI</div><div class="fo-val"><input id="marcaNie" class="auto-fill" placeholder="Tu NIE"></div></div>
+          <div class="fo-row"><div class="fo-lbl">Email</div><div class="fo-val"><input id="marcaEmail" class="auto-fill" placeholder="Email"></div></div>
+          <div class="fo-row"><div class="fo-lbl">Clases de Niza</div><div class="fo-val"><input id="marcaClases" placeholder="Selecciona abajo"></div></div>
+        </div>
+      </div>
+      <div style="margin-top:14px;"><div class="card-title" style="font-size:10px;">Clasificación Internacional de Niza</div>
+        <div class="niza-grid">
+          <div class="niza-item" onclick="toggleNiza(this,'44')"><div class="niza-num">Clase 44</div><div class="niza-desc">Servicios de peluquería, salones de belleza</div></div>
+          <div class="niza-item" onclick="toggleNiza(this,'41')"><div class="niza-num">Clase 41</div><div class="niza-desc">Educación, formación, cursos online</div></div>
+          <div class="niza-item" onclick="toggleNiza(this,'42')"><div class="niza-num">Clase 42</div><div class="niza-desc">Servicios tecnológicos, software</div></div>
+          <div class="niza-item" onclick="toggleNiza(this,'45')"><div class="niza-num">Clase 45</div><div class="niza-desc">Servicios jurídicos, gestión documental</div></div>
+          <div class="niza-item" onclick="toggleNiza(this,'35')"><div class="niza-num">Clase 35</div><div class="niza-desc">Publicidad, gestión de negocios</div></div>
+        </div>
+      </div>
+      <div class="tasa-card" style="margin-top:14px;"><div class="tasa-title">💳 Tasas OEPM</div><div class="tasa-campo"><span class="tasa-lbl">Solicitud 1 clase (online)</span><span class="tasa-val">143,79 €</span></div><div class="tasa-campo"><span class="tasa-lbl">Cada clase adicional</span><span class="tasa-val">+ 80,45 €</span></div><div class="tasa-campo"><span class="tasa-lbl">Vigencia</span><span class="tasa-val">10 años renovables</span></div></div>
+      <div class="btns-row"><button class="btn btn-gold" onclick="generarSolicitudOepm()">📥 Generar solicitud OEPM PDF</button><button class="btn btn-outline" onclick="inyectarBovedaEnMarca()">🔄 Inyectar mis datos</button><button class="btn btn-blue" onclick="abrirEnlace('https://www.oepm.es/es/marcas_y_nombres_comerciales/solicitud_de_marcas/')">🌐 Sede OEPM</button></div>
+    </div>
+  </div>
+  <div class="tab-content" id="tab4-pi">
+    <div class="card"><div class="card-title">💻 Memoria Técnica — Propiedad Intelectual del Software</div>
+      <div class="form-oficial">
+        <div class="fo-header"><div class="fo-escudo">©</div><div class="fo-title">REGISTRO DE LA PROPIEDAD INTELECTUAL</div><div class="fo-sub">MEMORIA TÉCNICA — OBRA DE SOFTWARE</div></div>
+        <div class="fo-body">
+          <div class="fo-row"><div class="fo-lbl">Título de la obra</div><div class="fo-val"><input id="piTitulo" value="FÁTIMA CALDEA STUDIO PRO — Sistema Privado de Gestión Profesional"></div></div>
+          <div class="fo-row"><div class="fo-lbl">Tipo de obra</div><div class="fo-val"><input id="piTipo" value="Programa de ordenador (código fuente HTML/CSS/JavaScript)"></div></div>
+          <div class="fo-row"><div class="fo-lbl">Versión</div><div class="fo-val"><input id="piVersion" value="V5 (Studio Pro) + V28 (Documentos) + V1 (Legal)"></div></div>
+          <div class="fo-row"><div class="fo-lbl">Autor / Titular</div><div class="fo-val"><input id="piAutor" class="auto-fill" placeholder="Tu nombre completo"></div></div>
+          <div class="fo-row"><div class="fo-lbl">NIE</div><div class="fo-val"><input id="piNie" class="auto-fill" placeholder="Tu NIE"></div></div>
+          <div class="fo-row"><div class="fo-lbl">Fecha de creación</div><div class="fo-val"><input id="piFecha" type="date"></div></div>
+          <div class="fo-section-title">DESCRIPCIÓN TÉCNICA</div>
+          <div class="fo-row" style="min-height:80px;"><div class="fo-lbl">Descripción</div><div class="fo-val" style="align-items:flex-start;padding:6px;"><textarea style="width:100%;border:none;font-family:'Times New Roman',serif;font-size:11px;resize:none;min-height:70px;outline:none;" id="piDesc">Sistema privado de gestión profesional para peluquería, colorimetría y fitness. Comprende: Studio Pro V5, Documentos Pro V28 y Sistema Legal V1. Todo el código fuente es original y de autoría exclusiva de Fátima Caldea.</textarea></div></div>
+        </div>
+      </div>
+      <div class="btns-row"><button class="btn btn-gold" onclick="generarMemoriaTecnica()">📥 Generar Memoria Técnica PDF</button><button class="btn btn-outline" onclick="inyectarBovedaEnPi()">🔄 Inyectar mis datos</button></div>
+    </div>
+  </div>
+</div></div>
+
+<!-- FASE 5 — SEDES -->
+<div class="view" id="view-f5"><div class="page">
+  <div class="sec-header"><div class="sec-title">🏛️ Panel de Sedes Electrónicas & Cl@ve</div><div class="sec-sub">Acceso directo a administraciones · Guía Cl@ve · Firma electrónica</div></div>
+  <div class="card"><div class="card-title">🔑 Guía Cl@ve Permanente paso a paso</div>
+    <div class="guia-card">
+      <div class="guia-paso"><div class="guia-num">1</div><div class="guia-txt"><strong>Regístrate en Cl@ve</strong> — Ve a cualquier oficina de la AEAT, SEPE o Correos con tu NIE y pasaporte.</div></div>
+      <div class="guia-paso"><div class="guia-num">2</div><div class="guia-txt"><strong>Activa tu Cl@ve PIN</strong> — Recibes una carta con código de activación. Actívala en la web de Cl@ve.</div></div>
+      <div class="guia-paso"><div class="guia-num">3</div><div class="guia-txt"><strong>Instala la app Cl@ve</strong> en tu móvil. Genera PINs de 4 dígitos para firmar trámites online.</div></div>
+      <div class="guia-paso"><div class="guia-num">4</div><div class="guia-txt"><strong>Úsala en cualquier sede electrónica</strong> — Al iniciar sesión elige "Cl@ve" y usa el PIN generado.</div></div>
+      <div class="enlace-oficial" onclick="abrirEnlace('https://clave.gob.es')"><div style="font-size:20px;">🔑</div><div><div class="enlace-txt">Portal oficial Cl@ve</div><div class="enlace-sub">clave.gob.es</div></div><span style="margin-left:auto;font-size:16px;">→</span></div>
+    </div>
+  </div>
+  <div class="card"><div class="card-title">🏛️ Directorio de Sedes Electrónicas</div>
+    <div class="sede-grid">
+      <div class="sede-card" onclick="abrirEnlace('https://sede.mjusticia.gob.es')"><div class="sede-icon">⚖️</div><div class="sede-name">Ministerio de Justicia</div><div class="sede-url">sede.mjusticia.gob.es</div><div class="sede-desc">Nacionalidad, Registro Civil, Apostillas</div></div>
+      <div class="sede-card" onclick="abrirEnlace('https://sede.sepe.gob.es')"><div class="sede-icon">💼</div><div class="sede-name">SEPE (Paro / Empleo)</div><div class="sede-url">sede.sepe.gob.es</div><div class="sede-desc">Prestaciones, subsidios, demanda de empleo</div></div>
+      <div class="sede-card" onclick="abrirEnlace('https://sede.seg-social.gob.es')"><div class="sede-icon">🏥</div><div class="sede-name">Seguridad Social</div><div class="sede-url">sede.seg-social.gob.es</div><div class="sede-desc">Afiliación, vida laboral, pensiones</div></div>
+      <div class="sede-card" onclick="abrirEnlace('https://sede.extranjeros.gob.es')"><div class="sede-icon">🌍</div><div class="sede-name">Extranjería</div><div class="sede-url">sede.extranjeros.gob.es</div><div class="sede-desc">NIE, residencia, reagrupación</div></div>
+      <div class="sede-card" onclick="abrirEnlace('https://www.agenciatributaria.es')"><div class="sede-icon">💰</div><div class="sede-name">Agencia Tributaria</div><div class="sede-url">agenciatributaria.es</div><div class="sede-desc">Declaración renta, certificados fiscales</div></div>
+      <div class="sede-card" onclick="abrirEnlace('https://www.oepm.es')"><div class="sede-icon">™️</div><div class="sede-name">OEPM — Marcas</div><div class="sede-url">oepm.es</div><div class="sede-desc">Registro de marcas y patentes</div></div>
+      <div class="sede-card" onclick="abrirEnlace('https://clave.gob.es')"><div class="sede-icon">🔑</div><div class="sede-name">Cl@ve — Firma</div><div class="sede-url">clave.gob.es</div><div class="sede-desc">Registro Cl@ve, PIN, firma digital</div></div>
+      <div class="sede-card" onclick="abrirEnlace('https://embajada-venezolana.es')"><div class="sede-icon">🇻🇪</div><div class="sede-name">Consulado Venezuela</div><div class="sede-url">embajada-venezolana.es</div><div class="sede-desc">Apostillas, pasaportes, visados</div></div>
+    </div>
+  </div>
+  <div class="card"><div class="card-title">📋 Mis datos para copiar en sedes electrónicas</div>
+    <div class="datos-copiar" id="datosParaCopiar"><button class="copy-btn-abs" onclick="copiarMisDatos()">📋 Copiar</button>Carga tus datos en la Bóveda (Fase 1) para ver la ficha lista para copiar</div>
+  </div>
+</div></div>
+
+<!-- COPILOTO -->
+<div id="copiloBtn" onclick="toggleCopiloto()" title="Abrir Copiloto Legal">⚖️</div>
+<div id="copiloPanel" style="display:none;flex-direction:column;">
+  <div style="background:linear-gradient(135deg,#1a1a1a,#2d2d2d);padding:11px 14px;display:flex;align-items:center;gap:10px;">
+    <div style="width:34px;height:34px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">⚖️</div>
+    <div style="flex:1;"><div style="font-size:11px;font-weight:700;color:var(--gold);">COPILOTO LEGAL</div><div style="font-size:8.5px;color:rgba(201,168,76,.6);">Mentoría Legal Privada · Fátima Caldea</div></div>
+    <div style="display:flex;gap:5px;align-items:center;">
+      <button id="copiloVozBtn" onclick="toggleVozCopiloto()" style="background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.3);border-radius:20px;color:var(--gold);font-size:9.5px;padding:3px 7px;cursor:pointer;">🔊 Voz</button>
+      <button onclick="toggleCopiloto()" style="background:none;border:none;color:#888;font-size:15px;cursor:pointer;">✕</button>
+    </div>
+  </div>
+  <div id="copiloFaseBar" style="background:rgba(201,168,76,.08);border-bottom:1px solid var(--border);padding:6px 14px;font-size:9.5px;color:var(--gold);display:flex;align-items:center;gap:6px;">📍 <span id="copiloFaseNombre" style="font-weight:700;">Bóveda Familiar</span></div>
+  <div id="copiloMensajes" style="flex:1;overflow-y:auto;padding:12px 14px;display:flex;flex-direction:column;gap:8px;max-height:260px;"></div>
+  <div style="padding:9px 11px;border-top:1px solid var(--border);display:flex;gap:6px;align-items:flex-end;">
+    <textarea id="copiloInput" placeholder="Pregúntame sobre tu trámite..." style="flex:1;padding:7px 9px;border:1.5px solid var(--border);border-radius:8px;font-size:10.5px;font-family:inherit;resize:none;max-height:65px;outline:none;line-height:1.5;" rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();enviarCopiloto();}"></textarea>
+    <button onclick="vozACopiloto()" style="width:32px;height:32px;background:rgba(201,168,76,.12);border:1.5px solid var(--gold);border-radius:8px;font-size:13px;cursor:pointer;flex-shrink:0;" id="copiloMicBtn">🎤</button>
+    <button onclick="enviarCopiloto()" style="width:32px;height:32px;background:var(--gold);border:none;border-radius:8px;font-size:13px;cursor:pointer;flex-shrink:0;">→</button>
+  </div>
+  <div id="copiloSugerencias" style="padding:7px 11px;border-top:1px solid var(--border);display:flex;gap:5px;flex-wrap:wrap;background:var(--bg3);"></div>
+</div>
+
+<div class="ftr"><span>Sistema Legal Privado · <span>Fátima Caldea</span></span><span style="margin-left:auto;">✦ SISTEMA LEGAL V1 · 5 FASES · tramites.fatimahairstudio082.com</span></div>
+</div><!-- /appContent -->
+
+<!-- FIREBASE SDK -->
+<script type="module">
+import{initializeApp}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import{getAuth,signInWithEmailAndPassword,signOut,onAuthStateChanged}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+
+const firebaseConfig={
+  apiKey:"AIzaSyBxe1gf2g7GjaZ9nid-YdsJhHPgH93XGfw",
+  authDomain:"tramites-eb8cb.firebaseapp.com",
+  projectId:"tramites-eb8cb",
+  storageBucket:"tramites-eb8cb.firebasestorage.app",
+  messagingSenderId:"63815441304",
+  appId:"1:63815441304:web:afe54267b5232c7e5329ed"
+};
+
+const app=initializeApp(firebaseConfig);
+const auth=getAuth(app);
+
+// Exponer funciones al scope global
+window._fbLogin=(email,pass)=>signInWithEmailAndPassword(auth,email,pass);
+window._fbLogout=()=>signOut(auth);
+
+onAuthStateChanged(auth,user=>{
+  if(user){
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('appContent').style.display='block';
+    const name=user.email.split('@')[0];
+    document.getElementById('userChipName').textContent=name+' · Privado';
+    // Cargar datos al entrar
+    if(typeof cargarBoveda==='function')cargarBoveda();
+    if(typeof cargarTabla==='function')cargarTabla();
+    if(typeof actualizarDatosCopia==='function')actualizarDatosCopia();
+  }else{
+    document.getElementById('loginScreen').style.display='flex';
+    document.getElementById('appContent').style.display='none';
+  }
+});
+</script>
+
+<script>
+'use strict';
+// ══════════════════════════════════════════════════════
+// AUTH
+// ══════════════════════════════════════════════════════
+function doLogin(){
+  const email=document.getElementById('loginEmail').value.trim();
+  const pass=document.getElementById('loginPass').value;
+  const err=document.getElementById('loginErr');
+  err.style.display='none';
+  if(!email||!pass){err.textContent='Introduce email y contraseña.';err.style.display='block';return;}
+  if(typeof window._fbLogin!=='function'){err.textContent='Error de conexión. Recarga la página.';err.style.display='block';return;}
+  window._fbLogin(email,pass).catch(e=>{
+    const msgs={
+      'auth/invalid-credential':'Email o contraseña incorrectos.',
+      'auth/user-not-found':'Este email no está registrado en el sistema.',
+      'auth/wrong-password':'Contraseña incorrecta.',
+      'auth/too-many-requests':'Demasiados intentos. Espera unos minutos.',
+      'auth/network-request-failed':'Sin conexión a internet.'
+    };
+    err.textContent=msgs[e.code]||'Error al iniciar sesión. Inténtalo de nuevo.';
+    err.style.display='block';
+  });
+}
+function doLogout(){
+  if(typeof window._fbLogout==='function')window._fbLogout();
+}
+
+// ══════════════════════════════════════════════════════
+// DATOS GLOBALES
+// ══════════════════════════════════════════════════════
+let BOVEDA={nombre:'',nie:'',fechaNac:'',tel:'',email:'',domicilio:'',municipio:'',provincia:'',cp:'',nacionalidad:'',paisNac:'',profesion:'',marido:'',maridoDni:'',hija:''};
+let nizaClases=[],apostillasData=[],tablaData=[];
+let activeRec=null,activeRecBtn=null;
+const gv=id=>{const e=document.getElementById(id);return e?e.value:'';};
+const sv=id=>v=>{const e=document.getElementById(id);if(e&&v!==undefined)e.value=v;};
+const svEl=(id,val)=>{const e=document.getElementById(id);if(e&&val)e.value=val;};
+
+// ══════════════════════════════════════════════════════
+// NAVEGACIÓN
+// ══════════════════════════════════════════════════════
+function setFase(id,btn){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('act'));
+  document.querySelectorAll('.fase-btn').forEach(b=>b.classList.remove('act'));
+  const v=document.getElementById('view-'+id);if(v)v.classList.add('act');
+  if(btn)btn.classList.add('act');
+  if(id==='f1'){renderTabla();actualizarDatosCopia();}
+  if(id==='f5')actualizarDatosCopia();
+  document.getElementById('copiloFaseNombre').textContent={f1:'Bóveda Familiar',f2:'Legal España',f3:'Puente Venezuela',f4:'Marca Personal',f5:'Sedes & Cl@ve'}[id]||id;
+}
+function setTab2(name,btn){switchTab('#view-f2','tab2-'+name,btn);}
+function setTab3(name,btn){switchTab('#view-f3','tab3-'+name,btn);}
+function setTab4(name,btn){switchTab('#view-f4','tab4-'+name,btn);}
+function switchTab(sel,tabId,btn){
+  const parent=document.querySelector(sel);if(!parent)return;
+  parent.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('act'));
+  parent.querySelectorAll('.tab').forEach(t=>t.classList.remove('act'));
+  const tc=document.getElementById(tabId);if(tc)tc.classList.add('act');
+  if(btn)btn.classList.add('act');
+}
+function setTabMarido(name,btn){
+  const parent=document.getElementById('tab3-marido');if(!parent)return;
+  parent.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('act'));
+  parent.querySelectorAll('.tab').forEach(t=>t.classList.remove('act'));
+  const tc=document.getElementById('tabMarido-'+name);if(tc)tc.classList.add('act');
+  if(btn)btn.classList.add('act');
+}
+
+// ══════════════════════════════════════════════════════
+// VOZ
+// ══════════════════════════════════════════════════════
+function voz(targetOrId,btn){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){alert('Usa Chrome o Edge para voz.');return;}
+  if(activeRec&&activeRecBtn===btn){activeRec.stop();return;}
+  if(activeRec)activeRec.stop();
+  const target=typeof targetOrId==='string'?document.getElementById(targetOrId):targetOrId;if(!target)return;
+  const rec=new SR();rec.lang='es-ES';rec.continuous=false;rec.interimResults=true;
+  activeRec=rec;activeRecBtn=btn;btn.classList.add('rec');btn.textContent='⏹';
+  const ind=document.getElementById('vozInd');if(ind)ind.classList.add('vis');
+  let final='';
+  rec.onresult=e=>{let interim='';for(let i=e.resultIndex;i<e.results.length;i++){if(e.results[i].isFinal)final+=e.results[i][0].transcript+' ';else interim=e.results[i][0].transcript;}target.value=(target.value?target.value.trimEnd()+' ':'')+( final+interim).trim();};
+  rec.onend=()=>{btn.classList.remove('rec');btn.textContent='🎤';if(ind)ind.classList.remove('vis');activeRec=null;activeRecBtn=null;};
+  rec.onerror=()=>{btn.classList.remove('rec');btn.textContent='🎤';if(ind)ind.classList.remove('vis');activeRec=null;activeRecBtn=null;};
+  rec.start();
+}
+
+// ══════════════════════════════════════════════════════
+// BÓVEDA
+// ══════════════════════════════════════════════════════
+function sincronizarBoveda(){
+  BOVEDA={nombre:gv('bNombre'),nie:gv('bNie'),fechaNac:gv('bFechaNac'),tel:gv('bTel'),email:gv('bEmail'),domicilio:gv('bDomicilio'),municipio:gv('bMunicipio'),provincia:gv('bProvincia'),cp:gv('bCp'),nacionalidad:gv('bNacionalidad'),paisNac:gv('bPaisNac'),profesion:gv('bProfesion'),marido:gv('bMarido'),maridoDni:gv('bMaridoDni'),hija:gv('bHija')};
+  renderTabla();
+}
+function guardarBoveda(){
+  sincronizarBoveda();
+  try{localStorage.setItem('fc_boveda_legal',JSON.stringify(BOVEDA));}catch(e){}
+  const ok=document.getElementById('bovedaOk');ok.style.display='flex';setTimeout(()=>ok.style.display='none',3000);
+  inyectarBovedaEnNac();inyectarBovedaEnHom();inyectarBovedaEnMarca();inyectarBovedaEnPi();actualizarDatosCopia();
+}
+function cargarBoveda(){
+  try{const d=localStorage.getItem('fc_boveda_legal');if(d)BOVEDA=JSON.parse(d);}catch(e){}
+  svEl('bNombre',BOVEDA.nombre);svEl('bNie',BOVEDA.nie);svEl('bFechaNac',BOVEDA.fechaNac);svEl('bTel',BOVEDA.tel);svEl('bEmail',BOVEDA.email);svEl('bDomicilio',BOVEDA.domicilio);svEl('bMunicipio',BOVEDA.municipio);svEl('bProvincia',BOVEDA.provincia);svEl('bCp',BOVEDA.cp);svEl('bNacionalidad',BOVEDA.nacionalidad);svEl('bPaisNac',BOVEDA.paisNac);svEl('bProfesion',BOVEDA.profesion);svEl('bMarido',BOVEDA.marido);svEl('bMaridoDni',BOVEDA.maridoDni);svEl('bHija',BOVEDA.hija);
+}
+function inyectarBovedaEnNac(){const nom=BOVEDA.nombre.split(' ');svEl('nacNombre',nom[0]||BOVEDA.nombre);svEl('nacApe1',nom[1]||'');svEl('nacNacionalidad',BOVEDA.nacionalidad);svEl('nacNie',BOVEDA.nie);svEl('nacFechaNac',BOVEDA.fechaNac?new Date(BOVEDA.fechaNac).toLocaleDateString('es-ES'):'');svEl('nacCalle',BOVEDA.domicilio);svEl('nacMunicipio',BOVEDA.municipio);svEl('nacProvincia',BOVEDA.provincia);svEl('nacTel',BOVEDA.tel);svEl('nacEmail',BOVEDA.email);}
+function inyectarBovedaEnHom(){svEl('homNombre',BOVEDA.nombre);svEl('homNie',BOVEDA.nie);svEl('homDomicilio',BOVEDA.domicilio+', '+BOVEDA.municipio);svEl('homContacto',BOVEDA.tel+' · '+BOVEDA.email);}
+function inyectarBovedaEnMarca(){svEl('marcaSol',BOVEDA.nombre);svEl('marcaNie',BOVEDA.nie);svEl('marcaEmail',BOVEDA.email);}
+function inyectarBovedaEnPi(){svEl('piAutor',BOVEDA.nombre);svEl('piNie',BOVEDA.nie);}
+function reinyectarBoveda(){sincronizarBoveda();renderTabla();stL('f1Status','✓ Datos de Bóveda reinyectados','ok');}
+
+// ══════════════════════════════════════════════════════
+// TABLAS
+// ══════════════════════════════════════════════════════
+const TABLAS={
+  datos_personales:[{campo:'Nombre completo',key:'nombre'},{campo:'NIE / DNI',key:'nie'},{campo:'Fecha nacimiento',key:'fechaNac'},{campo:'Teléfono',key:'tel'},{campo:'Email',key:'email'},{campo:'Domicilio',key:'domicilio'},{campo:'Municipio',key:'municipio'},{campo:'Nacionalidad',key:'nacionalidad'}],
+  candidatura_ett:[{campo:'Apellidos y nombre',key:'nombre'},{campo:'DNI / NIE',key:'nie'},{campo:'Teléfono',key:'tel'},{campo:'Email',key:'email'},{campo:'Domicilio',key:'domicilio'},{campo:'Municipio',key:'municipio'},{campo:'Puesto solicitado',key:'_libre',val:'',fuente:'Manual'},{campo:'Disponibilidad',key:'_libre2',val:'Inmediata',fuente:'Manual'}],
+  sepe:[{campo:'Nombre y apellidos',key:'nombre'},{campo:'DNI / NIE',key:'nie'},{campo:'Teléfono',key:'tel'},{campo:'Email',key:'email'},{campo:'Domicilio',key:'domicilio'},{campo:'Situación',key:'_libre',val:'Desempleo',fuente:'Manual'},{campo:'IBAN',key:'_libre2',val:'',fuente:'Manual'}],
+  bolsa_empleo:[{campo:'Nombre',key:'nombre'},{campo:'DNI / NIE',key:'nie'},{campo:'Dirección',key:'domicilio'},{campo:'Teléfono',key:'tel'},{campo:'Email',key:'email'},{campo:'Especialidad',key:'profesion'},{campo:'Disponibilidad',key:'_libre',val:'Inmediata',fuente:'Manual'}],
+  banco_nomina:[{campo:'Nombre titular',key:'nombre'},{campo:'NIE / DNI',key:'nie'},{campo:'Banco',key:'_libre',val:'',fuente:'Manual'},{campo:'IBAN',key:'_libre2',val:'',fuente:'Manual'},{campo:'Propósito',key:'_libre3',val:'Domiciliación de nómina',fuente:'Manual'}],
+  extranjeria:[{campo:'Nombre completo',key:'nombre'},{campo:'NIE',key:'nie'},{campo:'Nacionalidad',key:'nacionalidad'},{campo:'Domicilio en España',key:'domicilio'},{campo:'Municipio',key:'municipio'},{campo:'Teléfono',key:'tel'},{campo:'Email',key:'email'},{campo:'Tipo de trámite',key:'_libre',val:'',fuente:'Manual'}],
+  nacionalidad:[{campo:'Nombre',key:'nombre'},{campo:'NIE',key:'nie'},{campo:'Fecha nacimiento',key:'fechaNac'},{campo:'Nacionalidad actual',key:'nacionalidad'},{campo:'Domicilio',key:'domicilio'},{campo:'Teléfono',key:'tel'},{campo:'Email',key:'email'},{campo:'Años de residencia',key:'_libre',val:'2 (venezolana — Art.22 CC)',fuente:'Manual'},{campo:'CCSE aprobado',key:'_libre2',val:'',fuente:'Manual'},{campo:'Tasa 790-026 pagada',key:'_libre3',val:'',fuente:'Manual'}]
+};
+function getBVal(key){if(!key||key.startsWith('_libre'))return'';return BOVEDA[key]||'';}
+function cargarTabla(){const tipo=gv('tablaSelector');const def=TABLAS[tipo]||TABLAS.datos_personales;tablaData=def.map(r=>({campo:r.campo,val:getBVal(r.key)||(r.val||''),fuente:r.fuente||'Bóveda',key:r.key}));renderTabla();}
+function renderTabla(){const tipo=gv('tablaSelector');const def=TABLAS[tipo]||[];if(!tablaData.length||tablaData[0]?.campo!==def[0]?.campo)cargarTabla();const tbody=document.getElementById('tablaCuerpo');if(!tbody)return;tbody.innerHTML=tablaData.map((row,i)=>`<tr><td class="lbl">${row.campo}</td><td class="val"><input value="${row.val||''}" class="${row.fuente==='Bóveda'?'auto':''}" placeholder="${row.fuente==='Bóveda'?'(auto de Bóveda)':'Escribe aquí...'}" oninput="tablaData[${i}].val=this.value"></td><td style="padding:5px 8px;text-align:center;"><span style="font-size:8px;padding:2px 6px;border-radius:10px;font-weight:600;background:${row.fuente==='Bóveda'?'#eff6ff':'#f0fdf4'};color:${row.fuente==='Bóveda'?'#2563EB':'#16A34A'};">${row.fuente==='Bóveda'?'🔵 Auto':'✏️ Manual'}</span></td></tr>`).join('');}
+function exportarCsvReal(){if(!tablaData.length)return;const csv='\uFEFF'+tablaData.map(r=>`"${r.campo}","${r.val||''}"`).join('\n');const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});const a=document.createElement('a');a.download=`datos_${gv('tablaSelector')}_${Date.now()}.csv`;a.href=URL.createObjectURL(blob);a.click();stL('f1Status','✓ CSV exportado','ok');}
+function exportarPdfReal(){if(!tablaData.length)return;const tipo=gv('tablaSelector').replace(/_/g,' ').toUpperCase();const hoy=new Date().toLocaleDateString('es-ES');const rows=tablaData.map(r=>`<tr><td style="padding:7px 10px;border:1px solid #ccc;font-weight:700;background:#f8f7f4;width:200px;font-size:10.5px;">${r.campo}</td><td style="padding:7px 10px;border:1px solid #ccc;font-size:11px;">${r.val||'—'}</td></tr>`).join('');const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:'Segoe UI',Arial,sans-serif;padding:20mm;font-size:11px;}h2{font-size:13pt;color:#C9A84C;margin-bottom:4px;}p{font-size:9pt;color:#888;margin-bottom:14px;}table{width:100%;border-collapse:collapse;}@media print{@page{size:A4;margin:15mm;}}</style></head><body><h2>${tipo}</h2><p>Generado el ${hoy} · Fátima Caldea Sistema Legal</p><table>${rows}</table><script>window.onload=()=>window.print()<\/script></body></html>`;const w=window.open('','_blank');if(!w)return;w.document.write(html);w.document.close();stL('f1Status','✓ PDF generado','ok');}
+function copiarTablaReal(){const txt=tablaData.map(r=>`${r.campo}\t${r.val||''}`).join('\n');navigator.clipboard.writeText(txt).then(()=>stL('f1Status','✓ Tabla copiada — pega en Excel con Ctrl+V','ok'));}
+
+// ══════════════════════════════════════════════════════
+// FORMULARIOS OFICIALES
+// ══════════════════════════════════════════════════════
+function imprimirFormOficial(tipo){
+  const hoy=new Date().toLocaleDateString('es-ES');let campos=[];
+  if(tipo==='nac')campos=[['Nombre',gv('nacNombre')],['Apellido',gv('nacApe1')],['Fecha nacimiento',gv('nacFechaNac')],['Nacionalidad',gv('nacNacionalidad')],['NIE',gv('nacNie')],['Domicilio',gv('nacCalle')],['Municipio',gv('nacMunicipio')],['Provincia',gv('nacProvincia')],['Teléfono',gv('nacTel')],['Email',gv('nacEmail')],['Años residencia',gv('nacAniosRes')],['Vía solicitud',gv('nacVia')],['CCSE',gv('nacCcse')],['DELE A2',gv('nacDele')]];
+  else if(tipo==='hom')campos=[['Nombre y apellidos',gv('homNombre')],['NIE',gv('homNie')],['Domicilio',gv('homDomicilio')],['Contacto',gv('homContacto')],['Título a homologar',gv('homTitulo')],['Centro emisor',gv('homCentro')],['País',gv('homPais')],['Equivalencia',gv('homEquivalencia')]];
+  const titulo=tipo==='nac'?'SOLICITUD DE NACIONALIDAD ESPAÑOLA POR RESIDENCIA':'SOLICITUD DE HOMOLOGACIÓN DE TÍTULO EXTRANJERO';
+  const ministerio=tipo==='nac'?'MINISTERIO DE JUSTICIA':'MINISTERIO DE EDUCACIÓN, FP Y DEPORTE';
+  const rows=campos.map(([l,v])=>`<tr><td style="padding:7px 10px;border:1px solid #ccc;font-weight:700;background:#f8f8f8;width:200px;font-size:10.5px;">${l}</td><td style="padding:7px 10px;border:1px solid #ccc;font-size:11px;">${v||'—'}</td></tr>`).join('');
+  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:'Times New Roman',serif;padding:20mm;font-size:11px;}.hdr{background:#1a1a1a;color:#fff;padding:12px;text-align:center;border-radius:4px 4px 0 0;}.titulo{font-size:13pt;font-weight:700;}.sub{font-size:9pt;opacity:.8;margin-top:3px;}table{width:100%;border-collapse:collapse;border:2px solid #1a1a1a;}.firma{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;margin-top:30px;}.f-box{text-align:center;border-top:1px solid #333;padding-top:6px;margin-top:40px;font-size:9pt;}.aviso{font-size:8pt;color:#888;margin-top:14px;text-align:center;}@media print{@page{size:A4;margin:15mm;}}</style></head><body><div class="hdr"><div class="titulo">${ministerio}</div><div class="sub">${titulo}</div></div><table>${rows}</table><div class="firma"><div class="f-box">Lugar y fecha<br>${hoy}</div><div class="f-box">Firma del solicitante</div><div class="f-box">Sello / Entrada</div></div><div class="aviso">Generado el ${hoy} · Fátima Caldea Sistema Legal</div><script>window.onload=()=>window.print()<\/script></body></html>`;
+  const w=window.open('','_blank');if(!w)return;w.document.write(html);w.document.close();
+}
+
+// ══════════════════════════════════════════════════════
+// RECLAMACIONES
+// ══════════════════════════════════════════════════════
+function generarTextoReclamacion(){
+  const tipo=gv('recTipo'),empresa=gv('recEmpresa'),problema=gv('recProblema'),contrato=gv('recContrato'),importe=gv('recImporte');
+  const nom=BOVEDA.nombre||'[Tu nombre]',nie=BOVEDA.nie||'[NIE]',dom=BOVEDA.domicilio+', '+BOVEDA.municipio,hoy=new Date().toLocaleDateString('es-ES');
+  const leyes={luz:'Ley 24/2013 del Sector Eléctrico',agua:'normativa municipal de suministro',gas:'Ley 34/1998 del Sector de Hidrocarburos',telefonia:'Ley 9/2014 General de Telecomunicaciones',ss:'Ley General de la Seguridad Social',arrendador:'Ley 29/1994 de Arrendamientos Urbanos',banco:'normativa del Banco de España',empresa:'Estatuto de los Trabajadores'};
+  const ley=leyes[tipo]||'la normativa vigente aplicable';
+  const txt=`${dom}, ${hoy}\n\nSEÑORES DE ${(empresa||'LA EMPRESA').toUpperCase()}:\n\nD./Dña. ${nom}, con NIE/DNI ${nie}, con domicilio en ${dom}, teléfono ${BOVEDA.tel}, email ${BOVEDA.email},\n\nEXPONE:\n\nQue con fecha reciente, ha sido objeto de la siguiente incidencia con ${empresa||'su empresa'}${contrato?' (referencia: '+contrato+')':''}:\n\n${problema||'[Describe aquí el problema]'}\n\nQue dicha situación vulnera los derechos reconocidos en ${ley} y en la Ley General para la Defensa de los Consumidores y Usuarios (RDL 1/2007).\n\n${importe?'Que el importe reclamado es de '+importe+'.\n\n':''}SOLICITA:\n\nQue se subsane la incidencia en el plazo de 15 días hábiles, con apercibimiento de acudir a los servicios de consumo de la Comunidad Autónoma.\n\nEn ${BOVEDA.municipio||'___'}, a ${hoy}\n\nFdo.: ${nom}\nNIE/DNI: ${nie}`;
+  const el=document.getElementById('recTexto');if(el)el.value=txt;
+}
+function generarPdfReclamacion(){generarTextoReclamacion();const txt=gv('recTexto');const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:'Times New Roman',serif;padding:25mm 22mm;font-size:12px;line-height:1.9;color:#1a1a1a;max-width:700px;margin:0 auto;}.pre{white-space:pre-wrap;line-height:1.9;}@media print{@page{size:A4;margin:20mm;}}</style></head><body><div class="pre">${txt}</div><script>window.onload=()=>window.print()<\/script></body></html>`;const w=window.open('','_blank');if(!w)return;w.document.write(html);w.document.close();stL('f2Status','✓ Reclamación jurídica generada','ok');}
+
+// ══════════════════════════════════════════════════════
+// RECURSO REPOSICIÓN
+// ══════════════════════════════════════════════════════
+function generarRecurso(){
+  const org=gv('recOrganismo'),exp=gv('recExpediente'),tram=gv('recTramite'),fecRes=gv('recFechaRes')?new Date(gv('recFechaRes')).toLocaleDateString('es-ES'):'',motivo=gv('recMotivo'),aleg=gv('recAlegaciones');
+  const nom=BOVEDA.nombre||'[Nombre]',nie=BOVEDA.nie||'[NIE]',dom=BOVEDA.domicilio+', '+BOVEDA.municipio,hoy=new Date().toLocaleDateString('es-ES');
+  const txt=`${dom}, ${hoy}\n\nA: ${org.toUpperCase()}\n\nD./Dña. ${nom}, con NIE/DNI ${nie}, domicilio en ${dom},\n\nINTERPONE RECURSO DE REPOSICIÓN\n\nContra la resolución de fecha ${fecRes}, expediente nº ${exp}, por la que se deniega: ${tram}.\n\nFUNDAMENTOS:\n\nPrimero. La resolución indica como motivo de denegación: "${motivo}"\n\nSegundo. Esta parte considera que la resolución no es conforme a derecho por los siguientes motivos:\n\n${aleg}\n\nTercero. De conformidad con el artículo 123 de la Ley 39/2015 del Procedimiento Administrativo Común, se interpone el presente recurso en el plazo de un mes desde la notificación.\n\nSOLICITA:\n\nQue se estime el presente recurso y se revoque la resolución, procediendo a ${tram}.\n\nEn ${BOVEDA.municipio||'___'}, a ${hoy}\n\nFdo.: ${nom}\nNIE/DNI: ${nie}`;
+  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:'Times New Roman',serif;padding:25mm 22mm;font-size:12px;line-height:1.9;max-width:700px;margin:0 auto;}.pre{white-space:pre-wrap;}@media print{@page{size:A4;margin:20mm;}}</style></head><body><div class="pre">${txt}</div><script>window.onload=()=>window.print()<\/script></body></html>`;
+  const w=window.open('','_blank');if(!w)return;w.document.write(html);w.document.close();stL('f2Status','✓ Recurso de Reposición generado','ok');
+}
+
+// ══════════════════════════════════════════════════════
+// REAGRUPACIÓN
+// ══════════════════════════════════════════════════════
+function generarReagrupacion(){
+  const nom=gv('reaNombre')||BOVEDA.nombre,nie=gv('reaNie')||BOVEDA.nie,hijaNom=gv('reaHijaNombre'),hijaPas=gv('reaHijaPas'),dep=gv('reaDependencia'),hoy=new Date().toLocaleDateString('es-ES');
+  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:'Segoe UI',Arial,sans-serif;padding:22mm 18mm;font-size:11px;line-height:1.9;color:#1a1a1a;max-width:680px;margin:0 auto;}.t{font-size:14pt;font-weight:700;text-align:center;margin-bottom:16px;}.campo{display:flex;padding:7px 0;border-bottom:1px solid #e0d9cc;}.lbl{font-weight:700;min-width:200px;color:#555;font-size:10.5px;}.fi{text-align:center;max-width:220px;margin:44px auto 0;border-top:1px solid #333;padding-top:7px;font-size:9.5px;}@media print{@page{size:A4;margin:16mm;}}</style></head><body><div class="t">SOLICITUD DE REAGRUPACIÓN FAMILIAR</div><div class="campo"><span class="lbl">Reagrupante</span><span>${nom}</span></div><div class="campo"><span class="lbl">NIE</span><span>${nie}</span></div><div class="campo"><span class="lbl">Familiar a reagrupar</span><span>${hijaNom}</span></div><div class="campo"><span class="lbl">Pasaporte</span><span>${hijaPas}</span></div><div class="campo"><span class="lbl">Vínculo</span><span>Hija mayor de edad dependiente</span></div><div class="campo"><span class="lbl">Dependencia económica</span><span>${dep}</span></div><p style="margin-top:14px;">En ${BOVEDA.municipio||'___'}, a ${hoy}</p><div class="fi">Fdo.: ${nom}<br>NIE: ${nie}</div><script>window.onload=()=>window.print()<\/script></body></html>`;
+  const w=window.open('','_blank');if(!w)return;w.document.write(html);w.document.close();stL('f3Status','✓ Solicitud de reagrupación generada','ok');
+}
+
+// ══════════════════════════════════════════════════════
+// PERMISO MENOR
+// ══════════════════════════════════════════════════════
+function generarPermisoMenor(){
+  const nom=gv('menNombre'),fec=gv('menFecNac')?new Date(gv('menFecNac')).toLocaleDateString('es-ES'):'',padre=gv('menPadre'),madre=gv('menMadre'),acomp=gv('menAcompanante'),dest=gv('menDestino'),fecV=gv('menFecViaje')?new Date(gv('menFecViaje')).toLocaleDateString('es-ES'):'',hoy=new Date().toLocaleDateString('es-ES');
+  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:'Segoe UI',Arial,sans-serif;padding:22mm 18mm;font-size:12px;line-height:1.9;max-width:650px;margin:0 auto;}.t{font-size:15pt;font-weight:700;text-align:center;margin-bottom:18px;}.campo{display:flex;padding:7px 0;border-bottom:1px solid #e0d9cc;}.lbl{font-weight:700;min-width:200px;color:#555;}.fw{display:grid;grid-template-columns:1fr 1fr;gap:24px;}.fi{text-align:center;border-top:1px solid #333;padding-top:7px;margin-top:44px;font-size:9.5px;}@media print{@page{size:A4;margin:16mm;}}</style></head><body><div class="t">PERMISO DE VIAJE INTERNACIONAL — MENOR DE EDAD</div><div class="campo"><span class="lbl">Menor</span><span>${nom}</span></div><div class="campo"><span class="lbl">Fecha nacimiento</span><span>${fec}</span></div><div class="campo"><span class="lbl">Padre</span><span>${padre}</span></div><div class="campo"><span class="lbl">Madre</span><span>${madre}</span></div><div class="campo"><span class="lbl">Acompañante</span><span>${acomp}</span></div><div class="campo"><span class="lbl">Destino</span><span>${dest}</span></div><div class="campo"><span class="lbl">Fecha de viaje</span><span>${fecV}</span></div><p style="margin-top:14px;">Los abajo firmantes autorizan el presente viaje y la atención médica de urgencia si fuera necesaria.</p><p>En _____, a ${hoy}</p><div class="fw"><div class="fi"><strong>PADRE</strong><br>${padre}</div><div class="fi"><strong>MADRE</strong><br>${madre}</div></div><script>window.onload=()=>window.print()<\/script></body></html>`;
+  const w=window.open('','_blank');if(!w)return;w.document.write(html);w.document.close();
+}
+
+// ══════════════════════════════════════════════════════
+// VISADO TRANSEÚNTE
+// ══════════════════════════════════════════════════════
+function generarSolicitudTranseunte(){
+  const nom=gv('visNombreMarido')||BOVEDA.marido,pas=gv('visPasaporte'),dni=gv('visDni'),conyuge=gv('visConyuge')||BOVEDA.nombre,cedula=gv('visCedulaConyuge'),acta=gv('visActaMatrimonio'),fecMat=gv('visFechaMatrimonio')?new Date(gv('visFechaMatrimonio')).toLocaleDateString('es-ES'):'',ciudad=gv('visCiudadMatrimonio'),motivo=gv('visMotivo'),duracion=gv('visDuracion'),dom=gv('visDomicilio')||BOVEDA.domicilio,hoy=new Date().toLocaleDateString('es-ES');
+  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:'Segoe UI',Arial,sans-serif;padding:22mm 18mm;font-size:11.5px;line-height:1.9;color:#1a1a1a;max-width:680px;margin:0 auto;}.t{font-size:14pt;font-weight:700;text-align:center;margin-bottom:4px;}.st{font-size:10pt;color:#888;text-align:center;margin-bottom:18px;}.sec{font-size:10px;font-weight:700;color:#C9A84C;margin:14px 0 6px;text-transform:uppercase;}.campo{display:flex;padding:6px 0;border-bottom:1px solid #e0d9cc;}.lbl{font-weight:700;min-width:220px;color:#555;font-size:10.5px;}.aviso{background:#fff5f5;border:2px solid #DC2626;border-radius:6px;padding:10px 14px;font-size:10px;color:#DC2626;font-weight:700;margin-top:14px;}.fi{text-align:center;max-width:220px;margin:44px auto 0;border-top:1px solid #333;padding-top:7px;font-size:9.5px;}@media print{@page{size:A4;margin:16mm;}}</style></head><body><div class="t">SOLICITUD DE VISADO DE TRANSEÚNTE</div><div class="st">Consulado General de Venezuela en España — Cónyuge de ciudadana venezolana</div><div class="sec">DATOS DEL SOLICITANTE (Ciudadano español)</div><div class="campo"><span class="lbl">Nombre completo</span><span>${nom}</span></div><div class="campo"><span class="lbl">Número de pasaporte</span><span>${pas}</span></div><div class="campo"><span class="lbl">DNI español</span><span>${dni}</span></div><div class="campo"><span class="lbl">Domicilio en España</span><span>${dom}</span></div><div class="sec">DATOS DEL VÍNCULO MATRIMONIAL</div><div class="campo"><span class="lbl">Cónyuge venezolana</span><span>${conyuge}</span></div><div class="campo"><span class="lbl">Cédula venezolana del cónyuge</span><span>${cedula}</span></div><div class="campo"><span class="lbl">Nº acta de matrimonio</span><span>${acta}</span></div><div class="campo"><span class="lbl">Fecha del matrimonio</span><span>${fecMat}</span></div><div class="campo"><span class="lbl">Ciudad donde se celebró</span><span>${ciudad}</span></div><div class="sec">DATOS DEL VIAJE</div><div class="campo"><span class="lbl">Motivo del viaje</span><span>${motivo}</span></div><div class="campo"><span class="lbl">Duración prevista</span><span>${duracion}</span></div><div class="aviso">⚠ Matrimonio venezolano apostillado adjunto · Documentación completa adjunta</div><p style="margin-top:14px;">En _____, a ${hoy}</p><div class="fi">Fdo.: ${nom}<br>Pasaporte: ${pas}</div><script>window.onload=()=>window.print()<\/script></body></html>`;
+  const w=window.open('','_blank');if(!w)return;w.document.write(html);w.document.close();stL('f3Status','✓ Solicitud visado transeúnte generada','ok');
+}
+function generarCartaInvitacion(){
+  const conyuge=gv('visConyuge')||BOVEDA.nombre,cedula=gv('visCedulaConyuge'),nom=gv('visNombreMarido')||BOVEDA.marido,pas=gv('visPasaporte'),hoy=new Date().toLocaleDateString('es-ES');
+  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:'Segoe UI',Arial,sans-serif;padding:25mm 20mm;font-size:12px;line-height:1.9;max-width:650px;margin:0 auto;}.t{font-size:14pt;font-weight:700;text-align:center;margin-bottom:18px;}.fi{text-align:center;max-width:200px;margin:46px auto 0;border-top:1px solid #333;padding-top:7px;font-size:9.5px;}@media print{@page{size:A4;margin:18mm;}}</style></head><body><div class="t">CARTA DE INVITACIÓN</div><p>${hoy}</p><br><p>Yo, <strong>${conyuge}</strong>, titular de la Cédula de Identidad venezolana Nº <strong>${cedula}</strong>, con domicilio en Venezuela,</p><p><strong>INVITO FORMALMENTE</strong> a mi cónyuge, D./Dña. <strong>${nom}</strong>, titular del Pasaporte español Nº <strong>${pas}</strong>, a ingresar al territorio de la República Bolivariana de Venezuela en calidad de cónyuge de ciudadana venezolana, con fines de visita conyugal y familiar.</p><p>Me comprometo a garantizar su alojamiento durante la estancia y a ser responsable de su regreso a España en el plazo establecido por el visado de transeúnte.</p><div class="fi">Fdo.: ${conyuge}<br>Cédula: ${cedula}</div><script>window.onload=()=>window.print()<\/script></body></html>`;
+  const w=window.open('','_blank');if(!w)return;w.document.write(html);w.document.close();stL('f3Status','✓ Carta de invitación generada','ok');
+}
+
+// ══════════════════════════════════════════════════════
+// SAIME
+// ══════════════════════════════════════════════════════
+function generarSolicitudSaime(){
+  const nom=gv('saimeNombre')||BOVEDA.marido,nac=gv('saimeNacionalidad'),pas=gv('saimePasaporte'),conyuge=gv('saimeConyuge')||BOVEDA.nombre,cedula=gv('saimeCedulaConyuge'),acta=gv('saimeActa'),fecMat=gv('saimeFechaMatrimonio')?new Date(gv('saimeFechaMatrimonio')).toLocaleDateString('es-ES'):'',dom=gv('saimeDomVenezuela'),estado=gv('saimeEstado'),hoy=new Date().toLocaleDateString('es-ES');
+  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:'Segoe UI',Arial,sans-serif;padding:22mm 18mm;font-size:11.5px;line-height:1.9;color:#1a1a1a;max-width:680px;margin:0 auto;}.t{font-size:14pt;font-weight:700;text-align:center;margin-bottom:4px;}.st{font-size:10pt;color:#888;text-align:center;margin-bottom:18px;}.sec{font-size:10px;font-weight:700;color:#C9A84C;margin:14px 0 6px;text-transform:uppercase;}.campo{display:flex;padding:6px 0;border-bottom:1px solid #e0d9cc;}.lbl{font-weight:700;min-width:220px;color:#555;font-size:10.5px;}.base-legal{background:#eff6ff;border:1px solid #bfdbfe;border-radius:6px;padding:10px 14px;font-size:10px;color:#1e40af;margin-top:14px;}.fi{text-align:center;max-width:220px;margin:44px auto 0;border-top:1px solid #333;padding-top:7px;font-size:9.5px;}@media print{@page{size:A4;margin:16mm;}}</style></head><body><div class="t">SOLICITUD DE CÉDULA DE IDENTIDAD VENEZOLANA</div><div class="st">SAIME — Naturalización por matrimonio con ciudadana venezolana</div><div class="sec">DATOS DEL SOLICITANTE (Extranjero)</div><div class="campo"><span class="lbl">Nombre completo</span><span>${nom}</span></div><div class="campo"><span class="lbl">Nacionalidad</span><span>${nac}</span></div><div class="campo"><span class="lbl">Número de pasaporte</span><span>${pas}</span></div><div class="sec">DATOS DEL VÍNCULO MATRIMONIAL</div><div class="campo"><span class="lbl">Cónyuge venezolana</span><span>${conyuge}</span></div><div class="campo"><span class="lbl">Cédula del cónyuge</span><span>${cedula}</span></div><div class="campo"><span class="lbl">Nº acta de matrimonio</span><span>${acta}</span></div><div class="campo"><span class="lbl">Fecha del matrimonio</span><span>${fecMat}</span></div><div class="sec">DOMICILIO EN VENEZUELA</div><div class="campo"><span class="lbl">Dirección</span><span>${dom}</span></div><div class="campo"><span class="lbl">Estado / Municipio</span><span>${estado}</span></div><div class="base-legal">⚖️ Base legal: Art. 45 de la Ley Orgánica de Identificación de la República Bolivariana de Venezuela — Naturalización por matrimonio con ciudadana venezolana</div><p style="margin-top:14px;">En _____, a ${hoy}</p><div class="fi">Fdo.: ${nom}<br>Pasaporte: ${pas}</div><script>window.onload=()=>window.print()<\/script></body></html>`;
+  const w=window.open('','_blank');if(!w)return;w.document.write(html);w.document.close();stL('f3Status','✓ Solicitud SAIME generada','ok');
+}
+
+// ══════════════════════════════════════════════════════
+// REGISTRO CONSULAR & MENAJE
+// ══════════════════════════════════════════════════════
+function generarSolicitudConsular(){
+  const esposa=gv('matEsposa')||BOVEDA.nombre,ced=gv('matCedEsposa'),esposo=gv('matEsposo')||BOVEDA.marido,dni=gv('matDniEsposo')||BOVEDA.maridoDni,fec=gv('matFecha')?new Date(gv('matFecha')).toLocaleDateString('es-ES'):'',lugar=gv('matLugar'),hoy=new Date().toLocaleDateString('es-ES');
+  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:'Segoe UI',Arial,sans-serif;padding:22mm 18mm;font-size:12px;line-height:1.9;max-width:650px;margin:0 auto;}.t{font-size:14pt;font-weight:700;text-align:center;margin-bottom:16px;}.campo{display:flex;padding:7px 0;border-bottom:1px solid #e0d9cc;}.lbl{font-weight:700;min-width:220px;color:#555;}.fw{display:grid;grid-template-columns:1fr 1fr;gap:24px;}.fi{text-align:center;border-top:1px solid #333;padding-top:7px;margin-top:44px;font-size:9.5px;}@media print{@page{size:A4;margin:16mm;}}</style></head><body><div class="t">SOLICITUD DE REGISTRO DE MATRIMONIO</div><div style="text-align:center;font-size:10pt;color:#888;margin-bottom:18px;">Consulado General de Venezuela en España</div><div class="campo"><span class="lbl">Esposa</span><span>${esposa}</span></div><div class="campo"><span class="lbl">Cédula venezolana esposa</span><span>${ced}</span></div><div class="campo"><span class="lbl">Esposo</span><span>${esposo}</span></div><div class="campo"><span class="lbl">DNI esposo</span><span>${dni}</span></div><div class="campo"><span class="lbl">Fecha del matrimonio</span><span>${fec}</span></div><div class="campo"><span class="lbl">Lugar del matrimonio</span><span>${lugar}</span></div><p style="margin-top:14px;">Los comparecientes solicitan el registro del matrimonio ante el Registro Consular de Venezuela.</p><p>En _____, a ${hoy}</p><div class="fw"><div class="fi"><strong>ESPOSA</strong><br>${esposa}</div><div class="fi"><strong>ESPOSO</strong><br>${esposo}</div></div><script>window.onload=()=>window.print()<\/script></body></html>`;
+  const w=window.open('','_blank');if(!w)return;w.document.write(html);w.document.close();stL('f3Status','✓ Solicitud consular generada','ok');
+}
+function generarMenaje(){
+  const nom=gv('menajNombre')||BOVEDA.nombre,doc=gv('menajDoc')||BOVEDA.nie,orig=gv('menajOrigen'),dest=gv('menajDestino'),desc=gv('menajDesc'),hoy=new Date().toLocaleDateString('es-ES');
+  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:'Segoe UI',Arial,sans-serif;padding:22mm 18mm;font-size:12px;line-height:1.9;max-width:650px;margin:0 auto;}.t{font-size:14pt;font-weight:700;text-align:center;margin-bottom:16px;}.campo{display:flex;padding:7px 0;border-bottom:1px solid #e0d9cc;}.lbl{font-weight:700;min-width:200px;color:#555;}.desc-box{background:#f8f7f4;border:1px solid #e0d9cc;padding:12px;margin:12px 0;white-space:pre-wrap;border-radius:4px;}.fi{text-align:center;max-width:220px;margin:44px auto 0;border-top:1px solid #333;padding-top:7px;font-size:9.5px;}@media print{@page{size:A4;margin:16mm;}}</style></head><body><div class="t">DECLARACIÓN DE MENAJE DE CASA</div><div class="campo"><span class="lbl">Declarante</span><span>${nom}</span></div><div class="campo"><span class="lbl">Documento</span><span>${doc}</span></div><div class="campo"><span class="lbl">Origen</span><span>${orig}</span></div><div class="campo"><span class="lbl">Destino</span><span>${dest}</span></div><p style="margin-top:12px;"><strong>DESCRIPCIÓN DEL MENAJE:</strong></p><div class="desc-box">${desc}</div><p>El/la declarante manifiesta que los bienes son de uso personal y familiar, trasladados como menaje de casa por cambio de residencia.</p><p>En _____, a ${hoy}</p><div class="fi">Fdo.: ${nom}<br>${doc}</div><script>window.onload=()=>window.print()<\/script></body></html>`;
+  const w=window.open('','_blank');if(!w)return;w.document.write(html);w.document.close();stL('f3Status','✓ Declaración de menaje generada','ok');
+}
+
+// ══════════════════════════════════════════════════════
+// APOSTILLAS
+// ══════════════════════════════════════════════════════
+function addApostilla(){const doc=gv('apDocumento').trim();if(!doc)return;apostillasData.push({id:Date.now(),doc,persona:gv('apPersona'),estado:gv('apEstado'),fecha:gv('apFecha'),gtu:gv('apGtu'),caducidad:gv('apCaducidad')});renderApostillas();svEl('apDocumento','');svEl('apPersona','');svEl('apGtu','');}
+function renderApostillas(){
+  const list=document.getElementById('apostillasList');if(!list)return;
+  if(!apostillasData.length){list.innerHTML='<div style="font-size:10px;color:var(--text3);padding:10px;">Sin documentos registrados aún.</div>';return;}
+  const colEst={pendiente:'#F59E0B',tramitando:'var(--blue)',apostillado:'var(--green)',vencido:'var(--red)'};
+  const icEst={pendiente:'⏳',tramitando:'🔄',apostillado:'✅',vencido:'⚠️'};
+  list.innerHTML=apostillasData.map(a=>`<div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;font-size:10px;"><span>${icEst[a.estado]||'📄'}</span><div style="flex:1;"><strong>${a.doc}</strong>${a.persona?' — '+a.persona:''}<br><span style="font-size:9px;color:var(--text3);">${a.gtu?'GTU: '+a.gtu+' · ':''} ${a.fecha?new Date(a.fecha).toLocaleDateString('es-ES'):''} ${a.caducidad?' · Cad: '+new Date(a.caducidad).toLocaleDateString('es-ES'):''}</span></div><span style="font-size:9px;font-weight:700;color:${colEst[a.estado]||'#555'};">${a.estado}</span><button style="background:none;border:none;color:var(--text3);cursor:pointer;" onclick="apostillasData=apostillasData.filter(x=>x.id!=${a.id});renderApostillas()">✕</button></div>`).join('');
+}
+function exportarApostillasCsv(){if(!apostillasData.length)return;const csv='\uFEFFDocumento,Persona,Estado,Fecha,GTU,Caducidad\n'+apostillasData.map(a=>`"${a.doc}","${a.persona}","${a.estado}","${a.fecha}","${a.gtu}","${a.caducidad}"`).join('\n');const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});const a2=document.createElement('a');a2.download=`apostillas_${Date.now()}.csv`;a2.href=URL.createObjectURL(blob);a2.click();}
+function imprimirApostillas(){const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:'Segoe UI',Arial,sans-serif;padding:18mm;font-size:11px;}table{width:100%;border-collapse:collapse;}th{background:#C9A84C;color:#fff;padding:8px 10px;font-size:10px;}td{padding:7px 10px;border:1px solid #ccc;font-size:10.5px;}@media print{@page{size:A4;margin:15mm;}}</style></head><body><h2 style="color:#C9A84C;">Control de Apostillas y GTU</h2><table><thead><tr><th>Documento</th><th>Persona</th><th>Estado</th><th>Fecha</th><th>GTU</th><th>Caducidad</th></tr></thead><tbody>${apostillasData.map(a=>`<tr><td>${a.doc}</td><td>${a.persona}</td><td>${a.estado}</td><td>${a.fecha?new Date(a.fecha).toLocaleDateString('es-ES'):''}</td><td>${a.gtu}</td><td>${a.caducidad?new Date(a.caducidad).toLocaleDateString('es-ES'):''}</td></tr>`).join('')}</tbody></table><script>window.onload=()=>window.print()<\/script></body></html>`;const w=window.open('','_blank');if(!w)return;w.document.write(html);w.document.close();}
+
+// ══════════════════════════════════════════════════════
+// OEPM & PI
+// ══════════════════════════════════════════════════════
+function toggleNiza(el,clase){el.classList.toggle('sel');nizaClases=[...document.querySelectorAll('.niza-item.sel')].map(e=>e.querySelector('.niza-num').textContent);svEl('marcaClases',nizaClases.join(', '));}
+function generarSolicitudOepm(){
+  const hoy=new Date().toLocaleDateString('es-ES');
+  const campos=[['Denominación',gv('marcaDenom')],['Tipo',gv('marcaTipo')],['Solicitante',gv('marcaSol')],['NIE',gv('marcaNie')],['Email',gv('marcaEmail')],['Clases de Niza',gv('marcaClases')]];
+  const rows=campos.map(([l,v])=>`<tr><td style="padding:7px 10px;border:1px solid #ccc;font-weight:700;background:#f8f8f8;width:200px;font-size:10.5px;">${l}</td><td style="padding:7px 10px;border:1px solid #ccc;font-size:11px;">${v||'—'}</td></tr>`).join('');
+  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:'Segoe UI',Arial,sans-serif;padding:22mm 18mm;font-size:11px;}.hdr{background:#1a1a1a;color:#fff;padding:12px;text-align:center;border-radius:4px 4px 0 0;}.titulo{font-size:13pt;font-weight:700;}.sub{font-size:9pt;opacity:.8;}table{width:100%;border-collapse:collapse;border:2px solid #1a1a1a;}.nota{font-size:8.5pt;color:#888;margin-top:14px;text-align:center;}.fi{text-align:center;max-width:220px;margin:44px auto 0;border-top:1px solid #333;padding-top:7px;font-size:9.5px;}@media print{@page{size:A4;margin:16mm;}}</style></head><body><div class="hdr"><div class="titulo">™️ OFICINA ESPAÑOLA DE PATENTES Y MARCAS (OEPM)</div><div class="sub">SOLICITUD DE REGISTRO DE MARCA NACIONAL</div></div><table>${rows}</table><div class="nota">Generado el ${hoy} · Este documento es preparatorio. La solicitud oficial en sede.oepm.es</div><div class="fi">Fdo.: ${gv('marcaSol')}<br>${gv('marcaNie')}</div><script>window.onload=()=>window.print()<\/script></body></html>`;
+  const w=window.open('','_blank');if(!w)return;w.document.write(html);w.document.close();stL('f4Status','✓ Solicitud OEPM generada','ok');
+}
+function generarMemoriaTecnica(){
+  const hoy=new Date().toLocaleDateString('es-ES');
+  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:'Segoe UI',Arial,sans-serif;padding:22mm 18mm;font-size:12px;line-height:1.9;color:#1a1a1a;max-width:700px;margin:0 auto;}.t{font-size:15pt;font-weight:700;text-align:center;margin-bottom:4px;}.st{font-size:10pt;color:#888;text-align:center;margin-bottom:18px;}.campo{display:flex;padding:8px 0;border-bottom:1px solid #e0d9cc;}.lbl{font-weight:700;min-width:200px;color:#555;}.desc{background:#f8f7f4;border:1px solid #e0d9cc;padding:14px;border-radius:4px;margin:12px 0;line-height:1.7;}.fi{text-align:center;max-width:220px;margin:44px auto 0;border-top:1px solid #333;padding-top:7px;font-size:9.5px;}@media print{@page{size:A4;margin:18mm;}}</style></head><body><div class="t">MEMORIA TÉCNICA</div><div class="st">Registro de Propiedad Intelectual — Obra de Software</div><div class="campo"><span class="lbl">Título</span><span>${gv('piTitulo')}</span></div><div class="campo"><span class="lbl">Tipo de obra</span><span>${gv('piTipo')}</span></div><div class="campo"><span class="lbl">Versión</span><span>${gv('piVersion')}</span></div><div class="campo"><span class="lbl">Fecha creación</span><span>${gv('piFecha')?new Date(gv('piFecha')).toLocaleDateString('es-ES'):hoy}</span></div><div class="campo"><span class="lbl">Autor / Titular</span><span>${gv('piAutor')}</span></div><div class="campo"><span class="lbl">NIE</span><span>${gv('piNie')}</span></div><p style="margin-top:14px;font-weight:700;">DESCRIPCIÓN TÉCNICA:</p><div class="desc">${document.getElementById('piDesc').value}</div><p>El autor declara que la presente obra es original, inédita y de su exclusiva autoría, en los términos de la Ley de Propiedad Intelectual (RDL 1/1996).</p><p>En _____, a ${hoy}</p><div class="fi">Fdo.: ${gv('piAutor')}<br>NIE: ${gv('piNie')}</div><script>window.onload=()=>window.print()<\/script></body></html>`;
+  const w=window.open('','_blank');if(!w)return;w.document.write(html);w.document.close();stL('f4Status','✓ Memoria técnica generada','ok');
+}
+
+// ══════════════════════════════════════════════════════
+// DATOS PARA COPIAR
+// ══════════════════════════════════════════════════════
+function actualizarDatosCopia(){
+  const el=document.getElementById('datosParaCopiar');if(!el)return;
+  if(!BOVEDA.nombre){el.textContent='Carga tus datos en la Bóveda para ver la ficha lista para copiar';return;}
+  el.innerHTML=`<button class="copy-btn-abs" onclick="copiarMisDatos()">📋 Copiar</button>Nombre: ${BOVEDA.nombre}\nNIE: ${BOVEDA.nie}\nFecha nacimiento: ${BOVEDA.fechaNac?new Date(BOVEDA.fechaNac).toLocaleDateString('es-ES'):''}\nTeléfono: ${BOVEDA.tel}\nEmail: ${BOVEDA.email}\nDomicilio: ${BOVEDA.domicilio}, ${BOVEDA.municipio}, ${BOVEDA.provincia} ${BOVEDA.cp}\nNacionalidad: ${BOVEDA.nacionalidad}\nProfesión: ${BOVEDA.profesion}`;
+}
+function copiarMisDatos(){const txt=`Nombre: ${BOVEDA.nombre}\nNIE: ${BOVEDA.nie}\nTeléfono: ${BOVEDA.tel}\nEmail: ${BOVEDA.email}\nDomicilio: ${BOVEDA.domicilio}, ${BOVEDA.municipio}\nNacionalidad: ${BOVEDA.nacionalidad}`;navigator.clipboard.writeText(txt).then(()=>stL('f1Status','✓ Datos copiados','ok'));}
+
+// ══════════════════════════════════════════════════════
+// COPILOTO LEGAL — BASE DE CONOCIMIENTO COMPLETA
+// ══════════════════════════════════════════════════════
+const COPILOTO={
+  abierto:false,vozActiva:true,hablando:false,recCopiloto:null,
+  conocimiento:{
+    f1:{nombre:'Bóveda Familiar',bienvenida:'Estás en la Bóveda Familiar. Rellena tus datos una sola vez y se inyectan en todos los formularios. Los 3 puntos clave: primero, el NIE exactamente como aparece en tu tarjeta. Segundo, la fecha en formato correcto. Tercero, el domicilio igual que en tu empadronamiento.',sugerencias:['¿Qué es el NIE?','¿Cómo se rellena el domicilio?','¿Puedo cambiar mis datos?']},
+    f2:{nombre:'Legal España',bienvenida:'Estás en Legal España. Como venezolana solo necesitas 2 años de residencia para la nacionalidad. Los 3 puntos clave: primero, el CCSE es obligatorio. Segundo, el DELE estás exenta por ser hispanohablante. Tercero, paga la Tasa 790-026 de 100 euros antes de presentar.',sugerencias:['¿Qué es el CCSE?','¿Cuánto tarda la nacionalidad?','¿Cómo apostillar en Venezuela?']},
+    f3:{nombre:'Puente Venezuela',bienvenida:'Estás en el Puente Migratorio Venezuela. Los 3 puntos clave: primero, el visado transeúnte para tu marido se tramita en el Consulado venezolano en España antes de viajar. Segundo, el SAIME tramita la cédula venezolana de tu marido durante su estancia. Tercero, todos los documentos venezolanos necesitan apostilla de La Haya para valer en España.',sugerencias:['¿Qué es el visado transeúnte?','¿Cómo tramitar en el SAIME?','¿Cuánto dura el visado transeúnte?']},
+    f4:{nombre:'Marca Personal',bienvenida:'Estás en Marca Personal. Los 3 puntos clave: primero, registra la marca en las clases de Niza que cubran todos tus servicios. Segundo, haz una búsqueda de anterioridades en la OEPM antes de solicitar. Tercero, una vez registrada tienes 10 años de protección.',sugerencias:['¿Qué clases de Niza necesito?','¿Cuánto cuesta registrar la marca?','¿Cuánto tarda el registro?']},
+    f5:{nombre:'Sedes & Cl@ve',bienvenida:'Estás en el Panel de Sedes. Los 3 puntos clave: primero, Cl@ve Permanente te permite hacer todos los trámites online sin ir en persona. Segundo, te registras presencialmente una sola vez en Hacienda, SEPE o Correos. Tercero, instala la app Cl@ve en el móvil para generar PINs.',sugerencias:['¿Cómo activar Cl@ve?','¿Dónde registro en persona?','¿Puedo hacer todo online?']}
+  },
+  respuestas:{
+    'nie':'El NIE (Número de Identidad de Extranjero) es tu documento de identificación en España. Lo necesitas para trabajar, pagar impuestos, abrir cuenta bancaria, alquilar un piso y solicitar la nacionalidad.',
+    'ccse':'El CCSE es el examen de Conocimiento Constitucional y Sociocultural de España. Son 25 preguntas tipo test sobre historia, cultura y sociedad española. Cuesta 85€ y se hace en el Instituto Cervantes. Es obligatorio para la nacionalidad.',
+    'apostill':'Apostillar es autenticar un documento para que tenga validez legal en otro país del Convenio de La Haya. En Venezuela lo hace el MPPRE. Sin apostilla tus documentos venezolanos no tienen validez en España.',
+    'transeúnte':'El visado de transeúnte venezolano permite a extranjeros entrar a Venezuela hasta 90 días como cónyuge de ciudadana venezolana. Se tramita en el Consulado venezolano en España antes del viaje.',
+    'saime':'El SAIME es el Servicio Administrativo de Identificación venezolano. Tu marido puede obtener su cédula venezolana presentándose en persona al SAIME con el matrimonio apostillado y su pasaporte, bajo el artículo 45 de la Ley de Identificación.',
+    'clave':'Para activar Cl@ve ve a una oficina de Hacienda, SEPE o Correos con tu NIE y pasaporte. Pide el registro en Cl@ve. Recibirás una carta con código de activación. Actívala en clave.gob.es e instala la app.',
+    'gracias':'¡Con mucho gusto Fátima! Para eso estoy. ¿Tienes más dudas?',
+    'hola':'¡Hola Fátima! Estoy aquí para guiarte. ¿En qué trámite necesitas ayuda?'
+  }
+};
+function toggleCopiloto(){COPILOTO.abierto=!COPILOTO.abierto;const panel=document.getElementById('copiloPanel');panel.style.display=COPILOTO.abierto?'flex':'none';if(COPILOTO.abierto&&document.getElementById('copiloMensajes').children.length===0)iniciarCopiloto();}
+function iniciarCopiloto(){const faseActual=document.querySelector('.fase-btn.act')?.textContent.includes('1')?'f1':document.querySelector('.fase-btn.act')?.textContent.includes('2')?'f2':document.querySelector('.fase-btn.act')?.textContent.includes('3')?'f3':document.querySelector('.fase-btn.act')?.textContent.includes('4')?'f4':'f5';const ctx=COPILOTO.conocimiento[faseActual]||COPILOTO.conocimiento.f1;agregarMensajeBot('¡Hola Fátima! 👋 '+ctx.bienvenida);mostrarSugerencias(ctx.sugerencias||[]);if(COPILOTO.vozActiva)hablarCopiloto(ctx.bienvenida);}
+function agregarMensajeBot(html,tipo='bot'){const wrap=document.getElementById('copiloMensajes');const div=document.createElement('div');div.style.cssText=`display:flex;gap:7px;align-items:flex-start;${tipo==='user'?'flex-direction:row-reverse;':''}`;const avatar=document.createElement('div');avatar.style.cssText=`width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;background:${tipo==='user'?'var(--blue)':'linear-gradient(135deg,#1a1a1a,#C9A84C)'};color:#fff;`;avatar.textContent=tipo==='user'?'Tú':'⚖';const burbuja=document.createElement('div');burbuja.style.cssText=`max-width:220px;padding:8px 11px;border-radius:${tipo==='user'?'12px 4px 12px 12px':'4px 12px 12px 12px'};font-size:10.5px;line-height:1.6;background:${tipo==='user'?'var(--blue)':'#f8f7f4'};color:${tipo==='user'?'#fff':'var(--text)'};border:1px solid ${tipo==='user'?'var(--blue)':'var(--border)'};`;burbuja.innerHTML=html;if(tipo==='bot'){const escBtn=document.createElement('button');escBtn.innerHTML='🎧';escBtn.title='Escuchar';escBtn.style.cssText='background:none;border:none;cursor:pointer;font-size:11px;opacity:.6;margin-top:3px;display:block;';const txt=burbuja.textContent;escBtn.onclick=()=>hablarCopiloto(txt);burbuja.appendChild(escBtn);}div.appendChild(avatar);div.appendChild(burbuja);wrap.appendChild(div);wrap.scrollTop=wrap.scrollHeight;}
+function enviarCopiloto(){const input=document.getElementById('copiloInput');const texto=input.value.trim();if(!texto)return;agregarMensajeBot(texto,'user');input.value='';setTimeout(()=>{const resp=procesarPregunta(texto);agregarMensajeBot(resp);if(COPILOTO.vozActiva)hablarCopiloto(resp.replace(/<[^>]+>/g,''));},400);}
+function procesarPregunta(texto){const q=texto.toLowerCase().trim();for(const[clave,resp]of Object.entries(COPILOTO.respuestas)){if(q.includes(clave))return resp;}if(q.includes('transeunt')||q.includes('visado'))return COPILOTO.respuestas['transeúnte'];if(q.includes('saime')||q.includes('cédula')||q.includes('cedula'))return COPILOTO.respuestas['saime'];if(q.includes('apostill'))return COPILOTO.respuestas['apostill'];if(q.includes('nie')||q.includes('documento'))return COPILOTO.respuestas['nie'];if(q.includes('ccse')||q.includes('examen'))return COPILOTO.respuestas['ccse'];if(q.includes('clave')||q.includes('firma digital'))return COPILOTO.respuestas['clave'];return '🤔 Puedo ayudarte con: Nacionalidad, Visado Transeúnte, SAIME, Apostillas, Homologación, Marca OEPM y Cl@ve. ¿Sobre cuál quieres saber más?';}
+function mostrarSugerencias(lista){const wrap=document.getElementById('copiloSugerencias');wrap.innerHTML=lista.map(s=>`<button onclick="clickSugerencia('${s}')" style="padding:3px 8px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);border-radius:14px;font-size:9px;color:var(--gold);cursor:pointer;">${s}</button>`).join('');}
+function clickSugerencia(texto){document.getElementById('copiloInput').value=texto;enviarCopiloto();}
+function hablarCopiloto(texto){if(!window.speechSynthesis||!COPILOTO.vozActiva)return;speechSynthesis.cancel();const utt=new SpeechSynthesisUtterance(texto.substring(0,500));utt.lang='es-ES';utt.rate=0.88;utt.pitch=1.05;const vs=speechSynthesis.getVoices();const es=vs.find(v=>v.lang==='es-ES'&&v.name.includes('Female'))||vs.find(v=>v.lang.startsWith('es'));if(es)utt.voice=es;speechSynthesis.speak(utt);}
+function toggleVozCopiloto(){COPILOTO.vozActiva=!COPILOTO.vozActiva;const btn=document.getElementById('copiloVozBtn');if(COPILOTO.vozActiva){btn.textContent='🔊 Voz';btn.style.color='var(--gold)';}else{speechSynthesis.cancel();btn.textContent='🔇 Mudo';btn.style.color='var(--text3)';}}
+function vozACopiloto(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){agregarMensajeBot('⚠️ Usa Chrome o Edge para reconocimiento de voz.');return;}if(COPILOTO.recCopiloto){COPILOTO.recCopiloto.stop();return;}const rec=new SR();rec.lang='es-ES';rec.continuous=false;rec.interimResults=false;COPILOTO.recCopiloto=rec;const btn=document.getElementById('copiloMicBtn');btn.textContent='⏹';btn.style.background='rgba(220,38,38,.15)';rec.onresult=e=>{document.getElementById('copiloInput').value=e.results[0][0].transcript;enviarCopiloto();};rec.onend=()=>{COPILOTO.recCopiloto=null;btn.textContent='🎤';btn.style.background='rgba(201,168,76,.12)';};rec.start();}
+function escucharInstruccion(texto){hablarCopiloto(texto);if(!COPILOTO.abierto){toggleCopiloto();setTimeout(()=>agregarMensajeBot('🎧 '+texto.substring(0,120)+'...'),300);}}
+
+// ══════════════════════════════════════════════════════
+// UTILIDADES
+// ══════════════════════════════════════════════════════
+function stL(id,msg,tipo='ok'){const el=document.getElementById(id);if(!el)return;el.textContent=msg;el.className='status vis'+(tipo==='err'?' err':tipo==='info'?' info':'');setTimeout(()=>el.classList.remove('vis'),4500);}
+function marcarCheck(cb){cb.closest('.chk-item').classList.toggle('done',cb.checked);}
+function abrirEnlace(url){window.open(url,'_blank');}
+</script>
+</body>
+</html>
