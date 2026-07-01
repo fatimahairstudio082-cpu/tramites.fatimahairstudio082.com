@@ -2,8 +2,16 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>FÁTIMA CALDEA — SISTEMA LEGAL</title>
+<meta name="theme-color" content="#122542">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Bóveda Legal">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 :root{--gold:#C9A84C;--bg:#f5f4f0;--bg2:#fff;--bg3:#f0ede6;--text:#1a1a1a;--text2:#555;--text3:#888;--border:#e0d9cc;--green:#27AE60;--blue:#2563EB;--red:#DC2626;--shadow:0 2px 12px rgba(0,0,0,.08);}
@@ -33,7 +41,7 @@ body{background:var(--bg);font-family:'Segoe UI',Arial,sans-serif;color:var(--te
 .hdr-title{font-size:13px;font-weight:700;}
 .hdr-sub{font-size:8.5px;color:var(--text3);margin-top:1px;}
 .hdr-right{display:flex;align-items:center;gap:8px;}
-.nav-link{background:var(--gold);color:#1a1a1a;padding:6px 14px;border-radius:20px;font-size:10px;font-weight:700;text-decoration:none;transition:.15s;}
+.nav-link{background:var(--gold);color:#1a1a1a;padding:8px 15px;border-radius:20px;font-size:11.5px;font-weight:700;text-decoration:none;transition:.15s;}
 .nav-link:hover{background:#b8922e;color:#fff;}
 .user-chip{display:flex;align-items:center;gap:5px;background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:20px;padding:3px 10px;}
 .user-dot{width:6px;height:6px;background:var(--green);border-radius:50%;}
@@ -43,9 +51,9 @@ body{background:var(--bg);font-family:'Segoe UI',Arial,sans-serif;color:var(--te
 
 /* FASES NAV */
 .fases-nav{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 20px;display:flex;gap:0;overflow-x:auto;}
-.fase-btn{padding:11px 18px;font-size:10.5px;font-weight:600;color:var(--text3);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;transition:.15s;display:flex;align-items:center;gap:5px;}
+.fase-btn{padding:13px 20px;font-size:13px;font-weight:700;color:#1a1a1a;cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;transition:.15s;display:flex;align-items:center;gap:5px;}
 .fase-btn.act{color:var(--gold);border-bottom-color:var(--gold);}
-.fase-num{width:17px;height:17px;border-radius:50%;background:var(--border);font-size:8px;font-weight:700;display:flex;align-items:center;justify-content:center;color:var(--text2);}
+.fase-num{width:20px;height:20px;border-radius:50%;background:var(--border);font-size:9.5px;font-weight:700;display:flex;align-items:center;justify-content:center;color:var(--text2);}
 .fase-btn.act .fase-num{background:var(--gold);color:#fff;}
 
 /* VIEWS */
@@ -251,6 +259,7 @@ body{background:var(--bg);font-family:'Segoe UI',Arial,sans-serif;color:var(--te
   </div>
   <div class="hdr-right">
     <a href="documentos.html" class="nav-link">📄 Documentos Pro →</a>
+    <a href="herramientas.html" class="nav-link" style="background:#7c3aed;color:#fff;">🧰 Herramientas →</a>
     <div class="user-chip"><div class="user-dot"></div><span class="user-name" id="userChipName">Cargando...</span></div>
     <button class="logout-btn" onclick="doLogout()">Salir</button>
   </div>
@@ -751,42 +760,56 @@ body{background:var(--bg);font-family:'Segoe UI',Arial,sans-serif;color:var(--te
 <div class="ftr"><span>Sistema Legal Privado · <span>Fátima Caldea</span></span><span style="margin-left:auto;">✦ SISTEMA LEGAL V1 · 5 FASES · tramites.fatimahairstudio082.com</span></div>
 </div><!-- /appContent -->
 
-<!-- FIREBASE SDK -->
-<script type="module">
-import{initializeApp}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import{getAuth,signInWithEmailAndPassword,signOut,onAuthStateChanged}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-
-const firebaseConfig={
-  apiKey:"AIzaSyBxe1gf2g7GjaZ9nid-YdsJhHPgH93XGfw",
-  authDomain:"tramites-eb8cb.firebaseapp.com",
-  projectId:"tramites-eb8cb",
-  storageBucket:"tramites-eb8cb.firebasestorage.app",
-  messagingSenderId:"63815441304",
-  appId:"1:63815441304:web:afe54267b5232c7e5329ed"
-};
-
-const app=initializeApp(firebaseConfig);
-const auth=getAuth(app);
-
-// Exponer funciones al scope global
-window._fbLogin=(email,pass)=>signInWithEmailAndPassword(auth,email,pass);
-window._fbLogout=()=>signOut(auth);
-
-onAuthStateChanged(auth,user=>{
-  if(user){
-    document.getElementById('loginScreen').style.display='none';
-    document.getElementById('appContent').style.display='block';
-    const name=user.email.split('@')[0];
-    document.getElementById('userChipName').textContent=name+' · Privado';
-    // Cargar datos al entrar
-    if(typeof cargarBoveda==='function')cargarBoveda();
-    if(typeof cargarTabla==='function')cargarTabla();
-    if(typeof actualizarDatosCopia==='function')actualizarDatosCopia();
-  }else{
-    document.getElementById('loginScreen').style.display='flex';
-    document.getElementById('appContent').style.display='none';
+<!-- FIREBASE SDK — carga dinámica, NO bloquea el renderizado de la página -->
+<script>
+'use strict';
+(function(){
+  const firebaseConfig={
+    apiKey:"AIzaSyBxe1gf2g7GjaZ9nid-YdsJhHPgH93XGfw",
+    authDomain:"tramites-eb8cb.firebaseapp.com",
+    projectId:"tramites-eb8cb",
+    storageBucket:"tramites-eb8cb.firebasestorage.app",
+    messagingSenderId:"63815441304",
+    appId:"1:63815441304:web:afe54267b5232c7e5329ed"
+  };
+  async function initFirebase(){
+    try{
+      const {initializeApp}=await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+      const {getAuth,signInWithEmailAndPassword,signOut,onAuthStateChanged}=await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
+      const app=initializeApp(firebaseConfig);
+      const auth=getAuth(app);
+      window._fbLogin=(email,pass)=>signInWithEmailAndPassword(auth,email,pass);
+      window._fbLogout=()=>signOut(auth);
+      onAuthStateChanged(auth,user=>{
+        if(user){
+          document.getElementById('loginScreen').style.display='none';
+          document.getElementById('appContent').style.display='block';
+          const name=user.email.split('@')[0];
+          const chip=document.getElementById('userChipName');if(chip)chip.textContent=name+' · Privado';
+          if(typeof cargarBoveda==='function')cargarBoveda();
+          if(typeof cargarTabla==='function')cargarTabla();
+          if(typeof actualizarDatosCopia==='function')actualizarDatosCopia();
+        }else{
+          document.getElementById('loginScreen').style.display='flex';
+          document.getElementById('appContent').style.display='none';
+        }
+      });
+    }catch(e){
+      console.warn('Firebase no disponible (sin conexión o vista previa):',e&&e.message);
+      // El respaldo de vista previa (boveda-app.js) mostrará el botón "Ver el sistema".
+    }
   }
-});
+  // ACCESO LIBRE — sin login de Firebase (uso privado familiar)
+  function entrarLibre(){
+    var l=document.getElementById('loginScreen'), a=document.getElementById('appContent');
+    if(l)l.style.display='none'; if(a)a.style.display='block';
+    var chip=document.getElementById('userChipName'); if(chip)chip.textContent='Familia Caldea';
+    window._fbLogin=function(){ return Promise.resolve(); };
+    window._fbLogout=function(){ location.reload(); };
+    try{ if(typeof cargarBoveda==='function')cargarBoveda(); if(typeof cargarTabla==='function')cargarTabla(); if(typeof actualizarDatosCopia==='function')actualizarDatosCopia(); }catch(e){}
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',entrarLibre); else entrarLibre();
+})();
 </script>
 
 <script>
@@ -1094,5 +1117,10 @@ function stL(id,msg,tipo='ok'){const el=document.getElementById(id);if(!el)retur
 function marcarCheck(cb){cb.closest('.chk-item').classList.toggle('done',cb.checked);}
 function abrirEnlace(url){window.open(url,'_blank');}
 </script>
+<template id="__bundler_thumbnail">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#122542"/><g transform="translate(50,50)"><path d="M0 -22 L18 -14 V4 C18 16 0 24 0 24 C0 24 -18 16 -18 4 V-14 Z" fill="#C9A84C"/><text x="0" y="7" font-size="20" text-anchor="middle" fill="#122542">⚖</text></g></svg>
+</template>
+<script src="cerebro.js" defer></script>
+<script src="boveda-app.js" defer></script>
 </body>
 </html>

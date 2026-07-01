@@ -1,0 +1,24 @@
+{
+  "name": "Fátima Caldea — Bóveda Privada Legal",
+  "short_name": "Bóveda Legal",
+  "description": "Sistema privado e inteligente de trámites España–Venezuela: documentos, formularios, apostillas, pasaporte y copiloto legal con voz.",
+  "lang": "es",
+  "dir": "ltr",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "any",
+  "background_color": "#122542",
+  "theme_color": "#122542",
+  "categories": ["productivity", "utilities"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Centro Venezuela", "short_url": "Venezuela", "url": "./index.html#venezuela", "description": "Trámites y enlaces oficiales de Venezuela" },
+    { "name": "Documentos Pro", "url": "./documentos.html", "description": "Currículum, cartas y plantillas" }
+  ]
+}

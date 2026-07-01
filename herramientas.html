@@ -1,0 +1,1490 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Herramientas de Utilidad Pro</title>
+<meta name="theme-color" content="#0d0d1a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Bóveda Legal">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<!-- Firebase desconectado — uso libre y gratuito -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d0d1a;--bg2:#13132a;--bg3:#1a1a35;
+  --ac:#7c3aed;--ac2:#a855f7;--ac3:#06b6d4;
+  --tx:#e2e8f0;--tx2:#94a3b8;--bd:#2d2d4a;
+  --ok:#10b981;--warn:#f59e0b;--err:#ef4444;
+  --card:#18183a;--card2:#22224a;
+}
+body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;font-size:13px}
+.topbar{background:var(--bg2);border-bottom:1px solid var(--bd);padding:8px 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.logo{width:34px;height:34px;background:linear-gradient(135deg,var(--ac),var(--ac3));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.top-title{font-size:14px;font-weight:700;color:var(--tx)}
+.top-sub{font-size:8px;color:var(--tx2)}
+.cr-area{margin-left:auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.cr-badge{background:var(--card2);border:1px solid var(--ac);border-radius:18px;padding:4px 12px;font-size:11px;color:var(--ac2);cursor:pointer}
+.cr-buy{background:linear-gradient(135deg,#25D366,#128C7E);border:none;border-radius:18px;padding:4px 12px;font-size:11px;color:#fff;cursor:pointer;font-weight:600}
+/* ═══ BOTÓN SALIR ═══ */
+.btn-salir-b6{background:transparent;border:.5px solid rgba(255,255,255,.15);border-radius:8px;padding:4px 10px;color:#888;font-size:.72rem;cursor:pointer;font-family:'Segoe UI',sans-serif;letter-spacing:.04em;transition:all .2s;white-space:nowrap;}
+.btn-salir-b6:hover{border-color:#ff6b6b;color:#ff6b6b;}
+.cr-bar-wrap{background:var(--bg2);border-bottom:1px solid var(--bd);padding:5px 14px;display:flex;align-items:center;gap:10px;font-size:9px}
+.cr-bar{flex:1;height:4px;background:var(--bd);border-radius:4px;overflow:hidden;min-width:60px}
+.cr-fill{height:100%;background:linear-gradient(90deg,var(--ac),var(--ac3));border-radius:4px;transition:width .4s}
+.main-tabs{display:flex;background:var(--bg2);border-bottom:1px solid var(--bd);overflow-x:auto}
+.main-tab{padding:12px 20px;font-size:10px;font-weight:700;letter-spacing:.5px;cursor:pointer;color:var(--tx2);border:none;background:transparent;white-space:nowrap;border-bottom:2px solid transparent;transition:all .2s;font-family:Monaco,monospace}
+.main-tab:hover{color:var(--tx);background:rgba(255,255,255,.03)}
+.main-tab.act{color:var(--ac2);border-bottom-color:var(--ac2);background:rgba(124,58,237,.06)}
+.tab-content{display:none;padding:14px}.tab-content.act{display:block}
+.dp-wrap{display:flex;gap:0;min-height:calc(100vh - 160px)}
+.dp-sidebar{width:50px;background:var(--bg2);border-right:1px solid var(--bd);display:flex;flex-direction:column;align-items:center;padding:8px 0;gap:5px;flex-shrink:0}
+.tb{width:36px;height:36px;border-radius:7px;border:1px solid transparent;background:transparent;color:var(--tx2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:all .2s}
+.tb:hover,.tb.act{background:var(--ac);color:#fff;border-color:var(--ac2)}
+.dp-main{flex:1;padding:12px;overflow-y:auto}
+.dz{border:2px dashed var(--bd);border-radius:10px;padding:20px 14px;text-align:center;cursor:pointer;background:var(--card);transition:all .3s;margin-bottom:10px}
+.dz:hover,.dz.drag{border-color:var(--ac);background:rgba(124,58,237,.08)}
+.panel{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:12px;margin-bottom:8px}
+.p-title{font-size:11px;font-weight:700;color:var(--ac2);margin-bottom:8px}
+.row{display:flex;align-items:center;gap:6px;margin-bottom:7px;flex-wrap:wrap}
+.lbl{font-size:10px;color:var(--tx2);min-width:76px;flex-shrink:0}
+input[type=range]{flex:1;accent-color:var(--ac);min-width:60px}
+.val{font-size:10px;color:var(--ac2);min-width:26px;text-align:right}
+select,input[type=text]{background:var(--bg3);border:1px solid var(--bd);color:var(--tx);border-radius:5px;padding:4px 8px;font-size:11px;flex:1;outline:none}
+.btn{background:var(--ac);color:#fff;border:none;border-radius:7px;padding:6px 12px;font-size:11px;cursor:pointer;transition:all .2s;white-space:nowrap}
+.btn:hover{background:var(--ac2);transform:translateY(-1px)}
+.btn-g{background:transparent;border:1px solid var(--bd);color:var(--tx2)}
+.btn-ok{background:var(--ok)}
+.btn-warn{background:var(--warn);color:#000}
+.sep{height:1px;background:var(--bd);margin:8px 0}
+.fi{display:flex;align-items:center;gap:8px;background:var(--bg3);border-radius:7px;padding:7px 10px;margin-bottom:7px}
+.fi-ico{font-size:18px}.fi-name{font-size:11px;font-weight:600;word-break:break-all}.fi-size{font-size:9px;color:var(--tx2)}
+.st{display:flex;align-items:center;gap:4px;font-size:10px;padding:4px 8px;border-radius:5px;margin-top:4px}
+.st.proc{background:rgba(168,85,247,.1);color:var(--ac2)}
+.st.done{background:rgba(16,185,129,.1);color:var(--ok)}
+.st.err{background:rgba(239,68,68,.1);color:var(--err)}
+.prev-box{background:var(--bg3);border:1px solid var(--bd);border-radius:8px;padding:8px;margin-top:7px}
+.prev-title{font-size:10px;color:var(--tx2);margin-bottom:5px}
+.peso-badge{display:inline-flex;gap:8px;align-items:center;background:var(--card2);border:1px solid var(--bd);border-radius:7px;padding:4px 9px;font-size:10px;margin:4px 0;flex-wrap:wrap}
+.peso-antes{color:var(--err)}.peso-despues{color:var(--ok)}.peso-ahorro{color:var(--warn);font-weight:700}
+.lchips{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:7px}
+.lc{padding:5px;border-radius:6px;border:1px solid var(--bd);font-size:9px;text-align:center;cursor:pointer;background:var(--bg3);transition:all .2s}
+.lc:hover,.lc.sel{border-color:var(--ac);background:rgba(124,58,237,.15);color:var(--ac2)}
+.wm-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;width:90px;flex-shrink:0}
+.wm-cell{width:27px;height:22px;border:1px solid var(--bd);border-radius:4px;cursor:pointer;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:8px;transition:all .2s}
+.wm-cell:hover,.wm-cell.sel{background:var(--ac);border-color:var(--ac2)}
+.dl-multi{background:var(--bg3);border:1px solid var(--ac);border-radius:9px;padding:10px;margin-top:8px}
+.dl-multi-title{font-size:10px;font-weight:700;color:var(--ac2);margin-bottom:7px}
+.dl-btns{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:7px}
+.dl-btn-fmt{display:flex;flex-direction:column;align-items:center;gap:3px;background:var(--card2);border:1px solid var(--bd);border-radius:7px;padding:6px 9px;cursor:pointer;min-width:54px;transition:all .2s}
+.dl-btn-fmt:hover{border-color:var(--ac);transform:translateY(-1px)}
+.dl-btn-fmt .fmt-ico{font-size:16px}
+.dl-btn-fmt .fmt-lbl{font-size:9px;font-weight:700;color:var(--ac2)}
+.dl-btn-fmt .fmt-sz{font-size:8px;color:var(--tx2)}
+.bg-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin:6px 0}
+.bg-chip{width:30px;height:30px;border-radius:6px;cursor:pointer;border:2px solid transparent;transition:all .2s;display:flex;align-items:center;justify-content:center;font-size:12px}
+.bg-chip:hover,.bg-chip.sel{border-color:#fff;transform:scale(1.1)}
+.checker{background-image:repeating-conic-gradient(#aaa 0% 25%,#fff 0% 50%);background-size:10px 10px}
+.fmt-btn{padding:4px 10px;border-radius:5px;border:1px solid var(--bd);font-size:10px;cursor:pointer;background:var(--bg3);color:var(--tx2);transition:all .2s}
+.fmt-btn:hover,.fmt-btn.sel{background:var(--ac);color:#fff;border-color:var(--ac2)}
+.tel-out{font-family:monospace;font-size:10px;word-break:break-all;color:var(--ac3);background:var(--bg);padding:7px;border-radius:5px;margin-top:5px;max-height:60px;overflow-y:auto}
+.modal-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:500;align-items:center;justify-content:center}
+.modal-ov.show{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--bd);border-radius:12px;padding:22px;max-width:380px;width:92%;text-align:center}
+.modal h2{margin-bottom:6px;color:var(--warn);font-size:14px}
+.modal p{font-size:10px;color:var(--tx2);margin-bottom:12px;line-height:1.6}
+.wa-link{background:#25D366;color:#fff;border:none;border-radius:8px;padding:9px;font-size:11px;cursor:pointer;text-decoration:none;display:block;margin-bottom:6px;font-weight:600}
+.tts-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(6,182,212,.1);border:1px solid rgba(6,182,212,.3);border-radius:6px;padding:3px 9px;font-size:9px;color:var(--ac3);cursor:pointer;transition:all .2s;font-family:Monaco,monospace;letter-spacing:.5px}
+.tts-badge:hover{background:rgba(6,182,212,.2)}
+.tts-ctrl{display:flex;align-items:center;gap:8px;background:var(--card2);border:1px solid var(--bd);border-radius:8px;padding:6px 10px;margin-top:8px;flex-wrap:wrap}
+.tts-ctrl label{font-size:9px;color:var(--tx2)}
+.tts-guia{position:fixed;bottom:16px;right:16px;background:var(--card2);border:1px solid var(--ac3);border-radius:10px;padding:8px 12px;font-size:10px;color:var(--ac3);max-width:220px;z-index:300;display:none;line-height:1.5;box-shadow:0 4px 20px rgba(6,182,212,.2)}
+.tts-guia.show{display:block}
+.card-preview{width:340px;height:200px;border-radius:16px;background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);position:relative;overflow:hidden;margin:12px auto;box-shadow:0 8px 32px rgba(0,0,0,.5);cursor:crosshair}
+.digit-sel{display:flex;gap:4px;flex-wrap:wrap;margin:6px 0}
+.dig-btn{width:32px;height:32px;border-radius:6px;border:1px solid var(--bd);background:var(--bg3);color:var(--tx2);cursor:pointer;font-family:monospace;font-size:12px;display:flex;align-items:center;justify-content:center;transition:all .2s;font-weight:700;user-select:none}
+.dig-btn.visible{border-color:var(--ok);background:rgba(16,185,129,.15);color:var(--ok)}
+.dig-btn.hidden{border-color:var(--err);background:rgba(239,68,68,.12);color:var(--err)}
+.cv-wrap{display:flex;gap:14px;flex-wrap:wrap}
+.cv-sidebar{width:280px;flex-shrink:0}
+.cv-main{flex:1;min-width:280px}
+.cv-sidebar h4{font-size:9px;color:var(--ac3);letter-spacing:2px;text-transform:uppercase;margin:12px 0 6px;border-left:3px solid var(--ac3);padding-left:7px}
+.cv-sidebar select,.cv-sidebar input{width:100%;padding:7px;border-radius:6px;border:1px solid var(--bd);background:var(--bg3);color:var(--tx);font-size:12px;margin-bottom:8px;outline:none}
+.cv-btn{width:100%;padding:11px;background:var(--ok);color:#fff;border:none;border-radius:7px;font-weight:700;font-size:13px;cursor:pointer;margin-top:8px;transition:all .2s}
+.cv-btn:hover{background:#059669;transform:translateY(-1px)}
+.cv-btn-sec{background:var(--ac)}
+.doc-area{background:#fff;color:#222;border-radius:10px;padding:24px;min-height:400px;font-family:'Georgia',serif;font-size:13px;line-height:1.7;box-shadow:0 4px 20px rgba(0,0,0,.3)}
+.doc-area h3{font-size:14px;border-bottom:1px solid #222;padding-bottom:3px;margin:16px 0 8px;text-transform:uppercase}
+.doc-area p{margin-bottom:10px;text-align:justify}
+.tag-list{display:flex;flex-wrap:wrap;gap:6px;list-style:none;padding:0}
+.tag-list li{padding:3px 10px;border-radius:12px;font-size:11px;font-weight:500}
+.skill-builder{display:flex;gap:5px;margin-top:4px}
+.skill-builder input{flex:1;padding:6px;border-radius:6px;border:1px solid var(--bd);background:var(--bg3);color:var(--tx);font-size:11px;outline:none}
+.skill-builder button{background:var(--ac);border:none;color:#fff;padding:0 12px;border-radius:6px;cursor:pointer;font-weight:700;font-size:14px}
+.del-btn{font-size:10px;color:var(--err);cursor:pointer;margin-left:4px}
+[contenteditable]{outline:none;border-bottom:1px dashed rgba(0,0,0,.2);padding-bottom:2px;min-height:1em}
+[contenteditable]:focus{background:rgba(124,58,237,.06);border-radius:3px}
+.media-info{background:var(--bg3);border:1px solid var(--bd);border-radius:8px;padding:8px;margin:6px 0;font-size:10px}
+.prog-wrap{background:var(--bd);border-radius:4px;height:6px;overflow:hidden;margin:6px 0}
+.prog-bar{height:100%;background:linear-gradient(90deg,var(--ac),var(--ac3));border-radius:4px;transition:width .3s;width:0%}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-thumb{background:var(--bd);border-radius:3px}
+</style>
+<style id="hub-responsive-fix">
+/* Red de seguridad responsive (solo móvil <=680px) — no afecta desktop */
+@media (max-width: 680px){
+  html,body{max-width:100%;overflow-x:hidden;}
+  img,svg,video{max-width:100%;height:auto;}
+  /* colapsar rejillas multi-columna definidas inline */
+  [style*="grid-template-columns:1fr 1fr"],
+  [style*="grid-template-columns: 1fr 1fr"],
+  [style*="grid-template-columns:repeat(2"],
+  [style*="grid-template-columns:repeat(3"],
+  [style*="grid-template-columns:repeat(4"]{
+    grid-template-columns: 1fr !important;
+  }
+  /* colapsar utilidades Tailwind de columnas fijas */
+  .grid-cols-2,.grid-cols-3,.grid-cols-4,
+  .md\:grid-cols-2,.md\:grid-cols-3,.md\:grid-cols-4,
+  .lg\:grid-cols-3,.lg\:grid-cols-4{
+    grid-template-columns: 1fr !important;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="logo">🧰</div>
+  <div>
+    <div class="top-title">Herramientas de Utilidad Pro</div>
+    <div class="top-sub">Documentos · CV · Tarjetas · Compresión · QR · Base64 · TTS · Vídeo/Audio</div>
+  </div>
+  <div class="cr-area">
+    <span class="tts-badge" onclick="ttsGuia('bienvenida')" title="Guía de voz">🔊 GUÍA</span>
+    <div class="cr-badge" onclick="checkCr()">🆓 <span id="crNum">∞</span> gratis</div>
+    
+    <a href="index.html" class="btn-salir-b6" style="text-decoration:none;">⬅ Sistema Legal</a><a href="documentos.html" class="btn-salir-b6" style="text-decoration:none;">📄 Documentos</a>
+  </div>
+</div>
+<div class="cr-bar-wrap">
+  <span style="font-size:9px;color:var(--tx2)">Créditos:</span>
+  <div class="cr-bar"><div class="cr-fill" id="crFill" style="width:100%"></div></div>
+  <span style="color:var(--ok);font-size:9px">Uso libre · ilimitado · gratis</span>
+  <span style="color:var(--tx2);font-size:9px;margin-left:auto">Usados: <strong id="crUsed">0</strong></span>
+</div>
+
+<!-- MAIN TABS -->
+<div class="main-tabs">
+  <button class="main-tab act" onclick="switchMain('digital',this)">🛡️ Protección Digital</button>
+  <button class="main-tab" onclick="switchMain('media',this)">🎬 Vídeo &amp; Audio</button>
+  <button class="main-tab" onclick="switchMain('tarjeta',this)">💳 Tarjeta Segura</button>
+  <button class="main-tab" onclick="switchMain('cv',this)">📄 CV &amp; Cartas</button>
+</div>
+
+<!-- ══ TAB: PROTECCIÓN DIGITAL ══ -->
+<div class="tab-content act" id="tab-digital">
+  <div class="dp-wrap">
+    <div class="dp-sidebar">
+      <button class="tb act" id="btn-protect" title="Proteger" onclick="setTool('protect')">🛡️</button>
+      <button class="tb" id="btn-img" title="Comprimir" onclick="setTool('img')">🖼️</button>
+      <button class="tb" id="btn-bg" title="Fondo" onclick="setTool('bg')">✂️</button>
+      <button class="tb" id="btn-pdf" title="PDF" onclick="setTool('pdf')">📄</button>
+      <button class="tb" id="btn-qr" title="QR" onclick="setTool('qr')">📲</button>
+      <button class="tb" id="btn-tel" title="Base64" onclick="setTool('tel')">🔐</button>
+    </div>
+    <div class="dp-main">
+      <div class="dz" id="dz" onclick="document.getElementById('fi').click()"
+        ondragover="event.preventDefault();this.classList.add('drag')"
+        ondragleave="this.classList.remove('drag')"
+        ondrop="handleDrop(event)">
+        <div style="font-size:26px;margin-bottom:4px">📂</div>
+        <div style="font-size:12px;font-weight:600;margin-bottom:3px">Arrastra tu archivo o haz clic</div>
+        <div style="font-size:9px;color:var(--tx2)">JPG · PNG · PDF · Cédula · NIE · Documentos</div>
+        <div style="font-size:9px;color:var(--ok);margin-top:3px">🔒 El archivo NUNCA sale de tu dispositivo</div>
+      </div>
+      <input type="file" id="fi" style="display:none" onchange="handleFile(this.files[0])">
+      <div id="toolArea"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ TAB: VÍDEO & AUDIO ══ -->
+<div class="tab-content" id="tab-media">
+  <div style="max-width:680px;margin:0 auto">
+    <div class="panel">
+      <div class="p-title">🎬 Optimizador de Vídeo &amp; Audio</div>
+      <div style="background:rgba(6,182,212,.06);border:1px solid rgba(6,182,212,.2);border-radius:8px;padding:10px;margin-bottom:12px;font-size:10px;color:var(--ac3)">
+        🔒 Todo se procesa en tu dispositivo. Ningún archivo se sube a ningún servidor.<br>
+        📦 Formatos: MP4 · MOV · AVI · MP3 · WAV · OGG · WEBM
+      </div>
+      <div class="dz" onclick="document.getElementById('mediaFi').click()"
+        ondragover="event.preventDefault();this.classList.add('drag')"
+        ondragleave="this.classList.remove('drag')"
+        ondrop="handleMediaDrop(event)">
+        <div style="font-size:28px;margin-bottom:4px">🎬</div>
+        <div style="font-size:12px;font-weight:600;margin-bottom:3px">Arrastra tu vídeo o audio aquí</div>
+        <div style="font-size:9px;color:var(--tx2)">MP4 · MOV · AVI · MP3 · WAV · OGG · WEBM</div>
+      </div>
+      <input type="file" id="mediaFi" accept="video/*,audio/*" style="display:none" onchange="handleMediaFile(this.files[0])">
+      <div id="mediaInfo"></div>
+      <div id="mediaOpts" style="display:none">
+        <div class="sep"></div>
+        <div style="font-size:10px;color:var(--ac2);font-weight:700;margin-bottom:8px">⚙️ Opciones de optimización:</div>
+        <div class="row">
+          <span class="lbl">Calidad</span>
+          <select id="mediaQ">
+            <option value="alta">Alta (mínima reducción)</option>
+            <option value="media" selected>Media (balance óptimo)</option>
+            <option value="baja">Baja (máxima reducción)</option>
+          </select>
+        </div>
+        <div class="row" id="mediaResRow">
+          <span class="lbl">Resolución</span>
+          <select id="mediaRes">
+            <option value="orig">Original</option>
+            <option value="1080">1080p</option>
+            <option value="720" selected>720p</option>
+            <option value="480">480p</option>
+            <option value="360">360p</option>
+          </select>
+        </div>
+        <div class="row">
+          <span class="lbl">Nombre salida</span>
+          <input type="text" id="mediaNombre" placeholder="archivo_optimizado">
+        </div>
+        <div class="row">
+          <button class="btn" onclick="processMedia()">⚡ Optimizar ahora</button>
+          <span class="tts-badge" onclick="ttsGuia('media')">🔊 ¿Cómo funciona?</span>
+        </div>
+        <div id="mediaProgWrap" style="display:none">
+          <div class="prog-wrap"><div class="prog-bar" id="mediaProgBar"></div></div>
+          <div style="font-size:9px;color:var(--tx2);margin-top:3px" id="mediaProgTxt">Procesando...</div>
+        </div>
+        <div id="mediaSt"></div>
+        <div id="mediaRes2"></div>
+      </div>
+      <div style="margin-top:14px;background:rgba(245,158,11,.05);border:1px solid rgba(245,158,11,.2);border-radius:8px;padding:10px;font-size:9px;color:var(--warn)">
+        ⚠️ <strong>Nota técnica:</strong> La optimización de vídeo en el navegador usa la API MediaRecorder nativa. Para compresión avanzada (H.264/HEVC), se recomienda usar la herramienta en Chrome/Edge desktop. Los resultados varían según el dispositivo.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ TAB: TARJETA SEGURA ══ -->
+<div class="tab-content" id="tab-tarjeta">
+  <div style="max-width:680px;margin:0 auto">
+    <div class="panel">
+      <div class="p-title">💳 Protección de Tarjeta Bancaria</div>
+      <div style="background:rgba(6,182,212,.06);border:1px solid rgba(6,182,212,.2);border-radius:8px;padding:8px;margin-bottom:10px;font-size:10px;color:var(--ac3)">
+        👆 <strong>Desliza el dedo</strong> sobre la tarjeta para tapar zonas. O usa los botones de dígitos para control fino.
+        <span class="tts-badge" style="margin-left:6px" onclick="ttsGuia('tarjeta')">🔊 Instrucciones</span>
+      </div>
+      <div class="row">
+        <span class="lbl">Foto tarjeta</span>
+        <input type="file" id="cardImg" accept="image/*" onchange="loadCardImg(event)" style="flex:1;background:var(--bg3);border:1px solid var(--bd);border-radius:5px;padding:4px;color:var(--tx);font-size:10px">
+      </div>
+      <div class="sep"></div>
+      <div style="font-size:10px;color:var(--ac3);margin-bottom:8px;font-weight:600">O introduce los datos manualmente:</div>
+      <div class="row"><span class="lbl">Banco / Nombre</span><input type="text" id="cardBank" value="MI BANCO" oninput="renderCard()"></div>
+      <div class="row"><span class="lbl">Número (16 dígitos)</span><input type="text" id="cardNum" value="4532 1234 5678 9012" maxlength="19" oninput="formatCardNum(this);renderCard()"></div>
+      <div class="row"><span class="lbl">Titular</span><input type="text" id="cardHolder" value="FÁTIMA CALDEA" oninput="renderCard()"></div>
+      <div class="row"><span class="lbl">Vencimiento</span><input type="text" id="cardExp" value="12/28" maxlength="5" oninput="renderCard()"></div>
+      <div class="row"><span class="lbl">Tipo</span>
+        <select id="cardType" onchange="renderCard()">
+          <option value="visa">💳 VISA</option>
+          <option value="mc">💳 MasterCard</option>
+          <option value="amex">💳 Amex</option>
+          <option value="generic">💳 Genérica</option>
+        </select>
+      </div>
+      <div class="sep"></div>
+      <div style="font-size:10px;color:var(--ac2);font-weight:700;margin-bottom:4px">🖐️ Modo deslizamiento — pinta sobre la tarjeta para ocultar:</div>
+      <div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap">
+        <button class="btn btn-g" id="btnModoSlide" onclick="toggleModoSlide()" style="font-size:10px">✏️ Activar pincel</button>
+        <button class="btn btn-g" onclick="clearCardPaint()" style="font-size:10px">🗑️ Limpiar pintado</button>
+        <div class="row" style="margin:0">
+          <span style="font-size:9px;color:var(--tx2)">Tamaño pincel:</span>
+          <input type="range" id="brushSize" min="10" max="60" value="22" style="width:80px" oninput="brushSz=parseInt(this.value)">
+        </div>
+      </div>
+      <div style="overflow-x:auto;text-align:center;position:relative">
+        <canvas id="cardCanvas" width="340" height="200"
+          style="border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,.5);max-width:100%;cursor:crosshair;touch-action:none"
+          onmousedown="startPaint(event)" onmousemove="doPaint(event)" onmouseup="stopPaint()"
+          ontouchstart="startPaintT(event)" ontouchmove="doPaintT(event)" ontouchend="stopPaint()">
+        </canvas>
+      </div>
+      <div style="font-size:10px;color:var(--ac2);font-weight:700;margin:8px 0 4px">🔢 Control fino por dígito:</div>
+      <div class="digit-sel" id="digitSel"></div>
+      <div style="font-size:9px;color:var(--tx2);margin-bottom:8px">Clic en cada dígito para alternar visibilidad</div>
+      <div class="row">
+        <label style="display:flex;align-items:center;gap:6px;font-size:10px;cursor:pointer"><input type="checkbox" id="hideHolder" onchange="renderCard()"> Ocultar titular</label>
+        <label style="display:flex;align-items:center;gap:6px;font-size:10px;cursor:pointer"><input type="checkbox" id="hideExp" onchange="renderCard()"> Ocultar vencimiento</label>
+        <label style="display:flex;align-items:center;gap:6px;font-size:10px;cursor:pointer"><input type="checkbox" id="hideBank" onchange="renderCard()"> Ocultar banco</label>
+      </div>
+      <div class="sep"></div>
+      <div class="row"><span class="lbl">Texto marca</span><input type="text" id="cardWm" value="Solo para uso personal" oninput="renderCard()"></div>
+      <div class="row"><span class="lbl">Opacidad</span><input type="range" id="cardWmOp" min="5" max="40" value="15" oninput="document.getElementById('cardWmOpV').textContent=this.value+'%';renderCard()"><span class="val" id="cardWmOpV">15%</span></div>
+      <div class="row" style="margin-top:12px;justify-content:center;gap:10px">
+        <button class="btn btn-ok" onclick="downloadCard('jpg')">⬇ Descargar JPG</button>
+        <button class="btn" onclick="downloadCard('png')">⬇ Descargar PNG</button>
+      </div>
+      <div id="cardSt"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ TAB: CV & CARTAS ══ -->
+<div class="tab-content" id="tab-cv">
+  <div class="cv-wrap">
+    <div class="cv-sidebar">
+      <div class="panel" style="padding:10px">
+        <h4>Tipo de Documento</h4>
+        <select id="tipoDoc" onchange="cvRender()">
+          <option value="carta">Carta de Presentación</option>
+          <option value="motivacional">Carta Motivacional</option>
+          <option value="renuncia">Carta de Renuncia</option>
+          <option value="cv">Currículum Vitae</option>
+        </select>
+        <h4>🌍 País destino</h4>
+        <select id="cvPais" onchange="cvRender()">
+          <option value="">— Sin especificar —</option>
+          <option value="ve">🇻🇪 Venezuela</option>
+          <option value="es">🇪🇸 España</option>
+          <option value="us">🇺🇸 EE.UU.</option>
+          <option value="de">🇩🇪 Alemania</option>
+          <option value="uk">🇬🇧 Reino Unido</option>
+          <option value="co">🇨🇴 Colombia</option>
+          <option value="cl">🇨🇱 Chile</option>
+          <option value="ar">🇦🇷 Argentina</option>
+          <option value="pa">🇵🇦 Panamá</option>
+          <option value="ca">🇨🇦 Canadá</option>
+          <option value="fr">🇫🇷 Francia</option>
+        </select>
+        <div id="cvPaisBadge" style="display:none"></div>
+        <h4>Cargo / Especialidad</h4>
+        <input type="text" id="cvCargo" placeholder="Ej: Estilista Senior" oninput="cvRender()">
+        <h4>Estilo</h4>
+        <select id="plantilla" onchange="cvRender()">
+          <option value="clasico">Clásico Ejecutivo</option>
+          <option value="moderno">Moderno Dinámico</option>
+          <option value="creativo">Creativo Impacto</option>
+          <option value="minimalista">Minimalista Limpio</option>
+        </select>
+        <h4>Color</h4>
+        <select id="paleta" onchange="cvRender()">
+          <option value="azul">Azul Corporativo</option>
+          <option value="verde">Verde Esmeralda</option>
+          <option value="violeta">Violeta Tecnológico</option>
+          <option value="oro">Dorado Premium</option>
+        </select>
+        <h4>Datos</h4>
+        <input type="text" id="cvNombre" value="Fátima Caldea" placeholder="Tu nombre completo" oninput="cvRender()">
+        <input type="file" id="cvFoto" accept="image/*" onchange="loadCvFoto(event)" style="font-size:10px;padding:4px;background:var(--bg3);border:1px solid var(--bd);border-radius:5px;color:var(--tx);width:100%;margin-bottom:8px">
+        <h4>Categoría (50)</h4>
+        <select id="cvCat" onchange="cvChangeCat()"></select>
+        <h4>Variante</h4>
+        <select id="cvVar" onchange="cvRender()"></select>
+        <h4>Empresa (para cartas)</h4>
+        <input type="text" id="cvEmpresa" value="Empresa Ejemplo S.A." oninput="cvRender()">
+        <div id="skillsBlock">
+          <h4>Habilidades <span style="font-size:8px;color:var(--tx2)">(solo CV)</span></h4>
+          <div class="skill-builder">
+            <input type="text" id="newSkill" placeholder="Nueva habilidad...">
+            <button onclick="addSkill()">+</button>
+          </div>
+        </div>
+        <button class="cv-btn cv-btn-sec" onclick="cvRender()" style="margin-top:8px">🔄 Actualizar</button>
+        <button class="cv-btn" onclick="printCV()">📥 Exportar JPG + PDF</button>
+        <div class="tts-ctrl" style="margin-top:10px">
+          <span class="tts-badge" onclick="ttsLeerDoc()">🔊 LEER DOCUMENTO</span>
+          <span class="tts-badge" style="background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.3);color:var(--err)" onclick="ttsStop()">⏹ STOP</span>
+          <div style="width:100%;display:flex;align-items:center;gap:6px;margin-top:4px">
+            <label>Velocidad:</label>
+            <input type="range" min="0.5" max="2" step="0.1" value="0.9" id="ttsSpeed" style="flex:1;accent-color:var(--ac3)" oninput="document.getElementById('ttsSpeedV').textContent=this.value+'×'">
+            <span style="font-size:9px;color:var(--ac3)" id="ttsSpeedV">0.9×</span>
+          </div>
+          <select id="ttsVoice" style="width:100%;font-size:9px;padding:3px;background:var(--bg3);border:1px solid var(--bd);color:var(--tx);border-radius:4px;outline:none;margin-top:4px"></select>
+          <span class="tts-badge" style="margin-top:4px" onclick="ttsGuia('cv')">🔊 Guía CV</span>
+        </div>
+      </div>
+    </div>
+    <div class="cv-main">
+      <div id="cvDoc" class="doc-area"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CRÉDITOS -->
+<div class="modal-ov" id="credModal">
+  <div class="modal">
+    <h2>⚡ Comprar créditos</h2>
+    <p>Tienes <strong id="crModalNum">0</strong> créditos.<br><strong>Pack: 40 créditos por €6</strong><br>1 créditos por acción. Contáctanos por WhatsApp:</p>
+    <button class="wa-link" onclick="openWA(0)">📱 Contactar España por WhatsApp</button>
+    <button class="wa-link" onclick="openWA(1)">📱 Contactar Venezuela por WhatsApp</button>
+    <button class="btn btn-g" style="width:100%;margin-top:8px" onclick="closeCredModal()">Cerrar</button>
+  </div>
+</div>
+
+<!-- TTS Guía flotante -->
+<div class="tts-guia" id="ttsGuiaBox">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+    <span style="font-size:9px;font-weight:700;color:var(--ac3)">🔊 GUÍA DE VOZ</span>
+    <span style="cursor:pointer;font-size:11px" onclick="cerrarGuia()">✕</span>
+  </div>
+  <div id="ttsGuiaTxt"></div>
+</div>
+
+<script>
+// ═══ SALIR AL HUB ═══
+function salirAlHub(){
+  if(window.speechSynthesis) window.speechSynthesis.cancel();
+  if(window.parent !== window){
+    window.parent.postMessage({tipo:'salirBloque', destino:'index.html'}, '*');
+  } else {
+    window.location.href = 'index.html';
+  }
+}
+
+// ══ SEGURIDAD: WhatsApp con doble capa ══
+function _wa(i){
+  const p1=['MzQ2','NTg0'];
+  const p2=['MDQ4MjIyNjU=','MTYzMTUxMTcw'];
+  return atob(p1[i]+p2[i]);
+}
+
+// ══ ESTADO GLOBAL ══
+const HUB_MODE = window.parent !== window;
+let credits = 999999; // uso libre
+let crUsed = parseInt(localStorage.getItem('hu_used') || '0');
+
+function saveCr(){
+  localStorage.setItem('hu_cr', credits);
+  localStorage.setItem('hu_used', crUsed);
+  document.getElementById('crNum').textContent = '∞';
+  document.getElementById('crUsed').textContent = crUsed;
+  const pct = Math.max(0, (credits/40)*100);
+  const fill = document.getElementById('crFill');
+  fill.style.width = pct+'%';
+  fill.style.background = credits<=4 ? 'linear-gradient(90deg,#ef4444,#f59e0b)' : 'linear-gradient(90deg,var(--ac),var(--ac3))';
+  var _cm=document.getElementById('crModalNum'); if(_cm)_cm.textContent='∞';
+}
+
+function gastar(n=2){ crUsed+=n; if(typeof saveCr==='function') saveCr(); return true; } // GRATIS · sin créditos
+
+window.addEventListener('message',e=>{
+  if(!e.data)return;
+  if(e.data.tipo==='sincronizarCreditos'){credits=e.data.creditos||0;saveCr();}
+  if(e.data.tipo==='hubSesion'){
+    credits=e.data.creditos_b6||e.data.creditos||0;
+    saveCr();
+    if(e.data.uid) window._B6_UID=e.data.uid;
+    if(e.data.email) window._B6_EMAIL=e.data.email;
+  }
+});
+if(HUB_MODE)window.parent.postMessage({tipo:'pedirCreditos'},'*');
+
+function checkCr(){alert("Uso libre e ilimitado — todas las herramientas son gratis para tu familia.");}
+function openCredModal(){document.getElementById('credModal').classList.add('show');}
+function closeCredModal(){document.getElementById('credModal').classList.remove('show');}
+function openWA(idx){
+  const num=_wa(idx);
+  window.open(`https://wa.me/${num}?text=${encodeURIComponent('Hola Fátima, quiero comprar 40 créditos (€6) para Herramientas de Utilidad Pro.')}`, '_blank');
+}
+
+// ══ MAIN TABS ══
+function switchMain(tab,el){
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('act'));
+  document.querySelectorAll('.main-tab').forEach(t=>t.classList.remove('act'));
+  document.getElementById('tab-'+tab).classList.add('act');
+  el.classList.add('act');
+  const guias={digital:'Protección Digital: sube tu archivo, elige la herramienta del panel izquierdo y descarga protegido.',tarjeta:'Tarjeta Segura: introduce tus datos, desliza el dedo sobre la tarjeta para ocultar zonas sensibles, luego descarga.',cv:'CV y Cartas: elige el tipo de documento, la categoría, rellena tus datos y exporta en PDF.',media:'Vídeo y Audio: sube tu archivo, elige calidad y resolución, y descarga optimizado sin perder calidad importante.'};
+  if(guias[tab])ttsGuia(tab);
+  if(tab==='tarjeta')setTimeout(()=>{initDigitSel();renderCardCanvas();},100);
+}
+
+// ══ TTS GUÍA ══
+const TTS_GUIAS = {
+  bienvenida:'Bienvenida a Herramientas de Utilidad Pro. Tienes 4 secciones: Protección Digital para documentos e imágenes, Vídeo y Audio para optimizar archivos multimedia, Tarjeta Segura para ocultar datos bancarios, y CV y Cartas para generar documentos profesionales.',
+  digital:'Protección Digital: sube cualquier imagen o PDF, elige la herramienta del panel izquierdo y aplica marca de agua, compresión, cambio de fondo o codificación.',
+  media:'Vídeo y Audio: sube tu archivo MP4, MOV, MP3 o WAV. Elige la calidad deseada. El sistema optimizará el peso inteligentemente en tu propio dispositivo, sin subir nada a internet.',
+  tarjeta:'Tarjeta Segura: puedes activar el pincel y deslizar el dedo sobre la tarjeta para tapar lo que quieras. También puedes hacer clic en dígitos individuales para mostrar u ocultar. Cuando termines, descarga en JPG o PNG.',
+  cv:'CV y Cartas: selecciona el tipo de documento. Para cartas automáticas, el texto se genera pero puedes editarlo directamente haciendo clic sobre cualquier párrafo. Las habilidades solo aparecen en el Currículum Vitae.'
+};
+function ttsGuia(tipo){
+  const txt=TTS_GUIAS[tipo]||TTS_GUIAS.bienvenida;
+  document.getElementById('ttsGuiaTxt').textContent=txt;
+  document.getElementById('ttsGuiaBox').classList.add('show');
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(txt);
+  u.lang='es-ES';u.rate=0.9;u.pitch=1.05;
+  const voices=speechSynthesis.getVoices().filter(v=>v.lang.toLowerCase().startsWith('es'));
+  if(voices.length)u.voice=voices[0];
+  speechSynthesis.speak(u);
+}
+function cerrarGuia(){
+  document.getElementById('ttsGuiaBox').classList.remove('show');
+  speechSynthesis.cancel();
+}
+
+// ══ DIGITAL PRO ══
+let curFile=null,curTool='protect',selLabel='';
+let wmPosIdx=4,protBlob=null;
+let processedBlobs={jpg:null,png:null,webp:null,pdf:null};
+let processedBaseName='archivo';
+let bgSelColor='transparent';
+
+const LABELS=[{k:'trabajo',e:'💼',t:'Trabajo'},{k:'legal',e:'⚖️',t:'Legal'},{k:'personal',e:'👤',t:'Personal'},{k:'bancario',e:'🏦',t:'Bancario'},{k:'medico',e:'🏥',t:'Médico'},{k:'otro',e:'📁',t:'Otro'}];
+const POS_MAP=[[.05,.85],[.35,.85],[.65,.85],[.05,.5],[.3,.45],[.55,.5],[.05,.15],[.35,.15],[.6,.15]];
+const BG_PRESETS=[{n:'Transparente',v:'transparent',cls:'checker',e:'🔲'},{n:'Blanco',v:'#ffffff',e:'⬜'},{n:'Negro',v:'#000000',e:'⬛'},{n:'Azul',v:'#1a237e',e:'💙'},{n:'Verde',v:'#4caf50',e:'💚'},{n:'Rojo',v:'#e53935',e:'❤️'},{n:'Morado',v:'#7c3aed',e:'💜'},{n:'Bokeh',v:'bokeh1',e:'✨'},{n:'Grad1',v:'grad1',e:'🌅'},{n:'Grad2',v:'grad2',e:'🌈'},{n:'Grad3',v:'grad3',e:'💼'},{n:'Rosa',v:'#f48fb1',e:'🩷'}];
+
+function fmt(b){if(b<1024)return b+' B';if(b<1048576)return(b/1024).toFixed(1)+' KB';return(b/1048576).toFixed(2)+' MB';}
+function setTool(t){
+  curTool=t;
+  document.querySelectorAll('.tb').forEach(b=>b.classList.remove('act'));
+  const b=document.getElementById('btn-'+t);if(b)b.classList.add('act');
+  renderTool();
+}
+function handleDrop(ev){ev.preventDefault();document.getElementById('dz').classList.remove('drag');const f=ev.dataTransfer.files[0];if(f)handleFile(f);}
+function handleFile(f){
+  if(!f)return;
+  if(f.type.startsWith('video/')||f.type.startsWith('audio/')){
+    switchMain('media',document.querySelector('[onclick*="media"]'));
+    handleMediaFile(f);return;
+  }
+  curFile=f;processedBlobs={jpg:null,png:null,webp:null,pdf:null};renderTool();
+}
+function renderTool(){const m={protect:renderProtect,img:renderImg,bg:renderBG,pdf:renderPDF,qr:renderQR,tel:renderTel};(m[curTool]||renderProtect)();}
+
+function pesoBadge(orig,nuevo){const pct=Math.round((1-nuevo/orig)*100);return`<div class="peso-badge"><span class="peso-antes">📦 ${fmt(orig)}</span><span>→</span><span class="peso-despues">✅ ${fmt(nuevo)}</span><span class="peso-ahorro">⬇ -${pct}%</span></div>`;}
+
+function allImageBlobs(canvas,q=0.88){
+  return new Promise(resolve=>{
+    canvas.toBlob(jpg=>{
+      canvas.toBlob(png=>{
+        canvas.toBlob(webp=>{resolve({jpg,png,webp,pdf:null});},'image/webp',.85);
+      },'image/png');
+    },'image/jpeg',q);
+  });
+}
+async function imageBlobToPDF(blob,filename){
+  if(typeof PDFLib==='undefined')return null;
+  try{
+    const arr=await blob.arrayBuffer();const pdfDoc=await PDFLib.PDFDocument.create();
+    let img;if(blob.type==='image/png')img=await pdfDoc.embedPng(arr);else img=await pdfDoc.embedJpg(arr);
+    const page=pdfDoc.addPage([img.width,img.height]);page.drawImage(img,{x:0,y:0,width:img.width,height:img.height});
+    pdfDoc.setTitle(filename);const bytes=await pdfDoc.save();return new Blob([bytes],{type:'application/pdf'});
+  }catch{return null;}
+}
+
+function multiDownloadPanel(blobs,origSize,baseName){
+  processedBlobs=blobs;processedBaseName=baseName;
+  const fmts=[{key:'jpg',ico:'🟡',label:'JPG'},{key:'png',ico:'🔵',label:'PNG'},{key:'webp',ico:'🟢',label:'WEBP'},{key:'pdf',ico:'🔴',label:'PDF'}];
+  let btns=fmts.map(f=>{const b=blobs[f.key];if(!b)return'';const sz=fmt(b.size);const pct=origSize?Math.round((1-b.size/origSize)*100):0;const badge=pct>0?`<span style="color:var(--ok);font-size:7px">-${pct}%</span>`:'';return`<div class="dl-btn-fmt" onclick="dlFmt('${f.key}','${baseName}')"><span class="fmt-ico">${f.ico}</span><span class="fmt-lbl">${f.label} ${badge}</span><span class="fmt-sz">${sz}</span></div>`;}).join('');
+  const keys=Object.keys(blobs).filter(k=>blobs[k]);
+  if(keys.length>1)btns+=`<div class="dl-btn-fmt" onclick="dlZip('${baseName}')" style="border-color:var(--warn)"><span class="fmt-ico">📦</span><span class="fmt-lbl" style="color:var(--warn)">ZIP</span><span class="fmt-sz">Todo</span></div>`;
+  return`<div class="dl-multi"><div class="dl-multi-title">⬇ Descargar formato</div><div class="dl-btns">${btns}</div><div style="font-size:8px;color:var(--tx2)">💡 Tienes ${credits} créditos · 2cr por descarga</div></div>`;
+}
+
+async function dlFmt(key,base){
+  if(credits<=0){openCredModal();return;}
+  const blob=processedBlobs[key];if(!blob)return;
+  if(!gastar(2))return;
+  const ext={jpg:'.jpg',png:'.png',webp:'.webp',pdf:'.pdf'};
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=base+ext[key];document.body.appendChild(a);a.click();document.body.removeChild(a);
+}
+async function dlZip(base){
+  if(!gastar(1))return;
+  if(typeof JSZip==='undefined')return;
+  const zip=new JSZip();const ext={jpg:'.jpg',png:'.png',webp:'.webp',pdf:'.pdf'};
+  for(const[k,b]of Object.entries(processedBlobs)){if(b)zip.file(base+ext[k],b);}
+  const zb=await zip.generateAsync({type:'blob',compression:'DEFLATE',compressionOptions:{level:6}});
+  const a=document.createElement('a');a.href=URL.createObjectURL(zb);a.download=base+'_multi.zip';document.body.appendChild(a);a.click();document.body.removeChild(a);
+}
+
+function labelSection(){return`<div style="margin-bottom:7px"><div style="font-size:9px;color:var(--tx2);margin-bottom:4px">🏷️ Etiqueta</div><div class="lchips">${LABELS.map(l=>`<div class="lc" onclick="selLbl('${l.k}',this)">${l.e} ${l.t}</div>`).join('')}</div></div>`;}
+function selLbl(k,el){selLabel=k;document.querySelectorAll('.lc').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');}
+
+function renderProtect(){
+  document.getElementById('toolArea').innerHTML=`
+  ${curFile?`<div class="fi"><div class="fi-ico">${curFile.type==='application/pdf'?'📄':'🖼️'}</div><div><div class="fi-name">${curFile.name}</div><div class="fi-size">${fmt(curFile.size)}</div></div></div>`:''}
+  <div class="panel">
+    <div class="p-title">🛡️ Protección con Marca de Agua</div>
+    <div class="row"><span class="lbl">Tu nombre</span><input type="text" id="wmName" placeholder="Fátima Caldea"></div>
+    <div class="row"><span class="lbl">Destinatario</span><input type="text" id="wmDest" placeholder="Solo para: empresa/trámite"></div>
+    <div class="row"><span class="lbl">Propósito</span>
+      <select id="wmProp"><option>Solo uso personal</option><option>Trámite legal</option><option>Solicitud de empleo</option><option>Gestión bancaria</option><option>Uso exclusivo empresa</option><option>Prohibido copiar</option></select>
+    </div>
+    <div class="row"><span class="lbl">Aviso extra</span><input type="text" id="wmAviso" placeholder="No válido fuera de este trámite"></div>
+    <div class="row"><span class="lbl">Fecha</span><input type="text" id="wmFecha" value="${new Date().toLocaleDateString('es-ES')}"></div>
+    <div class="sep"></div>
+    <div class="row" style="align-items:flex-start">
+      <span class="lbl" style="margin-top:4px">Posición</span>
+      <div class="wm-grid">${['↖','↑','↗','←','·','→','↙','↓','↘'].map((a,i)=>`<div class="wm-cell${i===4?' sel':''}" onclick="setWmPos(${i},this)">${a}</div>`).join('')}</div>
+      <div style="flex:1;margin-left:8px">
+        <div class="row"><span class="lbl">Opacidad</span><input type="range" id="wmOp" min="8" max="55" value="22" oninput="document.getElementById('wmOpV').textContent=this.value+'%'"><span class="val" id="wmOpV">22%</span></div>
+        <div class="row"><span class="lbl">Color</span><select id="wmColor"><option value="gray">Gris</option><option value="red">Rojo</option><option value="blue">Azul</option><option value="black">Negro</option></select></div>
+      </div>
+    </div>
+    ${labelSection()}
+    <div class="row"><span class="lbl">Nombre salida</span><input type="text" id="protOut" placeholder="documento_protegido"></div>
+    <div class="row"><button class="btn" onclick="processProtect()">🛡️ Proteger y generar formatos</button></div>
+    <div id="protSt"></div><div id="protPrev"></div><div id="protRes"></div>
+  </div>`;
+}
+function setWmPos(idx,el){wmPosIdx=idx;document.querySelectorAll('.wm-cell').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');}
+function buildWmLines(){
+  const name=document.getElementById('wmName')?.value||'';
+  const dest=document.getElementById('wmDest')?.value||'';
+  const prop=document.getElementById('wmProp')?.value||'';
+  const aviso=document.getElementById('wmAviso')?.value||'';
+  const fecha=document.getElementById('wmFecha')?.value||new Date().toLocaleDateString('es-ES');
+  return[name,dest?`Para: ${dest}`:'',prop,aviso,`Fecha: ${fecha}`].filter(Boolean);
+}
+function dibujarMarca(ctx,w,h){
+  const lines=buildWmLines();const op=parseInt(document.getElementById('wmOp')?.value||22)/100;
+  const colorKey=document.getElementById('wmColor')?.value||'gray';
+  const cMap={gray:`rgba(90,90,90,${op})`,red:`rgba(180,20,20,${op})`,blue:`rgba(20,40,160,${op})`,black:`rgba(0,0,0,${op})`};
+  const color=cMap[colorKey];const fontSz=Math.max(16,w*.028);const step=Math.max(w,h)*.38;
+  const pos=POS_MAP[wmPosIdx];
+  ctx.save();ctx.font=`bold ${fontSz}px 'Segoe UI',Arial,sans-serif`;ctx.fillStyle=color;ctx.textAlign='center';ctx.textBaseline='middle';
+  for(let x=-w;x<w*2;x+=step)for(let y=-h;y<h*2;y+=step){
+    ctx.save();ctx.translate(x+w*pos[0]*2,y+h*pos[1]*2);ctx.rotate(-35*Math.PI/180);
+    lines.forEach((line,i)=>{ctx.fillText(line,0,i*fontSz*1.35);});ctx.restore();
+  }
+  ctx.restore();
+}
+async function processProtect(){
+  if(!curFile){alert('Sube un archivo primero.');return;}
+  if(!gastar(2))return;
+  const baseName=(document.getElementById('protOut')?.value||curFile.name.replace(/\.[^.]+$/,'')).replace(/\s+/g,'_')+'_protegido_'+new Date().toISOString().slice(0,10).replace(/-/g,'');
+  document.getElementById('protSt').innerHTML=`<div class="st proc">⏳ Procesando...</div>`;
+  if(curFile.type==='application/pdf'){
+    if(typeof PDFLib==='undefined'){document.getElementById('protSt').innerHTML=`<div class="st err">❌ pdf-lib cargando, intenta de nuevo.</div>`;return;}
+    const ab=await curFile.arrayBuffer();
+    const pdfDoc=await PDFLib.PDFDocument.load(ab,{ignoreEncryption:true});
+    const pages=pdfDoc.getPages();const font=await pdfDoc.embedFont(PDFLib.StandardFonts.HelveticaBold);
+    const lines=buildWmLines();const op=parseInt(document.getElementById('wmOp')?.value||22)/100;
+    const colorKey=document.getElementById('wmColor')?.value||'gray';
+    const cMap={gray:PDFLib.rgb(.45,.45,.45),red:PDFLib.rgb(.7,.1,.1),blue:PDFLib.rgb(.1,.2,.7),black:PDFLib.rgb(0,0,0)};
+    for(const page of pages){const{width,height}=page.getSize();
+      for(let xi=0;xi<3;xi++)for(let yi=0;yi<3;yi++){const bx=(width/3)*xi+width*.05,by=(height/3)*yi+height*.1;
+        lines.forEach((line,i)=>{page.drawText(line,{x:bx,y:by-(i*12*1.4),size:11,font,color:cMap[colorKey],opacity:op,rotate:PDFLib.degrees(-35)});});}}
+    const pdfBytes=await pdfDoc.save();const pdfBlob=new Blob([pdfBytes],{type:'application/pdf'});
+    document.getElementById('protSt').innerHTML=`<div class="st done">✅ PDF protegido</div>`;
+    document.getElementById('protRes').innerHTML=multiDownloadPanel({jpg:null,png:null,webp:null,pdf:pdfBlob},curFile.size,baseName);
+    return;
+  }
+  const img=new Image();img.onload=async()=>{
+    const c=document.createElement('canvas');c.width=img.naturalWidth;c.height=img.naturalHeight;
+    const ctx=c.getContext('2d');ctx.drawImage(img,0,0);dibujarMarca(ctx,c.width,c.height);
+    const blobs=await allImageBlobs(c,.92);blobs.pdf=await imageBlobToPDF(blobs.jpg,baseName);
+    document.getElementById('protSt').innerHTML=`<div class="st done">✅ Protegido en 4 formatos ${pesoBadge(curFile.size,blobs.jpg.size)}</div>`;
+    document.getElementById('protPrev').innerHTML=`<div class="prev-box"><div class="prev-title">👁️ Vista previa</div><img src="${URL.createObjectURL(blobs.jpg)}" style="max-width:100%;max-height:260px;border-radius:6px"></div>`;
+    document.getElementById('protRes').innerHTML=multiDownloadPanel(blobs,curFile.size,baseName);
+  };
+  img.src=URL.createObjectURL(curFile);
+}
+
+function autoQuality(file){if(!file)return 82;const sz=file.size;if(sz>5*1024*1024)return 70;if(sz>1*1024*1024)return 80;return 88;}
+function renderImg(){
+  const autoQ=curFile?autoQuality(curFile):82;
+  document.getElementById('toolArea').innerHTML=`
+  ${curFile?`<div class="fi"><div class="fi-ico">🖼️</div><div><div class="fi-name">${curFile.name}</div><div class="fi-size">${fmt(curFile.size)}</div><div style="font-size:9px;color:var(--ok)">⚡ Calidad auto: ${autoQ}%</div></div></div>`:''}
+  <div class="panel">
+    <div class="p-title">🖼️ Comprimir Imagen Multiformato</div>
+    <div class="row"><span class="lbl">Calidad</span><input type="range" id="imgQ" min="10" max="100" value="${autoQ}" oninput="document.getElementById('imgQv').textContent=this.value+'%'"><span class="val" id="imgQv">${autoQ}%</span></div>
+    <div class="row"><span class="lbl">Ancho máx.</span><select id="imgR"><option value="0">Sin redimensionar</option><option value="1920">1920px</option><option value="1280">1280px</option><option value="800">800px</option><option value="600">600px</option></select></div>
+    ${labelSection()}
+    <div class="row"><span class="lbl">Nombre</span><input type="text" id="imgN" placeholder="nombre_salida"></div>
+    <div class="row"><button class="btn" onclick="processImg()">⚙️ Comprimir</button></div>
+    <div id="imgSt"></div><div id="imgPrev"></div><div id="imgRes"></div>
+  </div>`;
+}
+async function processImg(){
+  if(!curFile){alert('Sube una imagen primero.');return;}
+  if(!gastar(2))return;
+  const q=parseInt(document.getElementById('imgQ').value)/100;
+  const maxW=parseInt(document.getElementById('imgR').value)||0;
+  document.getElementById('imgSt').innerHTML=`<div class="st proc">⏳ Comprimiendo...</div>`;
+  const img=new Image();img.onload=async()=>{
+    let W=img.naturalWidth,H=img.naturalHeight;
+    if(maxW&&W>maxW){H=Math.round(H*(maxW/W));W=maxW;}
+    const c=document.createElement('canvas');c.width=W;c.height=H;c.getContext('2d').drawImage(img,0,0,W,H);
+    const base=(document.getElementById('imgN').value||curFile.name.replace(/\.[^.]+$/,'')).replace(/\s+/g,'_')+'_'+(selLabel||'comprimido')+'_'+new Date().toISOString().slice(0,10).replace(/-/g,'');
+    const blobs=await allImageBlobs(c,q);blobs.pdf=await imageBlobToPDF(blobs.jpg,base);
+    document.getElementById('imgSt').innerHTML=`<div class="st done">✅ Comprimida ${pesoBadge(curFile.size,blobs.jpg.size)}</div>`;
+    document.getElementById('imgPrev').innerHTML=`<div class="prev-box"><div class="prev-title">👁️ Antes vs Después</div><div style="display:flex;gap:8px;flex-wrap:wrap"><div style="flex:1;text-align:center"><div style="font-size:9px;color:var(--tx2)">Original ${fmt(curFile.size)}</div><img src="${URL.createObjectURL(curFile)}" style="max-width:100%;max-height:140px;border-radius:6px"></div><div style="flex:1;text-align:center"><div style="font-size:9px;color:var(--ok)">Comprimida ✨</div><img src="${URL.createObjectURL(blobs.jpg)}" style="max-width:100%;max-height:140px;border-radius:6px"></div></div></div>`;
+    document.getElementById('imgRes').innerHTML=multiDownloadPanel(blobs,curFile.size,base);
+  };
+  img.src=URL.createObjectURL(curFile);
+}
+
+function renderBG(){
+  document.getElementById('toolArea').innerHTML=`
+  ${curFile?`<div class="fi"><div class="fi-ico">✂️</div><div><div class="fi-name">${curFile.name}</div><div class="fi-size">${fmt(curFile.size)}</div></div></div>`:''}
+  <div class="panel">
+    <div class="p-title">✂️ Eliminar / Cambiar Fondo</div>
+    <div class="bg-grid">${BG_PRESETS.map(b=>`<div class="bg-chip ${b.v==='transparent'?'checker':''}" style="${b.v!=='transparent'&&!b.v.startsWith('grad')&&b.v!=='bokeh1'?'background:'+b.v:''}" title="${b.n}" onclick="selBg('${b.v}',this)">${b.v.startsWith('grad')||b.v==='bokeh1'?b.e:''}</div>`).join('')}</div>
+    <div class="row"><span class="lbl">Color custom</span><input type="color" id="bgCC" value="#ffffff" style="width:36px;height:26px;border:none;background:none;cursor:pointer" onchange="bgSelColor=this.value"><input type="text" id="bgCT" placeholder="#hex o nombre" onchange="bgSelColor=this.value"></div>
+    ${labelSection()}
+    <div class="row"><span class="lbl">Nombre</span><input type="text" id="bgN" placeholder="imagen_sin_fondo"></div>
+    <div class="row"><button class="btn" onclick="processBG()">✨ Procesar</button></div>
+    <div id="bgSt"></div><div id="bgPrev"></div><div id="bgRes"></div>
+  </div>`;
+  document.querySelector('.bg-chip').classList.add('sel');
+}
+function selBg(v,el){bgSelColor=v;document.querySelectorAll('.bg-chip').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');}
+function aplicarFondo(ctx,W,H){
+  if(bgSelColor==='transparent'){ctx.clearRect(0,0,W,H);return;}
+  if(bgSelColor==='grad1'){const g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#667eea');g.addColorStop(1,'#764ba2');ctx.fillStyle=g;}
+  else if(bgSelColor==='grad2'){const g=ctx.createLinearGradient(0,0,W,0);g.addColorStop(0,'#f093fb');g.addColorStop(.5,'#f5576c');g.addColorStop(1,'#4facfe');ctx.fillStyle=g;}
+  else if(bgSelColor==='grad3'){const g=ctx.createLinearGradient(0,0,W,H);g.addColorStop(0,'#0f0c29');g.addColorStop(.5,'#302b63');g.addColorStop(1,'#24243e');ctx.fillStyle=g;}
+  else if(bgSelColor==='bokeh1'){
+    ctx.fillStyle='#1a1a2e';ctx.fillRect(0,0,W,H);
+    for(let i=0;i<40;i++){const x=Math.random()*W,y=Math.random()*H,r=Math.random()*60+20;const g=ctx.createRadialGradient(x,y,0,x,y,r);g.addColorStop(0,`rgba(${Math.floor(Math.random()*200+55)},${Math.floor(Math.random()*200+55)},255,0.35)`);g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();}
+    return;
+  }else ctx.fillStyle=bgSelColor;
+  ctx.fillRect(0,0,W,H);
+}
+async function processBG(){
+  if(!curFile||!curFile.type.startsWith('image/')){alert('Sube una imagen primero.');return;}
+  if(!gastar(2))return;
+  const img=new Image();img.onload=async()=>{
+    const W=img.naturalWidth,H=img.naturalHeight;
+    const c=document.createElement('canvas');c.width=W;c.height=H;const ctx=c.getContext('2d');
+    aplicarFondo(ctx,W,H);ctx.drawImage(img,0,0);
+    const idata=ctx.getImageData(0,0,W,H);const d=idata.data;
+    const corners=[[0,0],[W-1,0],[0,H-1],[W-1,H-1]].map(([x,y])=>{const i=(y*W+x)*4;return[d[i],d[i+1],d[i+2]];});
+    const avgR=Math.round(corners.reduce((s,c)=>s+c[0],0)/corners.length);
+    const avgG=Math.round(corners.reduce((s,c)=>s+c[1],0)/corners.length);
+    const avgB=Math.round(corners.reduce((s,c)=>s+c[2],0)/corners.length);
+    const tol=55;
+    for(let i=0;i<d.length;i+=4){
+      if(Math.abs(d[i]-avgR)<tol&&Math.abs(d[i+1]-avgG)<tol&&Math.abs(d[i+2]-avgB)<tol){
+        if(bgSelColor==='transparent'){d[i+3]=0;}
+        else{const fc=hexToRgb(bgSelColor)||{r:255,g:255,b:255};d[i]=fc.r;d[i+1]=fc.g;d[i+2]=fc.b;d[i+3]=255;}
+      }
+    }
+    ctx.putImageData(idata,0,0);
+    const base=(document.getElementById('bgN')?.value||curFile.name.replace(/\.[^.]+$/,'')).replace(/\s+/g,'_')+'_fondo_'+new Date().toISOString().slice(0,10).replace(/-/g,'');
+    const blobs=await allImageBlobs(c,.92);blobs.pdf=await imageBlobToPDF(blobs.jpg,base);
+    document.getElementById('bgSt').innerHTML=`<div class="st done">✅ Fondo procesado ${pesoBadge(curFile.size,blobs.jpg.size)}</div>`;
+    document.getElementById('bgPrev').innerHTML=`<div class="prev-box"><div class="prev-title">👁️ Resultado</div><img src="${URL.createObjectURL(blobs.png||blobs.jpg)}" style="max-width:100%;max-height:200px;border-radius:6px"></div>`;
+    document.getElementById('bgRes').innerHTML=multiDownloadPanel(blobs,curFile.size,base);
+  };
+  img.src=URL.createObjectURL(curFile);
+}
+function hexToRgb(h){if(!h||h==='transparent')return null;const r=h.match(/^#([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i);return r?{r:parseInt(r[1],16),g:parseInt(r[2],16),b:parseInt(r[3],16)}:null;}
+
+function renderPDF(){
+  document.getElementById('toolArea').innerHTML=`
+  ${curFile?`<div class="fi"><div class="fi-ico">📄</div><div><div class="fi-name">${curFile.name}</div><div class="fi-size">${fmt(curFile.size)}</div></div></div>`:''}
+  <div class="panel">
+    <div class="p-title">📄 Editor PDF</div>
+    <div class="row"><span class="lbl">Texto marca</span><input type="text" id="pdfWm" value="DOCUMENTO CONFIDENCIAL"></div>
+    <div class="row"><span class="lbl">Opacidad</span><input type="range" id="pdfOp" min="8" max="45" value="18" oninput="document.getElementById('pdfOpV').textContent=this.value+'%'"><span class="val" id="pdfOpV">18%</span></div>
+    <div class="row"><span class="lbl">Firma</span><input type="text" id="pdfSig" placeholder="Tu nombre / firma"></div>
+    ${labelSection()}
+    <div class="row"><span class="lbl">Nombre</span><input type="text" id="pdfN" placeholder="documento_procesado"></div>
+    <div class="row"><button class="btn" onclick="processPDF()">⚙️ Procesar PDF</button></div>
+    <div id="pdfSt"></div><div id="pdfPrev"></div><div id="pdfRes"></div>
+  </div>`;
+}
+async function processPDF(){
+  if(!curFile||curFile.type!=='application/pdf'){alert('Sube un PDF primero.');return;}
+  if(!gastar(1))return;
+  if(typeof PDFLib==='undefined'){alert('pdf-lib cargando...');return;}
+  document.getElementById('pdfSt').innerHTML=`<div class="st proc">⏳ Procesando PDF...</div>`;
+  const ab=await curFile.arrayBuffer();const pdfDoc=await PDFLib.PDFDocument.load(ab,{ignoreEncryption:true});
+  const pages=pdfDoc.getPages();const font=await pdfDoc.embedFont(PDFLib.StandardFonts.HelveticaBold);const fontN=await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
+  const wmTxt=document.getElementById('pdfWm').value||'CONFIDENCIAL';const op=parseInt(document.getElementById('pdfOp').value)/100;const sig=document.getElementById('pdfSig').value.trim();
+  const fecha=new Date().toISOString().slice(0,10);
+  for(const page of pages){const{width,height}=page.getSize();
+    [[.1,.75],[.4,.75],[.1,.45],[.4,.45],[.1,.15],[.4,.15]].forEach(([rx,ry])=>{page.drawText(wmTxt,{x:width*rx,y:height*ry,size:Math.min(22,width/wmTxt.length*1.8),font,color:PDFLib.rgb(.45,.45,.45),opacity:op,rotate:PDFLib.degrees(-35)});});
+    if(sig){page.drawText(`${sig} · ${fecha}`,{x:18,y:12,size:7,font:fontN,color:PDFLib.rgb(.15,.25,.65),opacity:.8});}
+  }
+  const pdfBytes=await pdfDoc.save();const pdfBlob=new Blob([pdfBytes],{type:'application/pdf'});
+  const base=(document.getElementById('pdfN').value||curFile.name.replace('.pdf','')).replace(/\s+/g,'_')+'_'+(selLabel||'procesado')+'_'+fecha.replace(/-/g,'');
+  document.getElementById('pdfSt').innerHTML=`<div class="st done">✅ PDF procesado ${pesoBadge(curFile.size,pdfBlob.size)}</div>`;
+  document.getElementById('pdfPrev').innerHTML=`<div class="prev-box"><div class="prev-title">👁️ Preview</div><iframe src="${URL.createObjectURL(pdfBlob)}" style="width:100%;height:220px;border:none;border-radius:6px;background:#fff"></iframe></div>`;
+  document.getElementById('pdfRes').innerHTML=multiDownloadPanel({jpg:null,png:null,webp:null,pdf:pdfBlob},curFile.size,base);
+}
+
+function renderQR(){
+  document.getElementById('toolArea').innerHTML=`
+  <div class="panel">
+    <div class="p-title">📲 Generador QR</div>
+    <div class="row"><span class="lbl">Texto / Link</span><input type="text" id="qrIn" placeholder="https://... · +34600... · texto"></div>
+    <div class="row"><span class="lbl">Tamaño</span><select id="qrSz"><option value="200">Pequeño</option><option value="300" selected>Mediano</option><option value="400">Grande</option></select></div>
+    <div class="row"><span class="lbl">Color QR</span><input type="color" id="qrCol" value="#7c3aed" style="width:36px;height:26px;border:none;cursor:pointer"><span class="lbl" style="margin-left:8px">Fondo</span><input type="color" id="qrBg" value="#ffffff" style="width:36px;height:26px;border:none;cursor:pointer"></div>
+    <div class="row"><button class="btn" onclick="genQR()">📲 Generar</button><button class="btn btn-ok" onclick="dlQR()">⬇ Descargar</button></div>
+    <div id="qrPrev" style="text-align:center;margin-top:8px"></div>
+  </div>`;
+}
+let qrCanvas=null;
+function genQR(){const txt=document.getElementById('qrIn').value.trim();if(!txt)return;const sz=parseInt(document.getElementById('qrSz').value);const col=document.getElementById('qrCol').value;const bg=document.getElementById('qrBg').value;const p=document.getElementById('qrPrev');p.innerHTML='<div class="prev-box"><div class="prev-title">👁️ QR</div><div id="qrDiv" style="display:flex;justify-content:center;padding:8px;background:#fff;border-radius:6px"></div></div>';try{new QRCode(document.getElementById('qrDiv'),{text:txt,width:sz,height:sz,colorDark:col,colorLight:bg,correctLevel:QRCode.CorrectLevel.H});setTimeout(()=>{qrCanvas=document.getElementById('qrDiv').querySelector('canvas')||document.getElementById('qrDiv').querySelector('img');},300);}catch(e){alert('Error QR: '+e.message);}}
+function dlQR(){
+  if(!qrCanvas){alert('Genera el QR primero.');return;}
+  if(!gastar(2))return;
+  const txt=(document.getElementById('qrIn')?.value||'qr').replace(/[^a-zA-Z0-9]/g,'_').slice(0,20);
+  const fecha=new Date().toISOString().slice(0,10).replace(/-/g,'');
+  const base=`QR_${txt}_${fecha}`;
+  const sz=qrCanvas.width||300;
+  const hd=document.createElement('canvas');
+  hd.width=sz*2;hd.height=sz*2;
+  const ctx=hd.getContext('2d');
+  ctx.imageSmoothingEnabled=false;
+  if(qrCanvas.tagName==='CANVAS'){ctx.drawImage(qrCanvas,0,0,hd.width,hd.height);}
+  else{const img=new Image();img.src=qrCanvas.src;ctx.drawImage(img,0,0,hd.width,hd.height);}
+  const pngUrl=hd.toDataURL('image/png',1.0);
+  const a=document.createElement('a');a.href=pngUrl;a.download=base+'.png';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  if(typeof window.jspdf!=='undefined'||typeof jsPDF!=='undefined'){
+    const JsPDF=window.jspdf?.jsPDF||jsPDF;
+    const pdf=new JsPDF({orientation:'portrait',unit:'mm',format:[60,60]});
+    pdf.addImage(pngUrl,'PNG',0,0,60,60);
+    pdf.save(base+'.pdf');
+  }
+  const arr=pngUrl.split(',');const bstr=atob(arr[1]);const blob=new Blob([new Uint8Array([...bstr].map(c=>c.charCodeAt(0)))],{type:'image/png'});
+  const stEl=document.getElementById('qrPrev');
+  if(stEl){stEl.insertAdjacentHTML('beforeend',`<div class="st done" style="margin-top:6px">✅ QR HD · PNG ${fmt(blob.size)}${(typeof window.jspdf!=='undefined'||typeof jsPDF!=='undefined')?' + PDF':''}</div>`);
+  setTimeout(()=>stEl.querySelector('.st.done')?.remove(),4000);}
+}
+
+function renderTel(){
+  document.getElementById('toolArea').innerHTML=`
+  <div class="panel">
+    <div class="p-title">🔐 Codificador Base64</div>
+    <div class="row"><span class="lbl">Contenido</span><input type="text" id="telIn" placeholder="+34604822265 · https://... · texto"></div>
+    <div class="row"><button class="btn" onclick="encTel()">🔒 Base64</button><button class="btn btn-g" onclick="decTel()">🔓 Decodificar</button><button class="btn" style="background:var(--ac3);color:#000" onclick="telToQR()">📲 → QR</button></div>
+    <div id="telRes"></div>
+  </div>`;
+}
+function encTel(){
+  const v=document.getElementById('telIn').value.trim();
+  if(!v)return;
+  const b64=btoa(unescape(encodeURIComponent(v)));
+  const fecha=new Date().toISOString().slice(0,10).replace(/-/g,'');
+  const base=`base64_${fecha}`;
+  const blob=new Blob([b64],{type:'text/plain'});
+  const blobUrl=URL.createObjectURL(blob);
+  document.getElementById('telRes').innerHTML=`
+    <div style="background:var(--bg3);border:1px solid var(--bd);border-radius:7px;padding:9px;margin-top:7px">
+      <div style="font-size:9px;color:var(--tx2);margin-bottom:4px">✅ Base64 · ${fmt(blob.size)}</div>
+      <div class="tel-out">${b64}</div>
+      <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap">
+        <button class="btn" style="font-size:9px;padding:3px 9px" onclick="navigator.clipboard.writeText('${b64}').then(()=>this.textContent='✅ Copiado').catch(()=>this.textContent='❌ Error')">📋 Copiar</button>
+        <a href="${blobUrl}" download="${base}.txt" class="btn" style="font-size:9px;padding:3px 9px;text-decoration:none">⬇ .txt ${fmt(blob.size)}</a>
+      </div>
+    </div>`;
+}
+function decTel(){const v=document.getElementById('telIn').value.trim();try{const d=decodeURIComponent(escape(atob(v)));document.getElementById('telRes').innerHTML=`<div style="background:var(--bg3);border:1px solid var(--bd);border-radius:7px;padding:9px;margin-top:7px"><div style="font-size:9px;color:var(--tx2)">✅ Decodificado:</div><div class="tel-out">${d}</div></div>`;}catch{alert('No es Base64 válido.');}}
+function telToQR(){const v=document.getElementById('telIn').value.trim();if(!v)return;setTool('qr');setTimeout(()=>{document.getElementById('qrIn').value=v;genQR();},250);}
+
+// ══ VÍDEO & AUDIO ══
+let mediaFile=null;
+function handleMediaDrop(ev){ev.preventDefault();const f=ev.dataTransfer.files[0];if(f)handleMediaFile(f);}
+function handleMediaFile(f){
+  if(!f)return;mediaFile=f;
+  const isVideo=f.type.startsWith('video/');
+  document.getElementById('mediaInfo').innerHTML=`<div class="media-info"><div style="font-size:12px;font-weight:700;color:var(--ac2)">${isVideo?'🎬':'🎵'} ${f.name}</div><div style="font-size:10px;color:var(--tx2);margin-top:3px">Tamaño original: <strong style="color:var(--err)">${fmt(f.size)}</strong></div><div style="font-size:9px;color:var(--ok);margin-top:2px">✅ Archivo listo para optimizar</div></div>`;
+  document.getElementById('mediaResRow').style.display=isVideo?'flex':'none';
+  document.getElementById('mediaOpts').style.display='block';
+  document.getElementById('mediaNombre').value=f.name.replace(/\.[^.]+$/,'')+'_optimizado';
+}
+async function processMedia(){
+  if(!mediaFile){alert('Sube un archivo de vídeo o audio primero.');return;}
+  if(!gastar(2))return;
+  const isVideo=mediaFile.type.startsWith('video/');
+  const q=document.getElementById('mediaQ').value;
+  const nombre=document.getElementById('mediaNombre').value||'archivo_optimizado';
+  document.getElementById('mediaProgWrap').style.display='block';
+  document.getElementById('mediaSt').innerHTML=`<div class="st proc">⏳ Optimizando ${isVideo?'vídeo':'audio'}...</div>`;
+  let prog=0;
+  const progInt=setInterval(()=>{prog=Math.min(prog+Math.random()*8,88);document.getElementById('mediaProgBar').style.width=prog+'%';document.getElementById('mediaProgTxt').textContent=`Procesando... ${Math.round(prog)}%`;},300);
+  try{
+    let outBlob;
+    if(isVideo){outBlob=await optimizeVideo(mediaFile,q);}
+    else{outBlob=await optimizeAudio(mediaFile,q);}
+    clearInterval(progInt);
+    document.getElementById('mediaProgBar').style.width='100%';
+    document.getElementById('mediaProgTxt').textContent='✅ Completado';
+    const ext=outBlob.type.includes('mp4')?'.mp4':outBlob.type.includes('webm')?'.webm':outBlob.type.includes('ogg')?'.ogg':'.mp3';
+    document.getElementById('mediaSt').innerHTML=`<div class="st done">✅ Optimizado ${pesoBadge(mediaFile.size,outBlob.size)}</div>`;
+    document.getElementById('mediaRes2').innerHTML=`<div class="dl-multi" style="margin-top:8px"><div class="dl-multi-title">⬇ Descargar archivo optimizado</div><div style="display:flex;gap:6px;flex-wrap:wrap"><div class="dl-btn-fmt" onclick="dlMedia('${URL.createObjectURL(outBlob)}','${nombre+ext}')"><span class="fmt-ico">${isVideo?'🎬':'🎵'}</span><span class="fmt-lbl">${ext.toUpperCase().replace('.','')}</span><span class="fmt-sz">${fmt(outBlob.size)}</span></div></div><div style="font-size:8px;color:var(--tx2);margin-top:4px">💡 Procesado 100% en tu dispositivo · Sin subir a internet</div></div>`;
+  }catch(err){
+    clearInterval(progInt);
+    document.getElementById('mediaSt').innerHTML=`<div class="st err">❌ Error: ${err.message}. Intenta con otro formato.</div>`;
+  }
+}
+async function optimizeVideo(file,quality){
+  return new Promise((resolve,reject)=>{
+    const video=document.createElement('video');video.src=URL.createObjectURL(file);
+    video.onloadedmetadata=()=>{
+      const canvas=document.createElement('canvas');
+      const res=document.getElementById('mediaRes').value;
+      let W=video.videoWidth,H=video.videoHeight;
+      if(res!=='orig'){const maxH=parseInt(res);if(H>maxH){W=Math.round(W*(maxH/H));H=maxH;}}
+      canvas.width=W;canvas.height=H;
+      const ctx=canvas.getContext('2d');
+      const bps={alta:4000000,media:2000000,baja:800000}[quality]||2000000;
+      let stream;
+      try{stream=canvas.captureStream(25);}catch(e){reject(new Error('captureStream no soportado'));return;}
+      try{const actx=new AudioContext();const src=actx.createMediaElementSource(video);const dest=actx.createMediaStreamDestination();src.connect(dest);dest.stream.getAudioTracks().forEach(t=>stream.addTrack(t));}catch(e){}
+      const rec=new MediaRecorder(stream,{mimeType:MediaRecorder.isTypeSupported('video/webm;codecs=vp9')?'video/webm;codecs=vp9':'video/webm',videoBitsPerSecond:bps});
+      const chunks=[];rec.ondataavailable=e=>{if(e.data.size>0)chunks.push(e.data);};rec.onstop=()=>resolve(new Blob(chunks,{type:rec.mimeType}));rec.start(100);video.play();
+      const drawFrame=()=>{if(video.ended||video.paused){rec.stop();return;}ctx.drawImage(video,0,0,W,H);requestAnimationFrame(drawFrame);};
+      video.onplay=()=>drawFrame();video.onerror=()=>reject(new Error('No se pudo cargar el vídeo'));
+    };
+    video.onerror=()=>reject(new Error('Formato de vídeo no soportado'));
+  });
+}
+async function optimizeAudio(file,quality){
+  const ab=await file.arrayBuffer();const actx=new (window.AudioContext||window.webkitAudioContext)();
+  const buf=await actx.decodeAudioData(ab);
+  const offline=new OfflineAudioContext(buf.numberOfChannels,buf.length,quality==='baja'?22050:44100);
+  const src=offline.createBufferSource();src.buffer=buf;src.connect(offline.destination);src.start();
+  const rendered=await offline.startRendering();return audioBufferToWav(rendered);
+}
+function audioBufferToWav(buf){
+  const ch=buf.numberOfChannels,sr=buf.sampleRate,len=buf.length;
+  const ab=new ArrayBuffer(44+len*ch*2);const view=new DataView(ab);
+  function ws(off,str){for(let i=0;i<str.length;i++)view.setUint8(off+i,str.charCodeAt(i));}
+  ws(0,'RIFF');view.setUint32(4,36+len*ch*2,true);ws(8,'WAVE');ws(12,'fmt ');view.setUint32(16,16,true);view.setUint16(20,1,true);view.setUint16(22,ch,true);
+  view.setUint32(24,sr,true);view.setUint32(28,sr*ch*2,true);view.setUint16(32,ch*2,true);view.setUint16(34,16,true);
+  ws(36,'data');view.setUint32(40,len*ch*2,true);
+  let off=44;for(let i=0;i<len;i++)for(let c=0;c<ch;c++){const s=Math.max(-1,Math.min(1,buf.getChannelData(c)[i]));view.setInt16(off,s<0?s*0x8000:s*0x7FFF,true);off+=2;}
+  return new Blob([ab],{type:'audio/wav'});
+}
+function dlMedia(url,name){if(!gastar(2))return;const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();document.body.removeChild(a);}
+
+// ══ TARJETA SEGURA ══
+let cardDigitVisible=[];let cardImgSrc=null;
+let paintMode=false,isPainting=false,brushSz=22;
+let paintCanvas=null,paintCtx=null;
+function toggleModoSlide(){paintMode=!paintMode;const btn=document.getElementById('btnModoSlide');btn.textContent=paintMode?'✏️ Pincel ACTIVO':'✏️ Activar pincel';btn.style.borderColor=paintMode?'var(--ac2)':'var(--bd)';btn.style.color=paintMode?'var(--ac2)':'var(--tx2)';document.getElementById('cardCanvas').style.cursor=paintMode?'crosshair':'default';}
+function initPaintCanvas(){if(!paintCanvas){paintCanvas=document.createElement('canvas');paintCanvas.width=340;paintCanvas.height=200;paintCtx=paintCanvas.getContext('2d');}}
+function getCanvasPos(ev,canvas){const rect=canvas.getBoundingClientRect();const scaleX=340/rect.width,scaleY=200/rect.height;return{x:(ev.clientX-rect.left)*scaleX,y:(ev.clientY-rect.top)*scaleY};}
+function startPaint(ev){if(!paintMode)return;initPaintCanvas();isPainting=true;doPaint(ev);}
+function doPaint(ev){if(!paintMode||!isPainting)return;const c=document.getElementById('cardCanvas');const pos=getCanvasPos(ev,c);paintCtx.fillStyle='rgba(0,0,0,0.92)';paintCtx.beginPath();paintCtx.arc(pos.x,pos.y,brushSz,0,Math.PI*2);paintCtx.fill();renderCardCanvas();}
+function stopPaint(){isPainting=false;}
+function startPaintT(ev){ev.preventDefault();if(!paintMode)return;initPaintCanvas();isPainting=true;doPaintT(ev);}
+function doPaintT(ev){ev.preventDefault();if(!paintMode||!isPainting)return;const c=document.getElementById('cardCanvas');const touch=ev.touches[0];const rect=c.getBoundingClientRect();const scaleX=340/rect.width,scaleY=200/rect.height;const x=(touch.clientX-rect.left)*scaleX,y=(touch.clientY-rect.top)*scaleY;paintCtx.fillStyle='rgba(0,0,0,0.92)';paintCtx.beginPath();paintCtx.arc(x,y,brushSz,0,Math.PI*2);paintCtx.fill();renderCardCanvas();}
+function clearCardPaint(){if(paintCtx)paintCtx.clearRect(0,0,340,200);renderCardCanvas();}
+function formatCardNum(el){let v=el.value.replace(/\D/g,'').substring(0,16);v=v.replace(/(.{4})/g,'$1 ').trim();el.value=v;}
+function initDigitSel(){const num=document.getElementById('cardNum')?.value.replace(/\D/g,'')||'4532123456789012';const digits=num.padEnd(16,'0').split('');cardDigitVisible=digits.map((_,i)=>i<4||i>=12);renderDigitSel(digits);}
+function renderDigitSel(digits){const container=document.getElementById('digitSel');if(!container)return;container.innerHTML='';digits.forEach((d,i)=>{const btn=document.createElement('button');btn.className='dig-btn '+(cardDigitVisible[i]?'visible':'hidden');btn.textContent=cardDigitVisible[i]?d:'●';btn.onclick=()=>{cardDigitVisible[i]=!cardDigitVisible[i];renderDigitSel(digits);renderCardCanvas();};container.appendChild(btn);if((i+1)%4===0&&i<15){const sep=document.createElement('span');sep.style.width='8px';sep.textContent=' ';container.appendChild(sep);}});}
+function loadCardImg(event){const file=event.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=e=>{cardImgSrc=e.target.result;renderCardCanvas();};reader.readAsDataURL(file);}
+function renderCard(){const num=document.getElementById('cardNum')?.value.replace(/\D/g,'')||'4532123456789012';if(cardDigitVisible.length!==16)cardDigitVisible=Array(16).fill(true).map((_,i)=>i<4||i>=12);const digits=num.padEnd(16,'0').split('');renderDigitSel(digits);renderCardCanvas();}
+function renderCardCanvas(){
+  const canvas=document.getElementById('cardCanvas');if(!canvas)return;
+  const ctx=canvas.getContext('2d');const W=340,H=200;ctx.clearRect(0,0,W,H);
+  if(cardImgSrc){const img=new Image();img.onload=()=>{
+    // fondo oscuro para el letterbox (evita bordes transparentes)
+    ctx.fillStyle='#0a0a14';if(ctx.roundRect){ctx.beginPath();ctx.roundRect(0,0,W,H,16);ctx.fill();}else ctx.fillRect(0,0,W,H);
+    // dibujar la imagen subida CENTRADA y SIN deformar (object-fit: contain)
+    const ar=img.naturalWidth/img.naturalHeight, cr=W/H;
+    let dw,dh;
+    if(ar>cr){dw=W;dh=W/ar;}else{dh=H;dw=H*ar;}
+    const dx=(W-dw)/2, dy=(H-dh)/2;
+    ctx.drawImage(img,dx,dy,dw,dh);
+    // SOLO marca de agua + capa de pintura (sin overlay sintetico que descentra)
+    drawCardOverlay(ctx,W,H,true);applyPaintLayer(ctx);
+  };img.src=cardImgSrc;return;}
+  const type=document.getElementById('cardType')?.value||'visa';
+  const gradMap={visa:['#1a1a2e','#16213e','#0f3460'],mc:['#1a0a00','#3d1a00','#6b2d00'],amex:['#001a00','#003300','#004d00'],generic:['#1a1a2e','#2d2d4a','#0a0a1a']};
+  const cols=gradMap[type]||gradMap.visa;
+  const grad=ctx.createLinearGradient(0,0,W,H);grad.addColorStop(0,cols[0]);grad.addColorStop(0.5,cols[1]);grad.addColorStop(1,cols[2]);
+  ctx.fillStyle=grad;if(ctx.roundRect)ctx.roundRect(0,0,W,H,16);else ctx.rect(0,0,W,H);ctx.fill();
+  drawCardOverlay(ctx,W,H);applyPaintLayer(ctx);
+}
+function applyPaintLayer(ctx){if(paintCanvas&&paintCtx)ctx.drawImage(paintCanvas,0,0);}
+function drawCardOverlay(ctx,W,H,soloMarca){
+  if(!soloMarca){
+  const type=document.getElementById('cardType')?.value||'visa';
+  const hideHolder=document.getElementById('hideHolder')?.checked;const hideExp=document.getElementById('hideExp')?.checked;const hideBank=document.getElementById('hideBank')?.checked;
+  const bank=document.getElementById('cardBank')?.value||'MI BANCO';const holder=document.getElementById('cardHolder')?.value||'TITULAR';const exp=document.getElementById('cardExp')?.value||'12/28';
+  const rawNum=(document.getElementById('cardNum')?.value||'').replace(/\D/g,'').padEnd(16,'0');
+  const chipGrad=ctx.createLinearGradient(24,60,66,92);chipGrad.addColorStop(0,'#d4af37');chipGrad.addColorStop(1,'#ffd700');ctx.fillStyle=chipGrad;ctx.beginPath();if(ctx.roundRect)ctx.roundRect(24,60,42,32,5);else ctx.rect(24,60,42,32);ctx.fill();
+  if(!hideBank){ctx.fillStyle='rgba(255,255,255,.75)';ctx.font='bold 10px Monaco,monospace';ctx.fillText(bank.toUpperCase(),20,24);}
+  ctx.font='28px Arial';const logoMap={visa:'💳',mc:'🔴',amex:'💚',generic:'⭐'};ctx.fillText(logoMap[type]||'💳',W-50,36);
+  ctx.font='bold 17px Monaco,Courier,monospace';let xPos=22;
+  const groups=[rawNum.slice(0,4),rawNum.slice(4,8),rawNum.slice(8,12),rawNum.slice(12,16)];
+  groups.forEach((group,gi)=>{group.split('').forEach((digit,di)=>{const idx=gi*4+di;const isVisible=cardDigitVisible[idx]!==undefined?cardDigitVisible[idx]:true;if(isVisible){ctx.fillStyle='#fff';ctx.font='bold 17px Monaco,Courier,monospace';ctx.fillText(digit,xPos,H-52);}else{ctx.fillStyle='rgba(255,255,255,.15)';ctx.fillRect(xPos-1,H-66,13,18);ctx.fillStyle='rgba(255,255,255,.35)';ctx.font='bold 15px Monaco,Courier,monospace';ctx.fillText('●',xPos,H-53);}xPos+=13;});xPos+=10;});
+  ctx.font='11px Monaco,monospace';
+  if(!hideHolder){ctx.fillStyle='rgba(255,255,255,.85)';ctx.fillText(holder.toUpperCase(),22,H-24);}else{ctx.fillStyle='rgba(255,255,255,.15)';ctx.fillRect(22,H-36,120,16);}
+  ctx.textAlign='right';if(!hideExp){ctx.fillStyle='rgba(255,255,255,.85)';ctx.font='11px Monaco,monospace';ctx.fillText(exp,W-20,H-24);}else{ctx.fillStyle='rgba(255,255,255,.15)';ctx.fillRect(W-70,H-36,50,16);}ctx.textAlign='left';
+  }
+  const wmTxt=document.getElementById('cardWm')?.value||'Solo uso personal';const wmOp=parseInt(document.getElementById('cardWmOp')?.value||15)/100;
+  if(wmTxt){ctx.save();ctx.globalAlpha=wmOp;ctx.font='bold 11px Segoe UI,Arial';ctx.fillStyle='#fff';ctx.textAlign='center';ctx.translate(W/2,H/2);ctx.rotate(-30*Math.PI/180);for(let row=-2;row<=2;row++)ctx.fillText(wmTxt,0,row*40);ctx.restore();}
+}
+function downloadCard(fmt){
+  if(!gastar(2))return;
+  const canvas=document.getElementById('cardCanvas');
+  const banco=(document.getElementById('cardBank')?.value||'tarjeta').replace(/\s+/g,'_').toLowerCase();
+  const fecha=new Date().toISOString().slice(0,10).replace(/-/g,'');
+  const base=`tarjeta_${banco}_${fecha}`;
+  const mimeMap={jpg:'image/jpeg',png:'image/png'};
+  const qualMap={jpg:0.97,png:1};
+  // Canvas escalado x2 para mayor resolución
+  const hd=document.createElement('canvas');
+  hd.width=canvas.width*2;hd.height=canvas.height*2;
+  const ctx=hd.getContext('2d');ctx.scale(2,2);ctx.drawImage(canvas,0,0);
+  const dataUrl=hd.toDataURL(mimeMap[fmt]||'image/jpeg',qualMap[fmt]||0.97);
+  const a=document.createElement('a');a.download=`${base}.${fmt}`;a.href=dataUrl;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  // PDF opcional si jsPDF disponible
+  if(fmt==='jpg'&&(typeof window.jspdf!=='undefined'||typeof jsPDF!=='undefined')){
+    const JsPDF=window.jspdf?.jsPDF||jsPDF;
+    const pdf=new JsPDF({orientation:'landscape',unit:'mm',format:[85.6,54]});
+    pdf.addImage(dataUrl,'JPEG',0,0,85.6,54);
+    pdf.save(`${base}.pdf`);
+  }
+  document.getElementById('cardSt').innerHTML=`<div class="st done">✅ Tarjeta HD descargada · ${fmt.toUpperCase()}${fmt==='jpg'?' + PDF':''}</div>`;
+}
+
+document.querySelector('[onclick*="tarjeta"]').addEventListener('click',()=>{setTimeout(()=>{initDigitSel();renderCardCanvas();},100);});
+
+// ══ CV / CARTAS ══
+const CV_VARIADORES={
+  carta:["Presento mi postulación formal con alto entusiasmo. Mi perfil técnico se alinea perfectamente con los requerimientos de su organización.","Me pongo en comunicación con el propósito de aportar dinamismo, compromiso y resultados mensurables a su equipo de trabajo.","A través de la presente, manifiesto mi firme interés en incorporarme a sus operaciones, ofreciendo una trayectoria sólida y metodologías probadas.","Le escribo para ofrecer mis competencias avanzadas orientadas al cumplimiento de objetivos corporativos exigentes.","Deseo proponer mi candidatura para el puesto vacante, respaldado por un impecable historial de eficiencia y proactividad.","Es un honor dirigirme a usted con el fin de sumarme a sus filas operativas, generando adaptación inmediata y excelencia en el servicio.","Motivado por el crecimiento constante de su firma, ofrezco un perfil maduro y habilidades técnicas de vanguardia.","Con gran interés en sus proyectos, postulo mi perfil buscando aportar soluciones eficaces y alto compromiso corporativo.","Me dirijo a usted con la intención de integrarme en su plantilla y desplegar todo mi potencial técnico.","Adjunto mis credenciales con la certeza de poder optimizar los flujos de trabajo mediante mi experiencia."],
+  motivacional:["Lo que me impulsa a unirme a ustedes es su cultura organizacional y mi genuina pasión por alcanzar la excelencia.","Considero que los retos de su empresa son la oportunidad perfecta para demostrar mi resiliencia y visión de mejora continua.","Mi motivación radica en la convergencia entre los valores de su corporación y mi búsqueda de desarrollo profesional.","Formar parte de su equipo es un hito que deseo alcanzar para fusionar mi creatividad con las metas globales de la firma.","Me entusiasma profundamente aportar mi energía y ética de trabajo a sus operaciones diarias.","Su liderazgo en el mercado me inspira a ofrecer lo mejor de mis destrezas para superar los estándares de calidad.","Busco un entorno de alta exigencia donde mi pasión por los detalles genere un impacto positivo inmediato.","Mi compromiso va más allá del deber laboral; me apasiona este sector y deseo volcarlo en su marca.","Encuentro profunda inspiración en sus metodologías y es mi deseo alinear mis esfuerzos para consolidar sus éxitos.","La oportunidad de colaborar con profesionales de su calibre es el estímulo definitivo para mi máxima entrega."],
+  renuncia:["Por motivos de índole profesional y crecimiento de carrera, comunico mi decisión irrevocable de cesar en mis funciones.","Agradezco profundamente la confianza depositada y notifico formalmente el término de nuestra relación laboral.","Ha sido una decisión largamente evaluada con el fin de emprender nuevos horizontes y proyectos personales.","Hago de su conocimiento mi renuncia al puesto que desempeño, garantizando una transición ordenada y pulcra.","Presento esta notificación de baja voluntaria, manifestando mi más sincera gratitud por el aprendizaje recibido.","Por razones personales que requieren mi completa atención, me veo en la necesidad de finalizar mis actividades.","Informo mi desvinculación voluntaria. Ha sido un honor sumar esfuerzos con este gran equipo.","Comunico formalmente mi dimisión al cargo con respeto absoluto hacia la dirección y mis mejores deseos.","Con fecha de hoy presento mi renuncia formal, comprometiéndome a colaborar en la capacitación de mi relevo.","Cierro este ciclo de manera sumamente agradecida y radico mi renuncia formal e irrevocable."]
+};
+const CV_CATS={"Peluquería":["Colorimetría","Corte","Marcado","Tratamientos","Estilismo"],"Enfermería":["Cuidados","Medicación","Triaje","Urgencias","Clínica"],"Albañilería":["Obra","Alicatado","Planos","Estructuras","Reformas"],"Empleada Hogar":["Limpieza","Cocina","Organización","Plancha","Logística"],"Camarero":["Protocolo","Servicio","Barra","Manejo TPV","Comandas"],"Recepcionista":["Atención","Ofimática","Gestión","Llamadas","Agendas"],"Barbero":["Barba","Degradado","Afeitado","Visajismo","Estilo"],"Dependienta":["Venta directa","Atención al cliente","Escaparatismo","Reposición","Cierre de caja"],"Cajera":["Cuadre de caja","Agilidad cobros","Fidelización","Sistemas POS","Atención al cliente"],"Cocinero":["Gestión de cocina","APPCC","Emplatado","Costes de menú","Alta cocina"],"Conductora":["Seguridad vial","Mantenimiento","Puntualidad","Rutas","Logística"],"Administrativa":["Facturación","Base de datos","Gestión archivos","Contabilidad","Excel avanzado"],"Contable":["Balances","Liquidación impuestos","Auditoría","ERP","Análisis financiero"],"Marketing Digital":["SEO/SEM","Google Analytics","Campañas Paid","Estrategia digital","Growth Hacking"],"Programadora":["JavaScript/Python","Git","Bases de datos","APIs Rest","Clean Code"],"Diseñadora Gráfica":["Adobe Photoshop","Illustrator","Branding","Identidad visual","UI Design"],"Esteticista":["Tratamientos faciales","Manicura","Aparatología","Depilación","Cosmética"],"Fisioterapeuta":["Rehabilitación","Terapia manual","Anatomía","Ergonomía","Vendaje"],"Agente Ventas":["Prospección","Cierre ventas","Negociación","CRM","Fidelización"],"Profesora":["Metodología","Pedagogía","Planificación","Evaluación","Motivación"],"Monitor Gimnasio":["Rutinas","Fitness","Nutrición deportiva","Clases dirigidas","Primeros auxilios"],"Community Manager":["Estrategia contenidos","Gestión comunidades","Copywriting","Métricas","Atención online"],"Traductora":["Traducción simultánea","Localización","Corrección estilo","Glosarios","Idiomas"],"Recursos Humanos":["Reclutamiento","Nóminas","Clima laboral","Evaluación","Onboarding"],"Pastelera":["Repostería fina","Masas fermentadas","Decoración","Higiene alimentaria","Costes"],"Sastre":["Toma de medidas","Patronaje","Confección","Arreglos ropa","Textil"],"Electricista":["Instalaciones BT","Esquemas","Cuadros eléctricos","Mantenimiento","Seguridad"],"Fontanera":["Tuberías","Fugas","Calefacción","Saneamiento","Soldadura"],"Jardinera":["Paisajismo","Sistemas de riego","Poda","Fitosanitarios","Maquinaria"],"Médica":["Diagnóstico","Tratamientos","Urgencias","Cirugía","Historia clínica"],"Agricultor":["Cultivo y siembra","Riego y abono","Maquinaria agrícola","Control de plagas","Cosecha y logística"]};
+const ACCENTMAP={azul:'#2563eb',verde:'#10b981',violeta:'#7c3aed',oro:'#c9a84c'};
+let cvSkills=[];let cvFotoB64='';
+function loadCvFoto(ev){const r=new FileReader();r.onload=e=>{cvFotoB64=e.target.result;cvRender();};r.readAsDataURL(ev.target.files[0]);}
+function cvInit(){
+  const cs=document.getElementById('cvCat');if(!cs)return;
+  cs.innerHTML=Object.keys(CV_CATS).map(k=>`<option value="${k}">${k}</option>`).join('');
+  const vs=document.getElementById('cvVar');vs.innerHTML=Array.from({length:10},(_,i)=>`<option value="${i}">Variante ${i+1}</option>`).join('');
+  cvChangeCat();
+  const initVoices=()=>{const all=speechSynthesis.getVoices();const es=all.filter(v=>v.lang.toLowerCase().startsWith('es'));const sel=document.getElementById('ttsVoice');if(!sel)return;sel.innerHTML=(es.length?es:all).map((v,i)=>`<option value="${i}">${v.name} (${v.lang})</option>`).join('');};
+  initVoices();speechSynthesis.onvoiceschanged=initVoices;
+}
+function cvChangeCat(){const cat=document.getElementById('cvCat')?.value;cvSkills=cat&&CV_CATS[cat]?[...CV_CATS[cat]]:['Comunicación','Organización','Puntualidad'];cvRender();}
+function addSkill(){const v=document.getElementById('newSkill')?.value.trim();if(v){cvSkills.push(v);document.getElementById('newSkill').value='';cvRender();}}
+function cvRender(){
+  const tipo=document.getElementById('tipoDoc')?.value||'carta';const paleta=document.getElementById('paleta')?.value||'azul';
+  const nombre=document.getElementById('cvNombre')?.value||'Tu Nombre';const empresa=document.getElementById('cvEmpresa')?.value||'la empresa';
+  const cat=document.getElementById('cvCat')?.value||'Peluquería';const varIdx=parseInt(document.getElementById('cvVar')?.value||0);
+  const ac=ACCENTMAP[paleta]||'#2563eb';
+  const skillsBlock=document.getElementById('skillsBlock');if(skillsBlock)skillsBlock.style.display=tipo==='cv'?'block':'none';
+  const varArr=tipo==='carta'?CV_VARIADORES.carta:tipo==='motivacional'?CV_VARIADORES.motivacional:tipo==='renuncia'?CV_VARIADORES.renuncia:null;
+  const varText=varArr?varArr[Math.min(varIdx,varArr.length-1)]:'';
+  const fotoHTML=cvFotoB64?`<img src="${cvFotoB64}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid ${ac};flex-shrink:0" alt="Foto">`:'';
+  const hoy=new Date().toLocaleDateString('es-ES',{day:'numeric',month:'long',year:'numeric'});
+  let html=`<div style="display:flex;gap:18px;align-items:center;border-bottom:2px solid ${ac};padding-bottom:14px;margin-bottom:16px">${fotoHTML}<div><h1 style="font-size:22px;color:#111;margin:0">${nombre}</h1><div style="font-style:italic;color:${ac};font-size:13px;margin-top:3px">${tipo==='cv'?'Especialista en '+cat:tipo==='carta'?'Carta de Presentación':tipo==='motivacional'?'Carta de Motivación':'Carta de Renuncia'}</div></div></div>`;
+  if(tipo==='carta'){html+=`<div style="text-align:right;font-size:12px;color:#555;margin-bottom:12px">${hoy}</div><p><strong>${empresa}</strong></p><p>Estimado/a equipo de selección:</p><h3 style="font-size:14px;border-bottom:1px solid ${ac};padding-bottom:2px;margin:16px 0 8px;text-transform:uppercase;color:${ac}">Carta de Presentación — ${cat}</h3><p contenteditable="true">${varText} Mi nombre es <strong>${nombre}</strong> y cuento con sólida experiencia en el área de <strong>${cat}</strong>.</p><h3 style="font-size:14px;border-bottom:1px solid ${ac};padding-bottom:2px;margin:16px 0 8px;text-transform:uppercase;color:${ac}">Experiencia Relevante</h3><p contenteditable="true">A lo largo de mi trayectoria he desarrollado competencias clave en ${cat}, con enfoque en resultados y mejora continua.</p><h3 style="font-size:14px;border-bottom:1px solid ${ac};padding-bottom:2px;margin:16px 0 8px;text-transform:uppercase;color:${ac}">Formación</h3><p contenteditable="true">Formación específica en ${cat} complementada con cursos de actualización profesional.</p><p style="margin-top:18px">Quedo a su entera disposición.<br><br>Atentamente,<br><strong>${nombre}</strong></p>`;}
+  else if(tipo==='motivacional'){html+=`<div style="text-align:right;font-size:12px;color:#555;margin-bottom:12px">${hoy}</div><p><strong>${empresa}</strong></p><h3 style="font-size:14px;border-bottom:1px solid ${ac};padding-bottom:2px;margin:16px 0 8px;text-transform:uppercase;color:${ac}">Motivación</h3><p contenteditable="true">${varText}</p><h3 style="font-size:14px;border-bottom:1px solid ${ac};padding-bottom:2px;margin:16px 0 8px;text-transform:uppercase;color:${ac}">Por qué ${empresa}</h3><p contenteditable="true">Me identifico plenamente con sus valores. Creo que puedo crecer dentro de su equipo aportando mi experiencia en <strong>${cat}</strong>.</p><p style="margin-top:18px">Atentamente,<br><strong>${nombre}</strong></p>`;}
+  else if(tipo==='renuncia'){html+=`<div style="text-align:right;font-size:12px;color:#555;margin-bottom:12px">${hoy}</div><p>A la Dirección de <strong>${empresa}</strong></p><h3 style="font-size:14px;border-bottom:1px solid ${ac};padding-bottom:2px;margin:16px 0 8px;text-transform:uppercase;color:${ac}">Comunicado de Renuncia</h3><p contenteditable="true">Por medio de la presente, yo, <strong>${nombre}</strong>, comunico formalmente mi renuncia voluntaria. ${varText}</p><h3 style="font-size:14px;border-bottom:1px solid ${ac};padding-bottom:2px;margin:16px 0 8px;text-transform:uppercase;color:${ac}">Agradecimiento</h3><p contenteditable="true">Expreso mi más sincero agradecimiento por la oportunidad de haber formado parte de este equipo.</p><p style="margin-top:18px">Respetuosamente,<br><strong>${nombre}</strong></p>`;}
+  else{html+=`<h3 style="font-size:14px;border-bottom:1px solid ${ac};padding-bottom:2px;margin:16px 0 8px;text-transform:uppercase;color:${ac}">Perfil Profesional</h3><p contenteditable="true">Profesional especializado/a en <strong>${cat}</strong>. Alta capacitación técnica y orientación a resultados.</p><h3 style="font-size:14px;border-bottom:1px solid ${ac};padding-bottom:2px;margin:16px 0 8px;text-transform:uppercase;color:${ac}">Experiencia Laboral</h3><div style="margin-bottom:10px" contenteditable="true"><div style="display:flex;justify-content:space-between;font-weight:700;font-size:13px"><span>${cat} Principal — ${empresa}</span><span>Ene 2022 – Presente</span></div><div style="font-size:12px;margin-top:3px">Coordinación integral de actividades de ${cat}.</div></div><h3 style="font-size:14px;border-bottom:1px solid ${ac};padding-bottom:2px;margin:16px 0 8px;text-transform:uppercase;color:${ac}">Habilidades</h3><ul class="tag-list">${cvSkills.map((h,i)=>`<li style="background:${ac}22;color:${ac}">${h} <span class="del-btn" onclick="cvSkills.splice(${i},1);cvRender()">×</span></li>`).join('')}</ul>`;}
+  const doc=document.getElementById('cvDoc');if(doc)doc.innerHTML=html;
+}
+function printCV(){
+  const docEl=document.getElementById('cvDoc');
+  if(!docEl){alert('Genera el documento primero.');return;}
+  if(!gastar(2))return;
+  const nombre=(document.getElementById('cvNombre')?.value||'cv').replace(/\s+/g,'_');
+  const fecha=new Date().toISOString().slice(0,10).replace(/-/g,'');
+  const base=`CV_${nombre}_${fecha}`;
+  // Mostrar estado
+  const btn=document.querySelector('.cv-btn:not(.cv-btn-sec)');
+  if(btn){btn.textContent='⏳ Generando...';btn.disabled=true;}
+  // html2canvas → JPG + PDF
+  if(typeof html2canvas!=='undefined'){
+    html2canvas(docEl,{scale:2,useCORS:true,backgroundColor:'#ffffff',logging:false}).then(canvas=>{
+      // JPG
+      const jpgData=canvas.toDataURL('image/jpeg',0.92);
+      const aJpg=document.createElement('a');aJpg.href=jpgData;aJpg.download=base+'.jpg';document.body.appendChild(aJpg);aJpg.click();document.body.removeChild(aJpg);
+      // PDF via jsPDF
+      if(typeof window.jspdf!=='undefined'||typeof jsPDF!=='undefined'){
+        const JsPDF=window.jspdf?.jsPDF||jsPDF;
+        const pdf=new JsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+        const pW=pdf.internal.pageSize.getWidth();
+        const pH=pdf.internal.pageSize.getHeight();
+        const cW=canvas.width,cH=canvas.height;
+        const ratio=pW/cW;
+        const imgH=cH*ratio;
+        let posY=0;
+        while(posY<imgH){
+          if(posY>0)pdf.addPage();
+          pdf.addImage(jpgData,'JPEG',0,-(posY),pW,imgH,undefined,'FAST');
+          posY+=pH;
+        }
+        pdf.save(base+'.pdf');
+      }
+      if(btn){btn.textContent='📥 Exportar JPG + PDF';btn.disabled=false;}
+      const st=document.querySelector('#tab-cv .cv-btn-sec');
+      if(st)st.insertAdjacentHTML('afterend','<div class="st done" style="margin-top:6px">✅ CV descargado: JPG + PDF</div>');
+      setTimeout(()=>document.querySelectorAll('#tab-cv .st.done').forEach(e=>e.remove()),4000);
+    }).catch(()=>{
+      if(btn){btn.textContent='📥 Exportar JPG + PDF';btn.disabled=false;}
+      window.print();
+    });
+  } else {
+    if(btn){btn.textContent='📥 Exportar JPG + PDF';btn.disabled=false;}
+    window.print();
+  }
+}
+function ttsLeerDoc(){
+  const doc=document.getElementById('cvDoc');if(!doc)return;
+  const txt=doc.innerText||'';const spd=parseFloat(document.getElementById('ttsSpeed')?.value||0.9);
+  const vIdx=parseInt(document.getElementById('ttsVoice')?.value||0);
+  const all=speechSynthesis.getVoices();const esVoices=all.filter(v=>v.lang.toLowerCase().startsWith('es'));const voices=esVoices.length?esVoices:all;
+  speechSynthesis.cancel();const chunks=txt.match(/.{1,200}/g)||[];let i=0;
+  function speakNext(){if(i>=chunks.length)return;const u=new SpeechSynthesisUtterance(chunks[i]);u.lang='es-ES';u.rate=spd;u.pitch=1.05;if(voices[vIdx])u.voice=voices[vIdx];u.onend=()=>{i++;speakNext();};speechSynthesis.speak(u);i++;}
+  speakNext();
+}
+function ttsStop(){speechSynthesis.cancel();}
+
+// ══════════════════════════════════════════════════
+// MOTOR CV INTERNACIONAL — Fátima Caldea Estudio
+// Parche aditivo — NO modifica lógica existente
+// ══════════════════════════════════════════════════
+
+const CV_PAISES = {
+  ve: { nombre:'Venezuela', bandera:'🇻🇪', foto:true,  edad:true,  civil:true,  cedula:true,  objetivo:true,  referencias:'opcional', carta:true,
+    reglas:'Foto obligatoria · Cédula de Identidad · Objetivo profesional al inicio · 2-3 páginas aceptable',
+    consejo:'Formato cálido y completo. Incluye datos que en Europa serían opcionales. Tono formal pero cercano.',
+    variadores:{
+      carta:['Con profundo respeto y genuino entusiasmo me dirijo a usted, confiando en que mi experiencia en Venezuela y en el exterior sea de gran valor para su organización.',
+             'Motivada por el crecimiento de su empresa y mi trayectoria comprobada, presento mi candidatura con la certeza de poder aportar resultados inmediatos.',
+             'Es un honor postular a esta posición. Mi formación técnica y años de experiencia me permiten adaptarme con rapidez y eficacia a nuevos entornos laborales.'],
+      motivacional:['Venezuela me formó con valores de trabajo duro y resiliencia. Cada reto lo asumo como una oportunidad de crecer y aportar.',
+                    'Mi motivación nace de la pasión por mi oficio y el compromiso con la excelencia. Busco un equipo donde mi energía sume valor real.',
+                    'Traigo conmigo la experiencia latinoamericana y la capacidad de adaptación que solo forja quien ha superado adversidades con profesionalismo.'],
+      renuncia:['Con todo el respeto que merece esta organización, comunico mi renuncia voluntaria, agradeciendo cada aprendizaje recibido durante mi gestión.',
+                'Ha sido un privilegio trabajar junto a este equipo. Con profunda gratitud notifico mi decisión de emprender nuevos caminos profesionales.',
+                'Informo mi renuncia formal garantizando la más completa transición y entrega de mis funciones al equipo que continúe.']
+    }
+  },
+  es: { nombre:'España', bandera:'🇪🇸', foto:false, edad:false, civil:false, cedula:false, objetivo:true,  referencias:'opcional', carta:'opcional',
+    reglas:'Sin foto obligatoria · Sin edad ni estado civil · NIE para extranjeros · Perfil profesional breve · Máximo 2 páginas',
+    consejo:'Muy breve y directo. El reclutador lee en 30 segundos. La foto ya no se pide en muchas empresas. Carta de presentación muy valorada.',
+    variadores:{
+      carta:['Me pongo en contacto para trasladarle mi interés en incorporarme a su equipo, aportando una trayectoria sólida y plena disposición al trabajo.',
+             'Adjunto mi currículum con el deseo de contribuir al crecimiento de su empresa desde el primer día, con profesionalidad y compromiso.',
+             'Tras conocer su oferta, considero que mi perfil encaja con lo que buscan. Estoy disponible para una entrevista en el momento que estimen oportuno.'],
+      motivacional:['España representa para mí la oportunidad de crecer en un entorno europeo exigente, donde mi experiencia y adaptabilidad marcan la diferencia.',
+                    'Me motiva la cultura de su empresa y la posibilidad de desarrollarme profesionalmente en un mercado dinámico y competitivo como el español.',
+                    'Busco estabilidad y crecimiento. Su empresa reúne los valores que me impulsan a dar lo mejor de mí cada día.'],
+      renuncia:['Por medio de la presente comunico mi renuncia voluntaria al puesto, agradeciendo la confianza depositada durante mi etapa en la empresa.',
+                'Habiendo valorado detenidamente mi situación profesional, he decidido poner fin a mi relación laboral de forma respetuosa y ordenada.',
+                'Notifico formalmente mi baja voluntaria, comprometiéndome a facilitar la transición de mis tareas de la mejor manera posible.']
+    }
+  },
+  us: { nombre:'EE.UU.', bandera:'🇺🇸', foto:false, edad:false, civil:false, cedula:false, objetivo:'summary', referencias:'disponibles', carta:true,
+    reglas:'NUNCA foto ni datos personales · Logros con métricas · Summary ejecutivo · Cover Letter requerida · 1 página máximo',
+    consejo:'Orientado a resultados medibles. "Aumenté ventas 35%". Debe pasar filtros ATS. La palabra correcta es Resume, no Currículo.',
+    variadores:{
+      carta:['I am writing to express my strong interest in joining your team. My background and measurable achievements make me a strong candidate for this position.',
+             'With a proven track record of delivering results, I am confident that my skills and experience align perfectly with your organizational goals.',
+             'I am excited about the opportunity to contribute to your team. My experience in achieving concrete, measurable outcomes speaks for itself.'],
+      motivacional:['I am driven by the challenge of exceeding expectations and building meaningful results in every role I take on.',
+                    'Your company\'s mission resonates deeply with my professional values. I am eager to bring my expertise and dedication to your team.',
+                    'I thrive in high-performance environments where data-driven decisions and team collaboration create real impact.'],
+      renuncia:['I am writing to formally notify you of my resignation, effective two weeks from today. I am grateful for the opportunities provided.',
+                'Please accept this letter as my formal notice of resignation. I am committed to ensuring a smooth transition during this period.',
+                'I have made the decision to pursue a new professional direction. I deeply appreciate everything I have learned during my time here.']
+    }
+  },
+  de: { nombre:'Alemania', bandera:'🇩🇪', foto:true,  edad:true,  civil:true,  cedula:false, objetivo:false, referencias:false, carta:true,
+    reglas:'Foto profesional obligatoria · Datos personales completos · Anschreiben obligatoria · Orden cronológico inverso · 2 páginas exactas',
+    consejo:'El más estricto de Europa. Errores tipográficos = rechazo inmediato. La foto debe ser tomada por fotógrafo profesional. Adjuntar certificados.',
+    variadores:{
+      carta:['Mit großem Interesse bewerbe ich mich auf die ausgeschriebene Stelle. Meine Qualifikationen und Erfahrungen passen sehr gut zu Ihrem Anforderungsprofil.',
+             'Hiermit möchte ich meine Bewerbung einreichen. Ich bin überzeugt, dass ich mit meinen Fähigkeiten einen wertvollen Beitrag leisten kann.',
+             'Ich freue mich sehr über die Möglichkeit, mich bei Ihrem Unternehmen zu bewerben und meine Kenntnisse einzubringen.'],
+      motivacional:['Ihre Unternehmenskultur und die anspruchsvollen Projekte motivieren mich, mein Bestes zu geben und langfristig Teil Ihres Teams zu werden.',
+                    'Ich schätze Präzision, Zuverlässigkeit und kontinuierliche Verbesserung — Werte, die ich in Ihrer Organisation wiederfinde.',
+                    'Deutschland bietet mir die Möglichkeit, in einem strukturierten und leistungsorientierten Umfeld zu wachsen.'],
+      renuncia:['Hiermit kündige ich mein Arbeitsverhältnis fristgerecht zum nächstmöglichen Termin. Ich bedanke mich für die gute Zusammenarbeit.',
+                'Mit diesem Schreiben erkläre ich meinen Rücktritt von meiner Position. Die gemeinsame Zeit war sehr lehrreich für mich.',
+                'Ich kündige meinen Arbeitsvertrag ordnungsgemäß und sichere eine vollständige Übergabe meiner Aufgaben zu.']
+    }
+  },
+  uk: { nombre:'Reino Unido', bandera:'🇬🇧', foto:false, edad:false, civil:false, cedula:false, objetivo:'profile', referencias:true, carta:true,
+    reglas:'Personal Profile obligatorio · 2 referencias de empleadores · Sin foto ni edad · Covering Letter · Máximo 2 páginas A4',
+    consejo:'Mezcla formalidad con personalidad. El Personal Profile vende al candidato en 4 líneas. Las referencias se verifican activamente.',
+    variadores:{
+      carta:['I am writing to apply for the position advertised. I believe my skills and experience make me an excellent fit for this role.',
+             'Please find enclosed my CV for your consideration. I am keen to bring my expertise and enthusiasm to your organisation.',
+             'I am excited to apply for this opportunity. My background and achievements strongly align with the requirements you are seeking.'],
+      motivacional:['The values and reputation of your organisation align perfectly with my professional aspirations and work ethic.',
+                    'I am motivated by the opportunity to contribute meaningfully to a forward-thinking team that values both quality and innovation.',
+                    'Working in the UK represents a significant milestone in my career. I am committed to exceeding expectations and growing within your team.'],
+      renuncia:['I am writing to formally tender my resignation from my position. I am grateful for the professional development I have experienced.',
+                'Please accept this letter as notice of my resignation. I will do everything possible to ensure a seamless handover.',
+                'I have decided to pursue a new direction in my career. I sincerely thank you for the opportunities and support provided.']
+    }
+  },
+  co: { nombre:'Colombia', bandera:'🇨🇴', foto:true,  edad:true,  civil:false, cedula:true,  objetivo:true,  referencias:true,  carta:false,
+    reglas:'Foto 3x4 recomendada · Cédula de Ciudadanía · Referencias personales y laborales · Objetivo al inicio · 2-3 páginas',
+    consejo:'Se llama Hoja de Vida. Similar a Venezuela. Las referencias personales son muy importantes. Formato Minerva sigue vigente en entidades públicas.',
+    variadores:{
+      carta:['Con respeto presento mi candidatura para el cargo, confiando en que mi perfil y experiencia corresponden plenamente a los requerimientos del puesto.',
+             'Me permito postular a la vacante disponible, segura de que mis competencias aportarán valor inmediato a su organización.',
+             'Es un placer dirigirme a usted para expresar mi interés en hacer parte de su equipo de trabajo con compromiso y dedicación.'],
+      motivacional:['Colombia me enseñó a trabajar con tenacidad y creatividad. Cada experiencia vivida se refleja en la calidad de mi desempeño profesional.',
+                    'Me motiva contribuir al desarrollo de empresas comprometidas con la calidad y el talento humano como pilares fundamentales.',
+                    'Mi motivación es el crecimiento mutuo: crecer como profesional mientras aporto valor real y sostenible a la organización.'],
+      renuncia:['Por medio de la presente notificación, comunico mi decisión de retirarme voluntariamente del cargo, agradeciendo la oportunidad brindada.',
+                'Con todo el respeto del caso, presento mi renuncia formal al cargo que venía desempeñando, garantizando una entrega ordenada.',
+                'Informo mi retiro voluntario, manifestando gratitud por el aprendizaje y los vínculos construidos durante mi tiempo en la empresa.']
+    }
+  },
+  cl: { nombre:'Chile', bandera:'🇨🇱', foto:true,  edad:true,  civil:false, cedula:true,  objetivo:true,  referencias:'opcional', carta:'opcional',
+    reglas:'Foto profesional recomendada · RUT incluido · Perfil de competencias · Habilidades técnicas y blandas · 2 páginas ideal',
+    consejo:'Mercado muy competitivo. Valoran honestidad en los datos, orden y competencias digitales. LinkedIn complementa el CV.',
+    variadores:{
+      carta:['Me dirijo a usted para postular al cargo, confiando en que mi experiencia y competencias responden a los desafíos que su empresa enfrenta.',
+             'Con gran interés en sumarse a su equipo, adjunto mis antecedentes laborales para su evaluación y consideración.',
+             'Presento mi candidatura con la convicción de que mi perfil profesional y capacidad de adaptación serán un aporte real para su organización.'],
+      motivacional:['Chile representa para mí un entorno de alto estándar donde puedo demostrar mis capacidades y seguir creciendo profesionalmente.',
+                    'Me motiva ser parte de una organización que apuesta por el talento y la innovación como motores del crecimiento.',
+                    'Valoro los entornos exigentes porque me permiten dar lo mejor de mí. Su empresa reúne las condiciones para ese desarrollo.'],
+      renuncia:['Por medio de la presente, comunico formalmente mi renuncia voluntaria al cargo, asegurando una transición responsable y ordenada.',
+                'Habiendo evaluado mi situación profesional, he decidido dar término a mi contrato de manera respetuosa y con la debida anticipación.',
+                'Notifico mi renuncia formal, comprometiéndome a entregar todas mis responsabilidades de manera completa y profesional.']
+    }
+  },
+  ar: { nombre:'Argentina', bandera:'🇦🇷', foto:false, edad:true,  civil:false, cedula:true,  objetivo:true,  referencias:'opcional', carta:'opcional',
+    reglas:'Gran énfasis en formación académica · DNI incluido · Foto opcional · Posgrados tienen mucho peso · 2-3 páginas aceptable',
+    consejo:'Alta cultura universitaria. El CV argentino detalla formación y logros académicos. Los cursos y capacitaciones suman mucho.',
+    variadores:{
+      carta:['Me dirijo a ustedes con el propósito de postular a la vacante, aportando una sólida formación académica y experiencia comprobada en el área.',
+             'Adjunto mi currículum vitae con la intención de demostrar que mi perfil es el indicado para contribuir al desarrollo de su empresa.',
+             'Con gran entusiasmo presento mi candidatura, confiando en que mis antecedentes y formación responden a sus expectativas.'],
+      motivacional:['Argentina me formó académica y profesionalmente. Cada etapa de mi carrera refleja dedicación, superación y resultados concretos.',
+                    'Me motiva la posibilidad de aplicar mis conocimientos en un entorno que valore la formación y la excelencia como ventajas competitivas.',
+                    'Busco un espacio donde mi preparación y experiencia sean aprovechadas al máximo para generar impacto real en la organización.'],
+      renuncia:['Por medio de la presente notifico mi renuncia voluntaria al cargo, agradeciendo profundamente la oportunidad de haberme desempeñado en esta empresa.',
+                'Comunico formalmente mi decisión de dar por concluida mi relación laboral, comprometiéndome con una transición ordenada y completa.',
+                'Presento mi renuncia indeclinable al cargo, con el compromiso de colaborar en todo lo necesario para asegurar la continuidad operativa.']
+    }
+  },
+  pa: { nombre:'Panamá', bandera:'🇵🇦', foto:true,  edad:true,  civil:false, cedula:true,  objetivo:true,  referencias:true,  carta:false,
+    reglas:'Foto profesional · Inglés valorado: indicar nivel exacto · Cédula panameña o pasaporte · Experiencia internacional suma · 2 páginas',
+    consejo:'Hub financiero y logístico. El inglés no es opcional — diferencia candidatos. Muchas multinacionales. Zona Libre de Colón genera empleo masivo.',
+    variadores:{
+      carta:['Me dirijo a usted para postular al cargo, destacando mi experiencia en entornos internacionales y mi dominio del inglés como valor diferenciador.',
+             'Panamá es el centro de mis aspiraciones profesionales. Presento mi candidatura con la certeza de aportar valor en un mercado tan dinámico.',
+             'Con experiencia en contextos bilingües y mercados globales, postulo con confianza a esta posición en su destacada organización.'],
+      motivacional:['Panamá es el puente de las Américas y quiero ser parte de ese dinamismo. Mi perfil internacional es un activo real para su empresa.',
+                    'Me motiva trabajar en el hub logístico más importante de Latinoamérica, donde la eficiencia y el bilingüismo son ventajas competitivas.',
+                    'La diversidad del mercado panameño me inspira. Tengo la flexibilidad y la experiencia para adaptarme y destacar en este entorno.'],
+      renuncia:['Por este medio notifico formalmente mi renuncia al cargo, garantizando la entrega ordenada de todas mis responsabilidades actuales.',
+                'Comunico mi retiro voluntario con el compromiso de facilitar la transición y asegurar la continuidad de los procesos a mi cargo.',
+                'Presento mi renuncia formal, agradeciendo la confianza depositada y comprometiéndome con una salida profesional y respetuosa.']
+    }
+  },
+  ca: { nombre:'Canadá', bandera:'🇨🇦', foto:false, edad:false, civil:false, cedula:false, objetivo:'summary', referencias:'disponibles', carta:true,
+    reglas:'NUNCA foto ni datos personales · Québec: CV en francés · Voluntariado suma mucho · Mencionar estatus migratorio · Logros con métricas',
+    consejo:'Similar a EE.UU. pero con más peso al voluntariado y comunidad. Québec requiere francés. El estatus migratorio es importante.',
+    variadores:{
+      carta:['I am pleased to submit my application for the position. My diverse background and commitment to excellence make me a strong candidate.',
+             'Please consider my application for this role. I bring a proven ability to deliver results and collaborate effectively within diverse teams.',
+             'I am excited about the opportunity to contribute to your organization. My experience and work ethic align well with Canadian workplace values.'],
+      motivacional:['Canada\'s values of diversity and inclusion align with my professional philosophy. I am committed to contributing positively to both the team and the community.',
+                    'I am motivated by the opportunity to grow in a country that values hard work, integrity, and continuous learning.',
+                    'Working in Canada represents the next chapter in my professional journey. I am ready to bring my full potential and dedication to your team.'],
+      renuncia:['I am writing to formally resign from my position. I am thankful for the growth opportunities and the welcoming environment provided.',
+                'Please accept this letter as my formal notice of resignation. I will ensure a thorough and professional handover of my responsibilities.',
+                'I have decided to pursue a new direction in my career. I am grateful for the experience and will do my best to support the transition.']
+    }
+  },
+  fr: { nombre:'Francia', bandera:'🇫🇷', foto:false, edad:false, civil:false, cedula:false, objetivo:false, referencias:false, carta:true,
+    reglas:'Lettre de motivation casi siempre requerida · Foto pequeña opcional · 1 página preferible · Loisirs (hobbies) se incluyen · Nivel CEFR para idiomas',
+    consejo:'La Lettre de motivation es tan importante como el CV. Los franceses valoran cultura general y hobbies. No usar "expert" sin respaldo.',
+    variadores:{
+      carta:['Je vous adresse ma candidature avec enthousiasme, convaincu(e) que mon profil correspond aux attentes de votre organisation.',
+             'C\'est avec grand intérêt que je postule à ce poste, souhaitant mettre mes compétences au service de votre équipe.',
+             'Permettez-moi de vous soumettre ma candidature. Je suis certain(e) de pouvoir apporter une contribution significative à votre structure.'],
+      motivacional:['La culture de votre entreprise et l\'excellence que vous recherchez correspondent exactement à mes aspirations professionnelles.',
+                    'Je suis motivé(e) par les défis que représente ce poste et par la possibilité de m\'épanouir au sein d\'une équipe de qualité.',
+                    'La France représente pour moi un environnement stimulant où je souhaite évoluer et donner le meilleur de moi-même.'],
+      renuncia:['Je vous informe par la présente de ma décision de démissionner de mon poste, en vous remerciant chaleureusement pour cette expérience.',
+                'Je présente ma démission en vous assurant de mon total engagement pour une transition fluide et professionnelle.',
+                'Après mûre réflexion, j\'ai décidé de mettre fin à mon contrat de travail. Je vous suis reconnaissant(e) pour tout ce que j\'ai appris.']
+    }
+  }
+};
+
+// ── Plantillas visuales reales (conecta el selector existente "plantilla") ──
+const CV_PLANTILLAS = {
+  clasico: (d) => {
+    const {nombre,cargo,ac,cat,empresa,hoy,fotoHTML,skills,varText,tipo} = d;
+    const header = `<div style="display:flex;gap:18px;align-items:center;border-bottom:3px solid ${ac};padding-bottom:16px;margin-bottom:18px">${fotoHTML}<div><h1 style="font-size:24px;color:#111;margin:0;font-family:Georgia,serif">${nombre}</h1><div style="color:${ac};font-size:13px;margin-top:4px;font-style:italic">${cargo||cat}</div></div></div>`;
+    return header + cvCuerpo(d,'clasico');
+  },
+  moderno: (d) => {
+    const {nombre,cargo,ac,cat,fotoHTML} = d;
+    const header = `<div style="background:${ac};margin:-24px -24px 20px;padding:22px 24px;display:flex;gap:16px;align-items:center">${fotoHTML?fotoHTML.replace('border-radius:50%','border-radius:8px'):''}<div><h1 style="font-size:22px;color:#fff;margin:0;letter-spacing:-0.5px">${nombre}</h1><div style="color:rgba(255,255,255,.8);font-size:12px;margin-top:4px;letter-spacing:1px;text-transform:uppercase">${cargo||cat}</div></div></div>`;
+    return header + cvCuerpo(d,'moderno');
+  },
+  creativo: (d) => {
+    const {nombre,cargo,ac,cat,fotoHTML} = d;
+    const header = `<div style="display:grid;grid-template-columns:90px 1fr;gap:0;margin:-24px -24px 20px"><div style="background:${ac};padding:20px;display:flex;align-items:center;justify-content:center">${fotoHTML||`<div style="width:55px;height:55px;background:rgba(255,255,255,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;color:white">👤</div>`}</div><div style="padding:20px;background:${ac}15;border-bottom:3px solid ${ac}"><h1 style="font-size:20px;color:#111;margin:0">${nombre}</h1><div style="color:${ac};font-size:11px;margin-top:5px;font-weight:700;letter-spacing:2px;text-transform:uppercase">${cargo||cat}</div></div></div>`;
+    return header + cvCuerpo(d,'creativo');
+  },
+  minimalista: (d) => {
+    const {nombre,cargo,ac,cat} = d;
+    const header = `<div style="border-left:4px solid ${ac};padding-left:16px;margin-bottom:22px"><h1 style="font-size:26px;color:#111;margin:0;font-weight:300;letter-spacing:-1px">${nombre}</h1><div style="color:#888;font-size:12px;margin-top:4px;letter-spacing:2px;text-transform:uppercase">${cargo||cat}</div></div>`;
+    return header + cvCuerpo(d,'minimalista');
+  }
+};
+
+function cvCuerpo(d, estilo) {
+  const {nombre,cargo,ac,cat,empresa,hoy,skills,varText,tipo,paisData} = d;
+  const secStyle = estilo==='minimalista'
+    ? `font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#aaa;margin:18px 0 8px;font-family:monospace`
+    : `font-size:13px;border-bottom:1px solid ${ac};padding-bottom:3px;margin:16px 0 8px;text-transform:uppercase;color:${ac};font-weight:700`;
+
+  if(tipo==='carta'){
+    const idiomaTag = paisData && (paisData.nombre==='EE.UU.'||paisData.nombre==='Canadá'||paisData.nombre==='Reino Unido') ? ' (en inglés)' : '';
+    return `<div style="text-align:right;font-size:11px;color:#777;margin-bottom:14px">${hoy}</div>
+    <p><strong>${empresa}</strong></p>
+    <p style="margin-bottom:12px">Estimado/a equipo de selección${idiomaTag}:</p>
+    <h3 style="${secStyle}">Carta de Presentación — ${cat}</h3>
+    <p contenteditable="true">${varText} Mi nombre es <strong>${nombre}</strong> y cuento con sólida experiencia en <strong>${cat}</strong>.</p>
+    <h3 style="${secStyle}">Experiencia Relevante</h3>
+    <p contenteditable="true">A lo largo de mi trayectoria he desarrollado competencias clave en ${cat}, con enfoque en resultados y mejora continua.</p>
+    <h3 style="${secStyle}">Formación</h3>
+    <p contenteditable="true">Formación específica en ${cat} complementada con actualización profesional permanente.</p>
+    <p style="margin-top:20px">Quedo a su entera disposición.<br><br>Atentamente,<br><strong>${nombre}</strong></p>`;
+  }
+  if(tipo==='motivacional'){
+    return `<div style="text-align:right;font-size:11px;color:#777;margin-bottom:14px">${hoy}</div>
+    <p><strong>${empresa}</strong></p>
+    <h3 style="${secStyle}">Motivación</h3>
+    <p contenteditable="true">${varText}</p>
+    <h3 style="${secStyle}">Por qué ${empresa}</h3>
+    <p contenteditable="true">Me identifico con sus valores y creo que puedo crecer aportando mi experiencia en <strong>${cat}</strong>.</p>
+    <p style="margin-top:20px">Atentamente,<br><strong>${nombre}</strong></p>`;
+  }
+  if(tipo==='renuncia'){
+    return `<div style="text-align:right;font-size:11px;color:#777;margin-bottom:14px">${hoy}</div>
+    <p>A la Dirección de <strong>${empresa}</strong></p>
+    <h3 style="${secStyle}">Comunicado de Renuncia</h3>
+    <p contenteditable="true">Por medio de la presente, yo, <strong>${nombre}</strong>, comunico formalmente mi renuncia voluntaria. ${varText}</p>
+    <h3 style="${secStyle}">Agradecimiento</h3>
+    <p contenteditable="true">Expreso mi más sincero agradecimiento por la oportunidad de haber formado parte de este equipo.</p>
+    <p style="margin-top:20px">Respetuosamente,<br><strong>${nombre}</strong></p>`;
+  }
+  // CV
+  const paisInfo = paisData ? `<div style="background:${ac}12;border-left:3px solid ${ac};padding:8px 12px;margin-bottom:14px;font-size:11px;color:#555;border-radius:0 6px 6px 0">
+    ${paisData.bandera} <strong>${paisData.nombre}:</strong> ${paisData.reglas}</div>` : '';
+  return `${paisInfo}
+    <h3 style="${secStyle}">Perfil Profesional</h3>
+    <p contenteditable="true">Profesional especializado/a en <strong>${cat}</strong>. Alta capacitación técnica, orientación a resultados y compromiso con la excelencia.</p>
+    <h3 style="${secStyle}">Experiencia Laboral</h3>
+    <div style="margin-bottom:12px" contenteditable="true">
+      <div style="display:flex;justify-content:space-between;font-weight:700;font-size:13px">
+        <span>${cat} — ${empresa}</span><span style="color:#999;font-weight:400;font-size:12px">2020 – Presente</span>
+      </div>
+      <div style="font-size:12px;margin-top:4px;color:#555">Responsabilidades y logros clave en el área de ${cat}.</div>
+    </div>
+    <h3 style="${secStyle}">Habilidades</h3>
+    <ul class="tag-list">${skills.map((h,i)=>`<li style="background:${ac}22;color:${ac}">${h} <span class="del-btn" onclick="cvSkills.splice(${i},1);cvRender()">×</span></li>`).join('')}</ul>
+    ${paisData&&paisData.consejo?`<div style="margin-top:16px;background:#f8f8f8;border:1px solid #eee;border-radius:6px;padding:10px;font-size:11px;color:#666"><strong>💡 Consejo para ${paisData.nombre}:</strong> ${paisData.consejo}</div>`:''}`;
+}
+
+// ── Indicador visual de país en el sidebar ──
+function cvActualizarBadgePais() {
+  const sel = document.getElementById('cvPais');
+  const badge = document.getElementById('cvPaisBadge');
+  if (!sel || !badge) return;
+  const p = CV_PAISES[sel.value];
+  if (!p) { badge.style.display='none'; return; }
+  badge.style.display = 'block';
+  badge.innerHTML = `<div style="background:var(--bg3);border:1px solid var(--bd);border-radius:7px;padding:7px 10px;font-size:10px;margin-bottom:8px">
+    <div style="font-weight:700;color:var(--ac2);margin-bottom:4px">${p.bandera} ${p.nombre}</div>
+    <div style="color:var(--tx2);line-height:1.5">${p.reglas}</div>
+    <div style="margin-top:5px;display:flex;gap:5px;flex-wrap:wrap">
+      ${p.foto?'<span style="background:rgba(16,185,129,.15);color:#10b981;padding:2px 7px;border-radius:10px;font-size:9px">📷 Foto</span>':'<span style="background:rgba(239,68,68,.1);color:#ef4444;padding:2px 7px;border-radius:10px;font-size:9px">❌ Sin foto</span>'}
+      ${p.edad?'<span style="background:rgba(16,185,129,.15);color:#10b981;padding:2px 7px;border-radius:10px;font-size:9px">🎂 Edad</span>':''}
+      ${p.civil?'<span style="background:rgba(16,185,129,.15);color:#10b981;padding:2px 7px;border-radius:10px;font-size:9px">💍 Civil</span>':''}
+    </div>
+  </div>`;
+}
+
+// ── Override de cvRender para conectar plantillas + países ──
+// Se guarda la función original y se reemplaza sin tocar otras funciones
+const _cvRenderOriginal = cvRender;
+cvRender = function() {
+  const tipo     = document.getElementById('tipoDoc')?.value || 'carta';
+  const paleta   = document.getElementById('paleta')?.value || 'azul';
+  const plantilla= document.getElementById('plantilla')?.value || 'clasico';
+  const paisCode = document.getElementById('cvPais')?.value || '';
+  const nombre   = document.getElementById('cvNombre')?.value || 'Tu Nombre';
+  const empresa  = document.getElementById('cvEmpresa')?.value || 'la empresa';
+  const cargo    = document.getElementById('cvCargo')?.value || '';
+  const cat      = document.getElementById('cvCat')?.value || 'Peluquería';
+  const varIdx   = parseInt(document.getElementById('cvVar')?.value || 0);
+  const ac       = ACCENTMAP[paleta] || '#2563eb';
+
+  const skillsBlock = document.getElementById('skillsBlock');
+  if (skillsBlock) skillsBlock.style.display = tipo==='cv' ? 'block' : 'none';
+
+  const paisData = paisCode ? CV_PAISES[paisCode] : null;
+
+  // Seleccionar variadores: país > genérico
+  let varArr;
+  if (paisData && paisData.variadores && paisData.variadores[tipo]) {
+    varArr = paisData.variadores[tipo];
+  } else {
+    varArr = tipo==='carta' ? CV_VARIADORES.carta
+           : tipo==='motivacional' ? CV_VARIADORES.motivacional
+           : tipo==='renuncia' ? CV_VARIADORES.renuncia : null;
+  }
+  const varText = varArr ? varArr[Math.min(varIdx, varArr.length-1)] : '';
+
+  const fotoHTML = cvFotoB64
+    ? `<img src="${cvFotoB64}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid ${ac};flex-shrink:0" alt="Foto">`
+    : '';
+  const hoy = new Date().toLocaleDateString('es-ES',{day:'numeric',month:'long',year:'numeric'});
+
+  const datos = { nombre, cargo, ac, cat, empresa, hoy, fotoHTML, skills: cvSkills, varText, tipo, paisData };
+
+  const tplFn = CV_PLANTILLAS[plantilla] || CV_PLANTILLAS.clasico;
+  const html  = tplFn(datos);
+
+  const docEl = document.getElementById('cvDoc');
+  if (docEl) docEl.innerHTML = html;
+
+  cvActualizarBadgePais();
+};
+
+// ── Uso libre y gratuito · sin créditos ──
+(function patchCredTextos(){
+  const barInfo = document.querySelector('.cr-bar-wrap span[style*="ok"]');
+  if(barInfo) barInfo.textContent = 'Uso libre · ilimitado · gratis';
+  const modalP = document.querySelector('#credModal .modal p');
+  if(modalP) modalP.innerHTML = 'Todas las herramientas son <strong>gratis e ilimitadas</strong> para tu familia.';
+})();
+
+// ══ INIT ══
+saveCr();
+renderProtect();
+cvInit();
+setTimeout(()=>{if(document.getElementById('tab-tarjeta').classList.contains('act')){initDigitSel();renderCardCanvas();}},500);
+</script>
+<template id="__bundler_thumbnail">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#0d0d1a"/><g transform="translate(50,50)"><rect x="-20" y="-20" width="40" height="40" rx="9" fill="url(#g)"/><text x="0" y="7" font-size="20" text-anchor="middle">🧰</text></g><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7c3aed"/><stop offset="1" stop-color="#06b6d4"/></linearGradient></defs></svg>
+</template>
+<script src="boveda-app.js" defer></script>
+</body>
+</html>

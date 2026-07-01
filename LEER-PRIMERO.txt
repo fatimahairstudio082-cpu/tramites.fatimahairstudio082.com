@@ -1,0 +1,28 @@
+# Bóveda Legal — App de trámites de Fátima Caldea
+
+Sistema privado familiar España–Venezuela. Contenido de esta carpeta:
+- index.html — Sistema Legal (5 fases + Centro Inteligente 🇻🇪)
+- documentos.html — Documentos Pro (CV, cartas, marca de agua, plantillas)
+- cerebro.js — Motor de conocimiento (guías SAIME, apostilla, consulado)
+- boveda-app.js — Inteligencia añadida (audio, guías paso a paso, VPN, país)
+- sw.js + manifest.webmanifest + icons/ — Para instalar como app (PWA)
+
+## Cómo instalarla como app (recomendado)
+1. Sube TODA esta carpeta a tu subdominio por HTTPS
+   (ej: https://tramites.fatimahairstudio082.com/), manteniendo los nombres.
+2. Abre la web en el móvil u ordenador.
+3. Instálala:
+   • Android / Chrome: menú ⋮ → "Instalar aplicación".
+   • iPhone / Safari: Compartir ⬆ → "Añadir a pantalla de inicio".
+   • Ordenador / Chrome o Edge: icono ⊕ (instalar) en la barra de direcciones.
+4. Aparecerá con el icono del escudo. Tus hijas y tu marido la instalan igual.
+
+## Verla sin subirla (rápido)
+Abre index.html directamente en el navegador. Si no hay internet para el
+login, tras unos segundos aparece el botón "👁 Ver el sistema (vista previa)".
+
+## Notas de arquitectura
+- El "Modo Venezuela / VPN" es una compuerta guía: una web NO puede encender
+  un VPN sola. La app guarda tus credenciales y te guía; el VPN lo activa la
+  app de VPN del teléfono. Si el dispositivo ya está en Venezuela, no lo pide.
+- Las guías (cerebro.js) se actualizan editando ese único archivo.

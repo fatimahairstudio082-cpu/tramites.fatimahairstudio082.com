@@ -2,8 +2,16 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>FÁTIMA CALDEA — DOCUMENTOS PRO</title>
+<meta name="theme-color" content="#122542">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Bóveda Legal">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 :root{--gold:#C9A84C;--gold2:#7A6130;--bg:#f5f4f0;--bg2:#ffffff;--bg3:#f0ede6;--text:#1a1a1a;--text2:#555;--text3:#888;--border:#e0d9cc;--border2:#d4c9b0;--green:#27AE60;--blue:#2563EB;--red:#DC2626;--shadow:0 2px 12px rgba(0,0,0,.08);}
@@ -31,9 +39,9 @@ body{background:var(--bg);font-family:'Segoe UI',Arial,sans-serif;color:var(--te
 .hdr-title{font-size:14px;font-weight:700;color:var(--text);}
 .hdr-sub{font-size:9px;color:var(--text3);margin-top:1px;}
 .nav{display:flex;gap:4px;flex-wrap:wrap;}
-.nav-btn{padding:6px 12px;font-size:10px;border-radius:6px;cursor:pointer;border:1.5px solid var(--border2);color:var(--text2);background:var(--bg3);transition:.2s;font-weight:500;}
+.nav-btn{padding:9px 16px;font-size:12.5px;border-radius:7px;cursor:pointer;border:1.5px solid var(--border2);color:#1a1a1a;background:var(--bg3);transition:.2s;font-weight:700;}
 .nav-btn.act,.nav-btn:hover{background:var(--gold);color:#fff;border-color:var(--gold);}
-.nav-link-ext{background:var(--gold);color:#1a1a1a;padding:6px 14px;border-radius:20px;font-size:10px;font-weight:700;text-decoration:none;transition:.15s;}
+.nav-link-ext{background:var(--gold);color:#1a1a1a;padding:8px 15px;border-radius:20px;font-size:11.5px;font-weight:700;text-decoration:none;transition:.15s;}
 .nav-link-ext:hover{background:#b8922e;color:#fff;}
 .user-chip{display:flex;align-items:center;gap:5px;background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:20px;padding:3px 10px;}
 .user-dot{width:6px;height:6px;background:var(--green);border-radius:50%;}
@@ -194,6 +202,7 @@ body{background:var(--bg);font-family:'Segoe UI',Arial,sans-serif;color:var(--te
   </div>
   <div style="display:flex;align-items:center;gap:8px;">
     <a href="index.html" class="nav-link-ext">⚖️ Sistema Legal →</a>
+    <a href="herramientas.html" class="nav-link-ext" style="background:#7c3aed;color:#fff;">🧰 Herramientas →</a>
     <div class="user-chip"><div class="user-dot"></div><span class="user-name" id="userChipName">Cargando...</span></div>
     <button class="logout-btn" onclick="doLogout()">Salir</button>
   </div>
@@ -926,39 +935,54 @@ function vozADocCopiloto(){
 </script>
 
 <!-- ══ FIREBASE AUTH — mismo proyecto tramites-eb8cb ══ -->
-<script type="module">
-import{initializeApp}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import{getAuth,signInWithEmailAndPassword,signOut,onAuthStateChanged}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-
-const firebaseConfig={
-  apiKey:"AIzaSyBxe1gf2g7GjaZ9nid-YdsJhHPgH93XGfw",
-  authDomain:"tramites-eb8cb.firebaseapp.com",
-  projectId:"tramites-eb8cb",
-  storageBucket:"tramites-eb8cb.firebasestorage.app",
-  messagingSenderId:"63815441304",
-  appId:"1:63815441304:web:afe54267b5232c7e5329ed"
-};
-
-const app=initializeApp(firebaseConfig);
-const auth=getAuth(app);
-
-window._fbLogin=(email,pass)=>signInWithEmailAndPassword(auth,email,pass);
-window._fbLogout=()=>signOut(auth);
-
-onAuthStateChanged(auth,user=>{
-  if(user){
-    document.getElementById('loginScreen').style.display='none';
-    document.getElementById('appContent').style.display='block';
-    const name=user.email.split('@')[0];
-    document.getElementById('userChipName').textContent=name+' · Privado';
-    if(typeof loadData==='function')loadData();
-    if(typeof generarPlantillaTrabajo==='function')generarPlantillaTrabajo();
-    if(typeof generarPlantillaBanco==='function')generarPlantillaBanco();
-  }else{
-    document.getElementById('loginScreen').style.display='flex';
-    document.getElementById('appContent').style.display='none';
+<script>
+'use strict';
+(function(){
+  const firebaseConfig={
+    apiKey:"AIzaSyBxe1gf2g7GjaZ9nid-YdsJhHPgH93XGfw",
+    authDomain:"tramites-eb8cb.firebaseapp.com",
+    projectId:"tramites-eb8cb",
+    storageBucket:"tramites-eb8cb.firebasestorage.app",
+    messagingSenderId:"63815441304",
+    appId:"1:63815441304:web:afe54267b5232c7e5329ed"
+  };
+  async function initFirebase(){
+    try{
+      const {initializeApp}=await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+      const {getAuth,signInWithEmailAndPassword,signOut,onAuthStateChanged}=await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
+      const app=initializeApp(firebaseConfig);
+      const auth=getAuth(app);
+      window._fbLogin=(email,pass)=>signInWithEmailAndPassword(auth,email,pass);
+      window._fbLogout=()=>signOut(auth);
+      onAuthStateChanged(auth,user=>{
+        if(user){
+          document.getElementById('loginScreen').style.display='none';
+          document.getElementById('appContent').style.display='block';
+          const name=user.email.split('@')[0];
+          const chip=document.getElementById('userChipName');if(chip)chip.textContent=name+' · Privado';
+          if(typeof loadData==='function')loadData();
+          if(typeof generarPlantillaTrabajo==='function')generarPlantillaTrabajo();
+          if(typeof generarPlantillaBanco==='function')generarPlantillaBanco();
+        }else{
+          document.getElementById('loginScreen').style.display='flex';
+          document.getElementById('appContent').style.display='none';
+        }
+      });
+    }catch(e){
+      console.warn('Firebase no disponible (sin conexión o vista previa):',e&&e.message);
+    }
   }
-});
+  // ACCESO LIBRE — sin login de Firebase (uso privado familiar)
+  function entrarLibre(){
+    var l=document.getElementById('loginScreen'), a=document.getElementById('appContent');
+    if(l)l.style.display='none'; if(a)a.style.display='block';
+    var chip=document.getElementById('userChipName'); if(chip)chip.textContent='Familia Caldea';
+    window._fbLogin=function(){ return Promise.resolve(); };
+    window._fbLogout=function(){ location.reload(); };
+    try{ if(typeof loadData==='function')loadData(); if(typeof generarPlantillaTrabajo==='function')generarPlantillaTrabajo(); if(typeof generarPlantillaBanco==='function')generarPlantillaBanco(); }catch(e){}
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',entrarLibre); else entrarLibre();
+})();
 </script>
 
 <script>
@@ -1154,12 +1178,12 @@ function applyCertWatermark(ctx,W,H){
 }
 function refreshCertMarca(cid,id){const cert=CERTS.find(c=>c.id===id);if(!cert)return;const canvas=document.getElementById(cid);if(!canvas)return;const img=new Image();img.crossOrigin='anonymous';img.onload=()=>{const ctx=canvas.getContext('2d');ctx.clearRect(0,0,canvas.width,canvas.height);ctx.drawImage(img,0,0);applyCertWatermark(ctx,canvas.width,canvas.height);};img.src=cert.dataUrl;}
 function eliminarCert(id){const idx=CERTS.findIndex(c=>c.id===id);if(idx>-1)CERTS.splice(idx,1);const el=document.getElementById(id);if(el)el.remove();}
-function downloadCert(cid,filename){const canvas=document.getElementById(cid);if(!canvas)return;const a=document.createElement('a');a.download=`CERT_PROTEGIDO_${Date.now()}.jpg`;a.href=canvas.toDataURL('image/jpeg',0.92);a.click();}
+function downloadCert(cid,filename){const canvas=document.getElementById(cid);if(!canvas)return;const a=document.createElement('a');a.download=`CERT_PROTEGIDO_${Date.now()}.png`;a.href=canvas.toDataURL('image/png');a.click();}
 async function generarPdfCertificados(){
   if(!CERTS.length){showStatus('cvStatus','⚠ Sube al menos un certificado','err');return;}
   const emp=v('certEmpresa')||'la empresa',pue=v('certPuesto')||'',fec=v('certFecha')?new Date(v('certFecha')).toLocaleDateString('es-ES'):new Date().toLocaleDateString('es-ES'),nom=(v('cvNombre')+' '+v('cvApellidos')).trim()||'Fátima Caldea';
   let certsHtml='';
-  for(const cert of CERTS){const canvas=document.getElementById(cert.canvasId);if(!canvas)continue;const imgData=canvas.toDataURL('image/jpeg',0.88);const nombre=document.getElementById('nombre_'+cert.id)?.value||'Certificado';const inst=document.getElementById('inst_'+cert.id)?.value||'';const anio=document.getElementById('anio_'+cert.id)?.value||'';certsHtml+=`<div class="cp"><div class="cm"><div class="cn">${nombre}</div>${inst?`<div class="ci">${inst}</div>`:''} ${anio?`<div class="ca">${anio}</div>`:''}</div><img src="${imgData}" class="cimg"><div class="cav">⚠ Uso exclusivo: ${emp.toUpperCase()} · ${fec} · Prohibido otros trámites</div></div>`;}
+  for(const cert of CERTS){const canvas=document.getElementById(cert.canvasId);if(!canvas)continue;const imgData=canvas.toDataURL('image/png');const nombre=document.getElementById('nombre_'+cert.id)?.value||'Certificado';const inst=document.getElementById('inst_'+cert.id)?.value||'';const anio=document.getElementById('anio_'+cert.id)?.value||'';certsHtml+=`<div class="cp"><div class="cm"><div class="cn">${nombre}</div>${inst?`<div class="ci">${inst}</div>`:''} ${anio?`<div class="ca">${anio}</div>`:''}</div><img src="${imgData}" class="cimg"><div class="cav">⚠ Uso exclusivo: ${emp.toUpperCase()} · ${fec} · Prohibido otros trámites</div></div>`;}
   const css=`*{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Arial,sans-serif;}body{background:#fff;padding:8mm;}.portada{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;page-break-after:always;}.ptit{font-size:18pt;font-weight:700;color:#C9A84C;letter-spacing:.08em;margin-bottom:8px;}.pnom{font-size:14pt;font-weight:700;margin-bottom:5px;}.pemp{font-size:11pt;color:#555;margin-bottom:16px;}.paviso{background:#fff5f5;border:2px solid #DC2626;border-radius:8px;padding:12px 18px;font-size:11pt;color:#DC2626;font-weight:700;}.cp{page-break-before:always;padding:14px;display:flex;flex-direction:column;align-items:center;gap:10px;}.cm{width:100%;max-width:560px;}.cn{font-size:13pt;font-weight:700;}.ci{font-size:10pt;color:#C9A84C;font-weight:600;}.ca{font-size:9pt;color:#888;}.cimg{max-width:560px;width:100%;border:2px solid #e0d9cc;border-radius:5px;}.cav{width:100%;max-width:560px;background:#fff5f5;border:1px solid #fca5a5;border-radius:5px;padding:7px 12px;font-size:9pt;color:#DC2626;font-weight:600;text-align:center;}@media print{@page{size:A4;margin:8mm;}}`;
   const w=window.open('','_blank');if(!w)return;
   w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><style>${css}</style></head><body><div class="portada"><div style="font-size:28px;margin-bottom:14px;">🎓</div><div class="ptit">ANEXO DE CERTIFICADOS</div><div class="pnom">${nom}</div><div class="pemp">Para: ${emp}${pue?' · '+pue:''} · ${fec}</div><div class="paviso">⚠ USO EXCLUSIVO · PROHIBIDO OTROS TRÁMITES</div></div>${certsHtml}<script>window.onload=()=>window.print()<\/script></body></html>`);
@@ -1184,7 +1208,7 @@ function applyDocWatermark(ctx,W,H){
   const lh=fs*1.55;lines.forEach((line,i)=>{const y=(i-(lines.length-1)/2)*lh;ctx.strokeStyle='rgba(255,255,255,0.5)';ctx.lineWidth=3.5;ctx.strokeText(line,0,y);ctx.fillStyle='rgba(150,150,150,0.35)';ctx.fillText(line,0,y);});ctx.restore();
 }
 function reapplyDocWatermark(cid){const canvas=document.getElementById(cid);if(!canvas)return;applyDocWatermark(canvas.getContext('2d'),canvas.width,canvas.height);showStatus('docStatus','✓ Marca actualizada','ok');}
-function downloadDocCanvas(cid,filename){const canvas=document.getElementById(cid);if(!canvas)return;const a=document.createElement('a');a.download=`PROTEGIDO_${(filename||'doc').replace(/\.[^.]+$/,'')}_${Date.now()}.jpg`;a.href=canvas.toDataURL('image/jpeg',0.92);a.click();}
+function downloadDocCanvas(cid,filename){const canvas=document.getElementById(cid);if(!canvas)return;const a=document.createElement('a');a.download=`PROTEGIDO_${(filename||'doc').replace(/\.[^.]+$/,'')}_${Date.now()}.png`;a.href=canvas.toDataURL('image/png');a.click();}
 
 // ══════════════════════════════════════════════════════
 // DOCS SENSIBLES
@@ -1291,8 +1315,8 @@ document.addEventListener('DOMContentLoaded',()=>{
 });
 function drawFormCanvas(){const canvas=document.getElementById('formCanvas');if(!canvas||!formImg)return;const ctx=canvas.getContext('2d');ctx.clearRect(0,0,canvas.width,canvas.height);ctx.drawImage(formImg,0,0);formFields.forEach(f=>{ctx.font=`bold ${f.size}px Arial`;ctx.fillStyle=f.color;ctx.shadowColor='rgba(255,255,255,0.9)';ctx.shadowBlur=4;ctx.fillText(f.valor,f.x,f.y);ctx.shadowBlur=0;});}
 function limpiarFormCanvas(){formFields=[];drawFormCanvas();}
-function descargarFormulario(){if(!formImg)return;drawFormCanvas();const a=document.createElement('a');a.download=`formulario_rellenado_${Date.now()}.jpg`;a.href=document.getElementById('formCanvas').toDataURL('image/jpeg',0.95);a.click();}
-function imprimirFormulario(){if(!formImg)return;const url=document.getElementById('formCanvas').toDataURL('image/jpeg',0.95);const w=window.open('','_blank');w.document.write(`<!DOCTYPE html><html><head><style>body{margin:0;}img{width:100%;}@media print{@page{size:A4;margin:0;}}</style></head><body><img src="${url}"><script>window.onload=()=>window.print()<\/script></body></html>`);w.document.close();}
+function descargarFormulario(){if(!formImg)return;drawFormCanvas();const a=document.createElement('a');a.download=`formulario_rellenado_${Date.now()}.png`;a.href=document.getElementById('formCanvas').toDataURL('image/png');a.click();}
+function imprimirFormulario(){if(!formImg)return;const url=document.getElementById('formCanvas').toDataURL('image/png');const w=window.open('','_blank');w.document.write(`<!DOCTYPE html><html><head><style>body{margin:0;}img{width:100%;}@media print{@page{size:A4;margin:0;}}</style></head><body><img src="${url}"><script>window.onload=()=>window.print()<\/script></body></html>`);w.document.close();}
 function generarExcelPreview(){
   const tipo=v('excelTipo');if(!tipo)return;
   const nom=(v('cvNombre')+' '+v('cvApellidos')).trim()||'—',tel=v('cvTelefono')||'—',eml=v('cvEmail')||'—',dir=v('cvDireccion')||'—',nac=v('cvNacionalidad')||'—',prof=v('cvProfesion')||'—',hoy=new Date().toLocaleDateString('es-ES');
@@ -1411,5 +1435,10 @@ function copiarBanco(){const ta=document.getElementById('bancoTexto');if(!ta)ret
 // ══════════════════════════════════════════════════════
 function showStatus(id,msg,type='ok'){const el=document.getElementById(id);if(!el)return;el.textContent=msg;el.className='status-bar visible'+(type==='err'?' err':'');setTimeout(()=>el.classList.remove('visible'),4000);}
 </script>
+<template id="__bundler_thumbnail">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#122542"/><g transform="translate(50,50)"><path d="M0 -22 L18 -14 V4 C18 16 0 24 0 24 C0 24 -18 16 -18 4 V-14 Z" fill="#C9A84C"/><text x="0" y="7" font-size="18" text-anchor="middle" fill="#122542">📄</text></g></svg>
+</template>
+<script src="cerebro.js" defer></script>
+<script src="boveda-app.js" defer></script>
 </body>
 </html>
