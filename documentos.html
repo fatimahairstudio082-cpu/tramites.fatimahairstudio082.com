@@ -1105,8 +1105,10 @@ function startVoice(targetOrId,btn){
   let final='';
   rec.onresult=e=>{let interim='';for(let i=e.resultIndex;i<e.results.length;i++){if(e.results[i].isFinal)final+=e.results[i][0].transcript+' ';else interim=e.results[i][0].transcript;}target.value=(target.value?target.value.trimEnd()+' ':'')+( final+interim).trim();if(typeof updatePreview==='function')updatePreview();};
   rec.onend=()=>{btn.classList.remove('rec');btn.textContent='🎤';document.getElementById('vozIndicator').classList.remove('visible');activeRec=null;activeRecBtn=null;};
-  rec.onerror=()=>{btn.classList.remove('rec');btn.textContent='🎤';document.getElementById('vozIndicator').classList.remove('visible');activeRec=null;activeRecBtn=null;};
-  rec.start();
+  rec.onerror=ev=>{btn.classList.remove('rec');btn.textContent='🎤';document.getElementById('vozIndicator').classList.remove('visible');activeRec=null;activeRecBtn=null;
+    var m={'not-allowed':'🎤 El micrófono está BLOQUEADO. Toca el candado 🔒 (o los 3 puntos ⋮ → Configuración del sitio) junto a la dirección → Micrófono → PERMITIR. Luego recarga.','service-not-allowed':'🎤 El micrófono está bloqueado por el sistema. Ve a Ajustes de Windows → Privacidad → Micrófono y permite el acceso a Chrome.','no-speech':'🔇 No te escuché. Habla cerca del micrófono y prueba otra vez.','audio-capture':'🎙️ No se detecta ningún micrófono en este dispositivo.','network':'🌐 El dictado necesita internet y ahora no hay conexión.'};
+    if(m[ev.error]) alert(m[ev.error]);};
+  try{rec.start();}catch(err){alert('No se pudo iniciar el micrófono. Prueba a recargar la página.');}
 }
 
 // ══════════════════════════════════════════════════════
