@@ -1,11 +1,15 @@
-/* Bóveda Legal — Service Worker (PWA offline) · v3 network-first, nunca cuelga */
-const CACHE = 'boveda-legal-v3';
+/* Bóveda Legal — Service Worker (PWA offline) · v4 network-first, nunca cuelga */
+const CACHE = 'boveda-legal-v4';
 const ASSETS = [
+  './',
+  './index.html',
+  './documentos.html',
+  './herramientas.html',
   './manifest.webmanifest',
-  './icons/icon-192.png',
-  './icons/icon-512.png',
-  './icons/icon-maskable-512.png',
-  './icons/apple-touch-icon.png'
+  './icon-192.png',
+  './icon-512.png',
+  './icon-maskable-512.png',
+  './apple-touch-icon.png'
 ];
 
 self.addEventListener('install', (e) => {

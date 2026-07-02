@@ -1,0 +1,60 @@
+═══════════════════════════════════════════════
+   FÁTIMA CALDEA — Sistema Legal / Trámites (Bóveda Legal)
+   Carpeta limpia · con TODOS los arreglos incluidos
+═══════════════════════════════════════════════
+
+Esta carpeta tiene el sistema completo. Son 3 pantallas HTML
+conectadas entre sí + su motor + íconos.
+
+ARCHIVOS
+  • index.html ............ Bóveda, tablas y formularios (principal)
+  • documentos.html ....... Documentos Pro (currículum, cartas)
+  • herramientas.html ..... Herramientas
+  • manifest.webmanifest .. Para instalarla como app
+  • sw.js ................. Para que funcione sin internet
+  • cerebro.js / boveda-app.js ... Motor del sistema (NO borrar)
+  • icon-192.png, icon-512.png, icon-maskable-512.png,
+    apple-touch-icon.png .......... Íconos de la app
+
+CLAVE DEL SISTEMA (login):  la que ya usas de siempre.
+
+───────────────────────────────────────────────
+ARREGLOS QUE YA TRAE ESTA VERSIÓN
+───────────────────────────────────────────────
+✅ INSTALA COMO APP DE VERDAD:
+   - Se agregó el registro del "service worker" (antes faltaba y
+     por eso solo salía acceso directo de Chrome).
+✅ ÍCONOS CORREGIDOS:
+   - Las rutas apuntaban a una carpeta "icons/" que no existe.
+     Corregido en index.html, documentos.html, herramientas.html
+     y manifest.webmanifest → ahora apuntan a la raíz.
+✅ DICTADO POR VOZ (audio → texto):
+   - Los formularios ahora escriben bien lo que dictas y lo
+     guardan solo en la Bóveda.
+   - El micrófono del COPILOTO legal también quedó arreglado.
+   (Recuerda: el dictado por voz NECESITA internet.)
+
+───────────────────────────────────────────────
+PROBARLA
+───────────────────────────────────────────────
+Abre "index.html" con Chrome. Los botones "Documentos Pro →" y
+"Herramientas →" saltan entre las 3 pantallas.
+
+⚠️ Mantén TODOS los archivos juntos en la misma carpeta y sin
+cambiarles el nombre.
+
+───────────────────────────────────────────────
+PUBLICARLA E INSTALARLA COMO APP
+───────────────────────────────────────────────
+1. Sube TODOS los archivos de esta carpeta a tu repositorio
+   (o a Netlify). Deben quedar en la RAÍZ, juntos.
+2. Activa GitHub Pages (Settings → Pages → main → /(root) → Save).
+3. En el teléfono: borra el acceso directo viejo, abre el link
+   en Chrome, dale "Actualizar", y espera unos segundos →
+   aparecerá "Instalar app". Instálala: abre en ventana propia,
+   sin barra de Chrome, con su ícono. ✅
+
+Si al primer intento solo ofrece acceso directo, cierra Chrome
+por completo y vuelve a abrir el link (tarda en detectar el
+service worker nuevo).
+═══════════════════════════════════════════════

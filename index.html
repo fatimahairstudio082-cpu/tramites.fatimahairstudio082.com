@@ -10,8 +10,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Bóveda Legal">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" type="image/png" href="icons/icon-192.png">
-<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 :root{--gold:#C9A84C;--bg:#f5f4f0;--bg2:#fff;--bg3:#f0ede6;--text:#1a1a1a;--text2:#555;--text3:#888;--border:#e0d9cc;--green:#27AE60;--blue:#2563EB;--red:#DC2626;--shadow:0 2px 12px rgba(0,0,0,.08);}
@@ -889,14 +889,23 @@ function voz(targetOrId,btn){
   if(activeRec&&activeRecBtn===btn){activeRec.stop();return;}
   if(activeRec)activeRec.stop();
   const target=typeof targetOrId==='string'?document.getElementById(targetOrId):targetOrId;if(!target)return;
-  const rec=new SR();rec.lang='es-ES';rec.continuous=false;rec.interimResults=true;
+  const rec=new SR();rec.lang='es-ES';rec.continuous=true;rec.interimResults=true;rec.maxAlternatives=1;
   activeRec=rec;activeRecBtn=btn;btn.classList.add('rec');btn.textContent='⏹';
   const ind=document.getElementById('vozInd');if(ind)ind.classList.add('vis');
-  let final='';
-  rec.onresult=e=>{let interim='';for(let i=e.resultIndex;i<e.results.length;i++){if(e.results[i].isFinal)final+=e.results[i][0].transcript+' ';else interim=e.results[i][0].transcript;}target.value=(target.value?target.value.trimEnd()+' ':'')+( final+interim).trim();};
+  const base=target.value?target.value.trimEnd()+' ':'';
+  rec.onresult=e=>{
+    let finalTxt='',interim='';
+    for(let i=0;i<e.results.length;i++){
+      const t=e.results[i][0].transcript;
+      if(e.results[i].isFinal)finalTxt+=t+' ';else interim+=t;
+    }
+    target.value=(base+finalTxt+interim).replace(/\s+/g,' ').trimStart();
+    try{target.dispatchEvent(new Event('input',{bubbles:true}));}catch(_){}
+  };
   rec.onend=()=>{btn.classList.remove('rec');btn.textContent='🎤';if(ind)ind.classList.remove('vis');activeRec=null;activeRecBtn=null;};
   rec.onerror=ev=>{btn.classList.remove('rec');btn.textContent='🎤';if(ind)ind.classList.remove('vis');activeRec=null;activeRecBtn=null;
-    var m={'not-allowed':'🎤 El micrófono está BLOQUEADO. Toca el candado 🔒 (o los 3 puntos ⋮ → Configuración del sitio) junto a la dirección → Micrófono → PERMITIR. Luego recarga.','service-not-allowed':'🎤 El micrófono está bloqueado por el sistema. Ve a Ajustes de Windows → Privacidad → Micrófono y permite el acceso a Chrome.','no-speech':'🔇 No te escuché. Habla cerca del micrófono y prueba otra vez.','audio-capture':'🎙️ No se detecta ningún micrófono en este dispositivo.','network':'🌐 El dictado necesita internet y ahora no hay conexión.'};
+    if(ev.error==='no-speech'||ev.error==='aborted')return;
+    var m={'not-allowed':'🎤 El micrófono está BLOQUEADO. Toca el candado 🔒 (o los 3 puntos ⋮ → Configuración del sitio) junto a la dirección → Micrófono → PERMITIR. Luego recarga.','service-not-allowed':'🎤 El micrófono está bloqueado por el sistema o esta app no tiene permiso. Ábrela en Chrome normal y da permiso al micrófono.','audio-capture':'🎙️ No se detecta ningún micrófono en este dispositivo.','network':'🌐 El dictado por voz NECESITA internet. Conéctate y prueba otra vez.'};
     if(m[ev.error]) alert(m[ev.error]);};
   try{rec.start();}catch(err){alert('No se pudo iniciar el micrófono. Prueba a recargar la página.');}
 }
@@ -1109,7 +1118,7 @@ function mostrarSugerencias(lista){const wrap=document.getElementById('copiloSug
 function clickSugerencia(texto){document.getElementById('copiloInput').value=texto;enviarCopiloto();}
 function hablarCopiloto(texto){if(!window.speechSynthesis||!COPILOTO.vozActiva)return;speechSynthesis.cancel();const utt=new SpeechSynthesisUtterance(texto.substring(0,500));utt.lang='es-ES';utt.rate=0.88;utt.pitch=1.05;const vs=speechSynthesis.getVoices();const es=vs.find(v=>v.lang==='es-ES'&&v.name.includes('Female'))||vs.find(v=>v.lang.startsWith('es'));if(es)utt.voice=es;speechSynthesis.speak(utt);}
 function toggleVozCopiloto(){COPILOTO.vozActiva=!COPILOTO.vozActiva;const btn=document.getElementById('copiloVozBtn');if(COPILOTO.vozActiva){btn.textContent='🔊 Voz';btn.style.color='var(--gold)';}else{speechSynthesis.cancel();btn.textContent='🔇 Mudo';btn.style.color='var(--text3)';}}
-function vozACopiloto(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){agregarMensajeBot('⚠️ Usa Chrome o Edge para reconocimiento de voz.');return;}if(COPILOTO.recCopiloto){COPILOTO.recCopiloto.stop();return;}const rec=new SR();rec.lang='es-ES';rec.continuous=false;rec.interimResults=false;COPILOTO.recCopiloto=rec;const btn=document.getElementById('copiloMicBtn');btn.textContent='⏹';btn.style.background='rgba(220,38,38,.15)';rec.onresult=e=>{document.getElementById('copiloInput').value=e.results[0][0].transcript;enviarCopiloto();};rec.onend=()=>{COPILOTO.recCopiloto=null;btn.textContent='🎤';btn.style.background='rgba(201,168,76,.12)';};rec.start();}
+function vozACopiloto(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){agregarMensajeBot('⚠️ Usa Chrome o Edge para reconocimiento de voz.');return;}if(COPILOTO.recCopiloto){COPILOTO.recCopiloto.stop();return;}const rec=new SR();rec.lang='es-ES';rec.continuous=false;rec.interimResults=true;COPILOTO.recCopiloto=rec;const btn=document.getElementById('copiloMicBtn');btn.textContent='⏹';btn.style.background='rgba(220,38,38,.15)';const inp=document.getElementById('copiloInput');let finalTxt='';rec.onresult=e=>{let interim='';finalTxt='';for(let i=0;i<e.results.length;i++){const t=e.results[i][0].transcript;if(e.results[i].isFinal)finalTxt+=t+' ';else interim+=t;}inp.value=(finalTxt+interim).replace(/\s+/g,' ').trim();};rec.onend=()=>{COPILOTO.recCopiloto=null;btn.textContent='🎤';btn.style.background='rgba(201,168,76,.12)';if(inp.value.trim())enviarCopiloto();};rec.onerror=ev=>{COPILOTO.recCopiloto=null;btn.textContent='🎤';btn.style.background='rgba(201,168,76,.12)';if(ev.error==='no-speech'||ev.error==='aborted')return;if(ev.error==='network')agregarMensajeBot('🌐 El dictado por voz necesita internet. Conéctate y prueba otra vez.');else if(ev.error==='not-allowed'||ev.error==='service-not-allowed')agregarMensajeBot('🎤 El micrófono está bloqueado. Toca el candado 🔒 junto a la dirección → Micrófono → Permitir, y recarga.');};rec.start();}
 function escucharInstruccion(texto){hablarCopiloto(texto);if(!COPILOTO.abierto){toggleCopiloto();setTimeout(()=>agregarMensajeBot('🎧 '+texto.substring(0,120)+'...'),300);}}
 
 // ══════════════════════════════════════════════════════
@@ -1124,5 +1133,17 @@ function abrirEnlace(url){window.open(url,'_blank');}
 </template>
 <script src="cerebro.js" defer></script>
 <script src="boveda-app.js" defer></script>
+<script>
+/* Registrar el Service Worker: SIN esto Android no ofrece "Instalar app"
+   de verdad (solo un acceso directo que abre Chrome). Igual que las otras
+   dos apps que sí instalan. */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('sw.js').catch(function (e) {
+      console.warn('SW no registrado:', e);
+    });
+  });
+}
+</script>
 </body>
 </html>
